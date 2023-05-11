@@ -9,7 +9,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import model.Absensi;
-import model.Mahasiswa;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import project.Route;

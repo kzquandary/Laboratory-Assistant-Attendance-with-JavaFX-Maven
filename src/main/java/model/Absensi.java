@@ -1,24 +1,16 @@
 package model;
 
 public class Absensi {
-    private String kode_absen;
     private String kode_pertemuan;
     private String nim;
     private String status;
+    private String kode_absen;
 
     public Absensi(String kode_absen, String kode_pertemuan, String nim, String status) {
         this.kode_absen = kode_absen;
         this.kode_pertemuan = kode_pertemuan;
         this.nim = nim;
         this.status = status;
-    }
-
-    public String getKodeAbsen() {
-        return kode_absen;
-    }
-
-    public void setKodeAbsen(String kode_absen) {
-        this.kode_absen = kode_absen;
     }
 
     public String getKodePertemuan() {

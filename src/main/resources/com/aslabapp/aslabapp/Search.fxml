@@ -52,16 +52,15 @@
          </font>
       </Button>
    </Pane>
-   <Pane fx:id="tabelkonten" layoutX="32.0" layoutY="333.0" prefHeight="329.0" prefWidth="861.0" styleClass="content-pane" stylesheets="@../../../css/style.css" visible="false">
-      <children>
-         <TableView fx:id="tabelAbsen" layoutX="60.0" layoutY="26.0" prefHeight="285.0" prefWidth="758.0" visible="false">
-           <columns>
-             <TableColumn fx:id="kodeabsen" prefWidth="177.5999984741211" text="Kode Absen" />
-               <TableColumn fx:id="kodepertemuanabsen" prefWidth="192.79998779296875" text="Kode Pertemuan" />
-             <TableColumn fx:id="nimabsen" prefWidth="235.20004272460938" text="NIM" />
-               <TableColumn fx:id="statusabsen" prefWidth="148.79998779296875" text="Status" />
-           </columns>
-         </TableView>
-      </children>
+   <Pane fx:id="tabelkonten" layoutX="32.0" layoutY="333.0" prefHeight="329.0" prefWidth="861.0"
+         styleClass="content-pane" stylesheets="@../../../css/style.css" visible="false">
+      <TableView fx:id="tabelAbsen" layoutX="60.0" layoutY="26.0" prefHeight="285.0" prefWidth="758.0" visible="false">
+         <columns>
+            <TableColumn fx:id="kodeabsen" prefWidth="177.5999984741211" text="Kode Absen"/>
+            <TableColumn fx:id="kodepertemuanabsen" prefWidth="192.79998779296875" text="Kode Pertemuan"/>
+            <TableColumn fx:id="nimabsen" prefWidth="235.20004272460938" text="NIM"/>
+            <TableColumn fx:id="statusabsen" prefWidth="148.79998779296875" text="Status"/>
+         </columns>
+      </TableView>
    </Pane>
 </Pane>
