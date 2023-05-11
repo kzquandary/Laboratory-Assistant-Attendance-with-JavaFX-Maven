@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.swardana.materialiconfx.control.MaterialIcon?>
+<?import java.net.URL?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aslabapp.aslabapp.Main">
+    <Rectangle fx:id="background" arcHeight="50.0" arcWidth="50.0" height="801.0" layoutY="1.0" width="1200.0">
+        <fill>
+            <LinearGradient>
+                <stops>
+                    <Stop>
+                        <color>
+                            <Color red="0.13317738473415375" green="0.2396465241909027" blue="0.5894736647605896" />
+                        </color>
+                    </Stop>
+                    <Stop offset="0.006729475100942127">
+                        <color>
+                            <Color red="0.03898635506629944" green="0.13450291752815247" blue="0.42105263471603394" />
+                        </color>
+                    </Stop>
+                    <Stop offset="0.5100942126514133">
+                        <color>
+
+                            <Color red="0.6901960968971252" green="0.4156862795352936" blue="0.7019608020782471" />
+                        </color>
+                    </Stop>
+                    <Stop offset="1.0">
+                        <color>
+                            <Color red="0.19607843458652496" green="0.5333333611488342" blue="0.7882353067398071" />
+                        </color>
+                    </Stop>
+                </stops>
+            </LinearGradient>
+        </fill>
+    </Rectangle>
+    <!-- Header -->
+    <Circle fill="#ff3b30" layoutX="1161.0" layoutY="16.0" onMouseClicked="#mainClose" radius="10.0" stroke="#ff3b30" strokeType="INSIDE">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor></Circle>
+    <Circle fill="#4cd964" layoutX="1136.0" layoutY="16.0" onMouseClicked="#mainMinimize" radius="10.0" stroke="#4cd964" strokeType="INSIDE">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor></Circle>
+    <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#390159b2" height="44.0" layoutX="25.0" layoutY="42.0" stroke="TRANSPARENT" strokeType="INSIDE" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" width="1150.0" />
+    <MaterialIcon color="WHITE" content="HOME" layoutX="47.0" layoutY="49.0" onMouseClicked="#home" size="30">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor></MaterialIcon>
+    <MaterialIcon color="WHITE" content="SCHOOL" layoutX="84.0" layoutY="49.0" onMouseClicked="#mahasiswa" size="30">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor></MaterialIcon>
+    <MaterialIcon color="WHITE" content="SETTINGS" layoutX="1112.0" layoutY="49.0" onMousePressed="#setting" size="30">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor></MaterialIcon>
+    <MaterialIcon color="WHITE" content="BOOK" layoutX="124.0" layoutY="49.0" size="30">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor></MaterialIcon>
+    <MaterialIcon fx:id="cari_click" color="WHITE" content="SEARCH" layoutX="1075.0" layoutY="50.0" size="30">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor></MaterialIcon>
+    <TextField fx:id="search_form" focusTraversable="false" layoutX="900.0" layoutY="50.0" onAction="#search_form" promptText="Cari Sesuatu" styleClass="form-cari" stylesheets="@../../../css/style.css" />
+    <Text fill="WHITE" layoutX="518.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Powered by : Kzquandary" textAlignment="CENTER">
+        <font>
+            <Font name="Comic Sans MS" size="19.0" />
+        </font>
+    </Text>
+    <!-- End Header -->
+    <!-- Sidebar -->
+    <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#380257b2" height="680.0" layoutX="25.0" layoutY="106.0" stroke="#fff7f700" strokeType="INSIDE" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" width="200.0" />
+    <Button fx:id="home" layoutX="47.0" layoutY="139.0" mnemonicParsing="false" onAction="#home" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Home">
+        <font>
+            <Font name="Comic Sans MS Bold" size="16.0" />
+        </font>
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+    </Button>
+    <Line endX="52.79998779296875" endY="-1.52587890625E-5" fill="#ffffff00" layoutX="146.0" layoutY="186.0" opacity="0.2" startX="-100.0" stroke="WHITE" />
+    <Button fx:id="mahasiswa" layoutX="47.0" layoutY="210.0" mnemonicParsing="false" onAction="#mahasiswa" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Mahasiswa">
+        <font>
+            <Font name="Comic Sans MS Bold" size="16.0" />
+        </font>
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+    </Button>
+    <Line endX="52.79998779296875" endY="-1.52587890625E-5" fill="#ffffff00" layoutX="148.0" layoutY="258.0" opacity="0.2" startX="-100.0" stroke="WHITE" />
+    <Button layoutX="47.0" layoutY="279.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Pertemuan">
+        <font>
+            <Font name="Comic Sans MS Bold" size="16.0" />
+        </font>
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+    </Button>
+    <Line endX="52.79998779296875" endY="-1.52587890625E-5" fill="#ffffff00" layoutX="148.0" layoutY="328.0" opacity="0.2" startX="-100.0" stroke="WHITE" />
+    <Button layoutX="47.0" layoutY="342.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Absen">
+        <font>
+            <Font name="Comic Sans MS Bold" size="16.0" />
+        </font>
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+    </Button>
+    <Line endX="52.79998779296875" endY="-1.52587890625E-5" fill="#ffffff00" layoutX="148.0" layoutY="389.0" opacity="0.2" startX="-100.0" stroke="WHITE" />
+    <Button layoutX="46.0" layoutY="407.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Laporan">
+        <font>
+            <Font name="Comic Sans MS Bold" size="16.0" />
+        </font>
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+    </Button>
+    <Line endX="52.79998779296875" endY="-1.52587890625E-5" fill="#ffffff00" layoutX="147.0" layoutY="455.0" opacity="0.2" startX="-100.0" stroke="WHITE" />
+    <Button layoutX="47.0" layoutY="473.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Nilai">
+        <font>
+            <Font name="Comic Sans MS Bold" size="16.0" />
+        </font>
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+    </Button>
+    <Line endX="52.79998779296875" endY="-1.52587890625E-5" fill="#ffffff00" layoutX="148.0" layoutY="520.0" opacity="0.2" startX="-100.0" stroke="WHITE" />
+    <Button layoutX="48.0" layoutY="540.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Keaktifan">
+        <font>
+            <Font name="Comic Sans MS Bold" size="16.0" />
+        </font>
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+    </Button>
+    <Line endX="52.79998779296875" endY="-1.52587890625E-5" fill="#ffffff00" layoutX="148.0" layoutY="586.0" opacity="0.2" startX="-100.0" stroke="WHITE" />
+    <Button layoutX="48.0" layoutY="610.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Logout">
+        <font>
+            <Font name="Comic Sans MS Bold" size="16.0" />
+        </font>
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+    </Button>
+    <Line endX="52.79998779296875" endY="-1.52587890625E-5" fill="#ffffff00" layoutX="148.0" layoutY="658.0" opacity="0.2" startX="-100.0" stroke="WHITE" />
+    <Pane fx:id="content" layoutX="252.0" layoutY="109.0" prefHeight="680.0" prefWidth="925.0" style="-fx-background-color: transparent;">
+        <!-- End Sidebar -->
+        <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#390159b2" height="200.0" layoutX="636.0" layoutY="26.0" stroke="TRANSPARENT" strokeType="INSIDE" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" width="250.0" />
+        <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#390159b2" height="200.0" layoutX="14.0" layoutY="26.0" stroke="TRANSPARENT" strokeType="INSIDE" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" width="250.0" />
+        <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#390159b2" height="200.0" layoutX="324.0" layoutY="26.0" stroke="TRANSPARENT" strokeType="INSIDE" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" width="250.0" />
+        <Text fill="WHITE" layoutX="87.0" layoutY="198.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mahasiswa">
+            <font>
+                <Font name="Comic Sans MS" size="21.0" />
+            </font>
+        </Text>
+        <Text fill="WHITE" layoutX="404.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pertemuan">
+            <font>
+                <Font name="Comic Sans MS" size="21.0" />
+            </font>
+        </Text>
+        <Text fill="WHITE" layoutX="723.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Laporan" textAlignment="CENTER">
+            <font>
+                <Font name="Comic Sans MS" size="21.0" />
+            </font>
+        </Text>
+        <MaterialIcon color="WHITE" content="SCHOOL" layoutX="33.0" layoutY="70.0" prefHeight="75.0" prefWidth="76.0" size="80" />
+        <MaterialIcon color="WHITE" content="BOOK" layoutX="343.0" layoutY="74.0" size="80" />
+        <MaterialIcon color="WHITE" content="CHECK_BOX" layoutX="658.0" layoutY="74.0" size="80" />
+        <Text fx:id="jmlmahasiswa" fill="WHITE" layoutX="182.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="45" textAlignment="CENTER">
+            <font>
+                <Font name="Comic Sans MS" size="35.0" />
+            </font>
+        </Text>
+        <Text fx:id="jmlpertemuan" fill="WHITE" layoutX="507.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2" textAlignment="CENTER" wrappingWidth="50.39999999999998">
+            <font>
+                <Font name="Comic Sans MS" size="35.0" />
+            </font>
+        </Text>
+        <Text fx:id="jmllaporan" fill="WHITE" layoutX="785.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="100" textAlignment="CENTER" wrappingWidth="91.8887939453125">
+            <font>
+                <Font name="Comic Sans MS" size="35.0" />
+            </font>
+        </Text>
+    </Pane>
+<!--       <Pane layoutX="238.0" layoutY="290.0" prefHeight="293.0" prefWidth="538.0" styleClass="content-pane" stylesheets="@../../../css/style.css" />-->
+    <stylesheets>
+        <URL value="@../../../css/style.css" />
+    </stylesheets>
+</AnchorPane>

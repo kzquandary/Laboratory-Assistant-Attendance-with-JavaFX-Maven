@@ -1,0 +1,32 @@
+#welcomePane {
+    -fx-background-color: #2cf000;
+    -fx-background-radius: 20 20 20 20;
+    -fx-border-radius: 20 20 20 20;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 2px;
+    -fx-padding: 20px;
+}
+#tambahpane {
+    -fx-background-color: #0a9efa;
+    -fx-background-radius: 20 20 20 20;
+    -fx-border-radius: 20 20 20 20;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 2px;
+    -fx-padding: 20px;
+}
+#updatepane {
+    -fx-background-color: #0a9efa;
+    -fx-background-radius: 20 20 20 20;
+    -fx-border-radius: 20 20 20 20;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 2px;
+    -fx-padding: 20px;
+}
+#updatebutton {
+    -fx-background-color: #0a9efa;
+    -fx-background-radius: 20 20 20 20;
+    -fx-border-radius: 20 20 20 20;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 2px;
+    -fx-padding: 20px;
+}
