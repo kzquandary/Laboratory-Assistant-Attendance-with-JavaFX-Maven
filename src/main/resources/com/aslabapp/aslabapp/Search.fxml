@@ -5,53 +5,62 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane fx:id="content" prefHeight="680.0" prefWidth="925.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SearchController">
+<Pane prefHeight="680.0" prefWidth="925.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SearchController">
    <Text fx:id="textInfo" fill="WHITE" layoutX="290.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="345.41949462890625">
       <font>
          <Font name="Comic Sans MS" size="19.0" />
       </font>
    </Text>
-   <Pane fx:id="infoPane" layoutX="32.0" layoutY="87.0" prefHeight="130.0" prefWidth="861.0" styleClass="content-pane" stylesheets="@../../../css/style.css" visible="false">
-      <children>
-         <Text fx:id="setNIM" fill="WHITE" layoutX="35.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NIM : 3411211049" textAlignment="CENTER" wrappingWidth="744.6195373535156">
-            <font>
-               <Font name="Comic Sans MS Bold" size="19.0" />
-            </font>
-         </Text>
-         <Text fx:id="setNAMA" fill="WHITE" layoutX="35.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NAMA : Nur Faid Prasetyo" textAlignment="CENTER" wrappingWidth="744.6195373535156">
-            <font>
-               <Font name="Comic Sans MS Bold" size="19.0" />
-            </font>
-         </Text>
-         <Text fx:id="setNOHP" fill="WHITE" layoutX="35.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="No HP : 089662966963" textAlignment="CENTER" wrappingWidth="744.6195373535156">
-            <font>
-               <Font name="Comic Sans MS Bold" size="19.0" />
-            </font>
-         </Text>
-      </children>
+   <Pane fx:id="infoPane" layoutX="32.0" layoutY="87.0" prefHeight="130.0" prefWidth="861.0" styleClass="content-pane"
+         stylesheets="@../../../css/style.css" visible="false">
+      <Text fx:id="setNIM" fill="WHITE" layoutX="35.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0"
+            text="NIM : 3411211049" textAlignment="CENTER" wrappingWidth="744.6195373535156">
+         <font>
+            <Font name="Comic Sans MS Bold" size="19.0"/>
+         </font>
+      </Text>
+      <Text fx:id="setNAMA" fill="WHITE" layoutX="35.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0"
+            text="NAMA : Nur Faid Prasetyo" textAlignment="CENTER" wrappingWidth="744.6195373535156">
+         <font>
+            <Font name="Comic Sans MS Bold" size="19.0"/>
+         </font>
+      </Text>
+      <Text fx:id="setNOHP" fill="WHITE" layoutX="35.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0"
+            text="No HP : 089662966963" textAlignment="CENTER" wrappingWidth="744.6195373535156">
+         <font>
+            <Font name="Comic Sans MS Bold" size="19.0"/>
+         </font>
+      </Text>
    </Pane>
-   <Pane fx:id="buttonsearch" layoutX="32.0" layoutY="228.0" prefHeight="85.0" prefWidth="861.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
-      <children>
-         <Button layoutX="94.0" layoutY="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #04ff00; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Absensi">
-            <font>
-               <Font name="Comic Sans MS Bold" size="15.0" />
-            </font>
-         </Button>
-         <Button layoutX="443.0" layoutY="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #009dff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Nilai">
-            <font>
-               <Font name="Comic Sans MS Bold" size="15.0" />
-            </font>
-         </Button>
-         <Button layoutX="271.0" layoutY="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #ff0000; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Laporan">
-            <font>
-               <Font name="Comic Sans MS Bold" size="15.0" />
-            </font>
-         </Button>
-         <Button layoutX="621.0" layoutY="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #fa00bb; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Keaktifan">
-            <font>
-               <Font name="Comic Sans MS Bold" size="15.0" />
-            </font>
-         </Button>
-      </children>
+   <Pane fx:id="buttonsearch" layoutX="32.0" layoutY="228.0" prefHeight="85.0" prefWidth="861.0"
+         styleClass="content-pane" stylesheets="@../../../css/style.css" visible="false">
+      <Button layoutX="94.0" layoutY="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0"
+              style="-fx-background-color: #04ff00; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);"
+              styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Absensi">
+         <font>
+            <Font name="Comic Sans MS Bold" size="15.0"/>
+         </font>
+      </Button>
+      <Button layoutX="443.0" layoutY="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0"
+              style="-fx-background-color: #009dff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);"
+              styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Nilai">
+         <font>
+            <Font name="Comic Sans MS Bold" size="15.0"/>
+         </font>
+      </Button>
+      <Button layoutX="271.0" layoutY="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0"
+              style="-fx-background-color: #ff0000; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);"
+              styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Laporan">
+         <font>
+            <Font name="Comic Sans MS Bold" size="15.0"/>
+         </font>
+      </Button>
+      <Button layoutX="621.0" layoutY="25.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0"
+              style="-fx-background-color: #fa00bb; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);"
+              styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Keaktifan">
+         <font>
+            <Font name="Comic Sans MS Bold" size="15.0"/>
+         </font>
+      </Button>
    </Pane>
 </Pane>
