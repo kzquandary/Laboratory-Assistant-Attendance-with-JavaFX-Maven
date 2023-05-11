@@ -1,10 +1,18 @@
 package controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import model.Absensi;
+import model.Mahasiswa;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import project.Route;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,6 +33,19 @@ public class SearchController {
     public Pane buttonsearch;
     @FXML
     public Pane infoPane;
+    @FXML
+    public Pane tabelkonten;
+    @FXML
+    public TableView<model.Absensi> tabelAbsen;
+    @FXML
+    public TableColumn<model.Absensi, String> kodeabsen;
+    @FXML
+    public TableColumn<model.Absensi, String> nimabsen;
+    @FXML
+    public TableColumn<model.Absensi, String> statusabsen;
+    @FXML
+    public TableColumn<model.Absensi, String> kodepertemuanabsen;
+    private boolean isTabelVisible = false;
     private String searchText;
 
     public void setSearch(String searchText) {
@@ -139,5 +160,58 @@ public class SearchController {
         String apiUrl = "http://127.0.0.1:8000/api/mahasiswa/nama/" + param;
 
         extractData(apiUrl);
+    }
+
+    public void absensi() {
+        isTabelVisible = !isTabelVisible; // Toggle visibilitas tabel
+
+        tabelkonten.setVisible(isTabelVisible);
+        tabelAbsen.setVisible(isTabelVisible);
+
+        if (isTabelVisible) {
+            String searchnim = searchText;
+            try {
+                URL url = new URL(Route.URL + "absensi/nim/" + searchnim);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("GET");
+                int status = con.getResponseCode();
+                if (status == 200) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String inputLine;
+                    StringBuilder content = new StringBuilder();
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine);
+                    }
+                    in.close();
+                    JSONArray jsonArray = new JSONArray(content.toString());
+                    ObservableList<Absensi> dataAbsen = FXCollections.observableArrayList();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String kode_absen = jsonObject.getString("kode_absen");
+                        String kode_pertemuan = jsonObject.getString("kode_pertemuan");
+                        String nim = jsonObject.getString("nim");
+                        String statusabsen = jsonObject.getString("status");
+                        dataAbsen.add(new Absensi(kode_absen, kode_pertemuan, nim, statusabsen));
+                    }
+                    kodeabsen.setCellValueFactory(new PropertyValueFactory<>("kodeAbsen"));
+                    kodepertemuanabsen.setCellValueFactory(new PropertyValueFactory<>("kodePertemuan"));
+                    nimabsen.setCellValueFactory(new PropertyValueFactory<>("nim"));
+                    statusabsen.setCellValueFactory(new PropertyValueFactory<>("status"));
+                    tabelAbsen.setItems(dataAbsen);
+                }
+                con.disconnect();
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
+    }
+    public void laporan(){
+
+    }
+    public void nilai(){
+
+    }
+    public void keaktifan(){
+
     }
 }

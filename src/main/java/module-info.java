@@ -11,4 +11,5 @@ module com.aslabapp.aslabapp {
     opens project to javafx.fxml;
     exports project;
     opens model to javafx.base;
+    exports model;
 }
