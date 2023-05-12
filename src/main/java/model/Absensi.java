@@ -5,7 +5,9 @@ public class Absensi {
     private String kode_pertemuan;
     private String nim;
     private String status;
+    public Absensi(){
 
+    }
     public Absensi(String kode_absen, String kode_pertemuan, String nim, String status) {
         this.kode_absen = kode_absen;
         this.kode_pertemuan = kode_pertemuan;

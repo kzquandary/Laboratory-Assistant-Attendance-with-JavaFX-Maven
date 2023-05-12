@@ -9,7 +9,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import model.Absensi;
-import model.Mahasiswa;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import project.Route;
@@ -21,6 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class SearchController {
+    private final Absensi absensi = new Absensi();
     @FXML
     public Text setNIM;
     @FXML
@@ -101,13 +101,7 @@ public class SearchController {
 
                 String nim = jsonObject.getString("nim");
                 String nama = jsonObject.getString("nama");
-                String noHp = jsonObject.getString("no_hp");
-                textInfo.setText("Biodata Mahasiswa");
-                setNIM.setText("NIM :" + nim);
-                setNAMA.setText("NAMA : " + nama);
-                setNOHP.setText("No HP : " + noHp);
-                buttonsearch.setVisible(true);
-                infoPane.setVisible(true);
+                setAbsensi(jsonObject, nim, nama);
             } else if (responseCode == 404) {
                 textInfo.setText("Data Mahasiswa Tidak Ditemukan");
             } else {
@@ -116,6 +110,17 @@ public class SearchController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setAbsensi(JSONObject jsonObject, String nim, String nama) {
+        String noHp = jsonObject.getString("no_hp");
+        textInfo.setText("Biodata Mahasiswa");
+        setNIM.setText("NIM :" + nim);
+        setNAMA.setText("NAMA : " + nama);
+        setNOHP.setText("No HP : " + noHp);
+        buttonsearch.setVisible(true);
+        infoPane.setVisible(true);
+        absensi.setNim(nim);
     }
 
     private void searchByNIM() {
@@ -137,14 +142,7 @@ public class SearchController {
                 JSONObject jsonObject = new JSONObject(content.toString());
                 String fetchedNama = jsonObject.getString("nama");
                 String fetchedNIM = jsonObject.getString("nim");
-                String fetchedNo_hp = jsonObject.getString("no_hp");
-
-                textInfo.setText("Biodata Mahasiswa");
-                setNIM.setText("NIM :" + fetchedNIM);
-                setNAMA.setText("NAMA : " + fetchedNama);
-                setNOHP.setText("No HP : " + fetchedNo_hp);
-                buttonsearch.setVisible(true);
-                infoPane.setVisible(true);
+                setAbsensi(jsonObject, fetchedNIM, fetchedNama);
             } else if (status == 404) {
                 textInfo.setText("Data Mahasiswa Tidak Ditemukan");
             }
@@ -169,7 +167,7 @@ public class SearchController {
         tabelAbsen.setVisible(isTabelVisible);
 
         if (isTabelVisible) {
-            String searchnim = searchText;
+            String searchnim = absensi.getNim();
             try {
                 URL url = new URL(Route.URL + "absensi/nim/" + searchnim);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
