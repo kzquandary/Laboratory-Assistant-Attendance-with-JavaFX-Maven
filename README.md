@@ -28,7 +28,7 @@
  </div>
 <!-- Table of Contents -->
 <div align="left">
-  <h2> :notebook_with_decorative_cover: Project Roadmap </h2>
+  <h2> 📔 Project Roadmap </h2>
 </div>
 
     ┌── Project Aslab APP
