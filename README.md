@@ -100,8 +100,8 @@
 </div>
 
 <div align="center"> 
-  <img src="src/main/resource/Screenshoot/Home.png" alt="screenshot" />
+  <img src="src/main/resources/Screenshoot/Home.png" alt="screenshot" />
 </div>
 <div align="center"> 
-  <img src="src/main/resource/Screenshoot/Search.png" alt="screenshot" />
+  <img src="src/main/resources/Screenshoot/Search.png" alt="screenshot" />
 </div>
