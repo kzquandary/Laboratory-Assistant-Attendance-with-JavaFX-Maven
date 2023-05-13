@@ -9,6 +9,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import model.Absensi;
+import model.Keaktifan;
+import model.Laporan;
+import model.Nilai;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import project.Route;
@@ -21,6 +24,9 @@ import java.net.URL;
 
 public class SearchController {
     private final Absensi absensi = new Absensi();
+    private final Laporan laporan = new Laporan();
+    private final Nilai nilai = new Nilai();
+    private final Keaktifan keaktifan = new Keaktifan();
     @FXML
     public Text setNIM;
     @FXML
@@ -45,9 +51,43 @@ public class SearchController {
     public TableColumn<model.Absensi, String> statusabsen;
     @FXML
     public TableColumn<model.Absensi, String> kodepertemuanabsen;
-    private boolean isTabelVisible = false;
+    @FXML
+    public TableView<model.Laporan> tabelLaporan;
+    @FXML
+    public TableColumn<model.Laporan, String> kodelaporan;
+    @FXML
+    public TableColumn<model.Laporan, String> nimlaporan;
+    @FXML
+    public TableColumn<model.Laporan, String> statuslaporan;
+    @FXML
+    public TableColumn<model.Laporan, String> kodepertemuanlaporan;
+    @FXML
+    public TableView<model.Nilai> tabelNilai;
+    @FXML
+    public TableColumn<model.Nilai, String> kodenilai;
+    @FXML
+    public TableColumn<model.Nilai, String> kodelaporannilai;
+    @FXML
+    public TableColumn<model.Nilai, String> kodepertemuannilai;
+    @FXML
+    public TableColumn<model.Nilai, String> nimnilai;
+    @FXML
+    public TableColumn<model.Nilai, String> nilainilai;
+    @FXML
+    public TableView<model.Keaktifan> tabelKeaktifan;
+    @FXML
+    public TableColumn<model.Keaktifan, String> kodekeaktifan;
+    @FXML
+    public TableColumn<model.Keaktifan, String> kodepertemuankeaktifan;
+    @FXML
+    public TableColumn<model.Keaktifan, String> nimkeaktifan;
+    @FXML
+    public TableColumn<model.Keaktifan, String> keterangankeaktifan;
     private String searchText;
-
+    private boolean isTabelAbsenVisible = false;
+    private boolean isTabelLaporanVisible = false;
+    private boolean isTabelNilaiVisible = false;
+    private boolean isTabelKeaktifanVisible = false;
     public void setSearch(String searchText) {
         this.searchText = searchText;
         performSearch();
@@ -121,6 +161,9 @@ public class SearchController {
         buttonsearch.setVisible(true);
         infoPane.setVisible(true);
         absensi.setNim(nim);
+        laporan.setNim(nim);
+        nilai.setNim(nim);
+        keaktifan.setNim(nim);
     }
 
     private void searchByNIM() {
@@ -161,12 +204,23 @@ public class SearchController {
     }
 
     public void absensi() {
-        isTabelVisible = !isTabelVisible; // Toggle visibilitas tabel
+        if (isTabelLaporanVisible) {
+            tabelLaporan.setVisible(false);
+            isTabelLaporanVisible = false;
+        }
+        if (isTabelNilaiVisible) {
+            tabelNilai.setVisible(false);
+            isTabelNilaiVisible = false;
+        }
+        if (isTabelKeaktifanVisible) {
+            tabelKeaktifan.setVisible(false);
+            isTabelKeaktifanVisible = false;
+        }
 
-        tabelkonten.setVisible(isTabelVisible);
-        tabelAbsen.setVisible(isTabelVisible);
-
-        if (isTabelVisible) {
+        if (!isTabelAbsenVisible) {
+            tabelkonten.setVisible(true);
+            tabelAbsen.setVisible(true);
+            isTabelAbsenVisible = true;
             String searchnim = absensi.getNim();
             try {
                 URL url = new URL(Route.URL + "absensi/nim/" + searchnim);
@@ -204,12 +258,168 @@ public class SearchController {
         }
     }
     public void laporan(){
+        if (isTabelAbsenVisible) {
+            tabelAbsen.setVisible(false);
+            isTabelAbsenVisible = false;
+        }
+        if (isTabelNilaiVisible) {
+            tabelNilai.setVisible(false);
+            isTabelNilaiVisible = false;
+        }
+        if (isTabelKeaktifanVisible) {
+            tabelKeaktifan.setVisible(false);
+            isTabelKeaktifanVisible = false;
+        }
 
+        if (!isTabelLaporanVisible) {
+            tabelkonten.setVisible(true);
+            tabelLaporan.setVisible(true);
+            isTabelLaporanVisible = true;
+            String searchnim = laporan.getNim();
+            try {
+                URL url = new URL(Route.URL + "laporan/nim/" + searchnim);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("GET");
+                int status = con.getResponseCode();
+                if (status == 200) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String inputLine;
+                    StringBuilder content = new StringBuilder();
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine);
+                    }
+                    in.close();
+                    JSONArray jsonArray = new JSONArray(content.toString());
+                    ObservableList<Laporan> dataLaporan = FXCollections.observableArrayList();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String kode_laporan = jsonObject.getString("kode_laporan");
+                        String kode_pertemuan = jsonObject.getString("kode_pertemuan");
+                        String nim = jsonObject.getString("nim");
+                        String statusabsen = jsonObject.getString("status");
+                        dataLaporan.add(new Laporan(kode_laporan, kode_pertemuan, nim, statusabsen));
+                    }
+                    kodelaporan.setCellValueFactory(new PropertyValueFactory<>("kodeLaporan"));
+                    kodepertemuanlaporan.setCellValueFactory(new PropertyValueFactory<>("kodePertemuan"));
+                    nimlaporan.setCellValueFactory(new PropertyValueFactory<>("nim"));
+                    statuslaporan.setCellValueFactory(new PropertyValueFactory<>("status"));
+                    tabelLaporan.setItems(dataLaporan);
+                }
+                con.disconnect();
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
     }
     public void nilai(){
+        if (isTabelAbsenVisible) {
+            tabelAbsen.setVisible(false);
+            isTabelAbsenVisible = false;
+        }
+        if (isTabelLaporanVisible) {
+            tabelLaporan.setVisible(false);
+            isTabelLaporanVisible = false;
+        }
+        if (isTabelKeaktifanVisible) {
+            tabelKeaktifan.setVisible(false);
+            isTabelKeaktifanVisible = false;
+        }
 
+        if (!isTabelNilaiVisible) {
+            tabelkonten.setVisible(true);
+            tabelNilai.setVisible(true);
+            isTabelNilaiVisible = true;
+            String searchnim = nilai.getNim();
+            try {
+                URL url = new URL(Route.URL + "nilai/nim/" + searchnim);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("GET");
+                int status = con.getResponseCode();
+                if (status == 200) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String inputLine;
+                    StringBuilder content = new StringBuilder();
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine);
+                    }
+                    in.close();
+                    JSONArray jsonArray = new JSONArray(content.toString());
+                    ObservableList<Nilai> dataNilai = FXCollections.observableArrayList();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String kode_nilai = jsonObject.getString("kode_nilai");
+                        String kode_laporan = jsonObject.getString("kode_laporan");
+                        String kode_pertemuan = jsonObject.getString("kode_pertemuan");
+                        String nim = jsonObject.getString("nim");
+                        int nilai  = jsonObject.getInt("nilai");
+                        dataNilai.add(new Nilai(kode_nilai, kode_laporan, kode_pertemuan, nim, nilai));
+                    }
+                    kodenilai.setCellValueFactory(new PropertyValueFactory<>("kodeNilai"));
+                    kodelaporannilai.setCellValueFactory(new PropertyValueFactory<>("kodeLaporan"));
+                    kodepertemuannilai.setCellValueFactory(new PropertyValueFactory<>("kodePertemuan"));
+                    nimnilai.setCellValueFactory(new PropertyValueFactory<>("nim"));
+                    nilainilai.setCellValueFactory(new PropertyValueFactory<>("nilai"));
+                    tabelNilai.setItems(dataNilai);
+                }
+                con.disconnect();
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
     }
     public void keaktifan(){
+        if (isTabelAbsenVisible) {
+            tabelAbsen.setVisible(false);
+            isTabelAbsenVisible = false;
+        }
+        if (isTabelLaporanVisible) {
+            tabelLaporan.setVisible(false);
+            isTabelLaporanVisible = false;
+        }
+        if (isTabelNilaiVisible) {
+            tabelNilai.setVisible(false);
+            isTabelNilaiVisible = false;
+        }
 
+        if (!isTabelKeaktifanVisible) {
+            tabelkonten.setVisible(true);
+            tabelKeaktifan.setVisible(true);
+            isTabelKeaktifanVisible = true;
+            String searchnim = keaktifan.getNim();
+            try {
+                URL url = new URL(Route.URL + "keaktifan/nim/" + searchnim);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("GET");
+                int status = con.getResponseCode();
+                if (status == 200) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String inputLine;
+                    StringBuilder content = new StringBuilder();
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine);
+                    }
+                    in.close();
+                    JSONArray jsonArray = new JSONArray(content.toString());
+                    ObservableList<Keaktifan> dataKeaktifan = FXCollections.observableArrayList();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String kode_keaktifan = jsonObject.getString("kode_keaktifan");
+                        String kode_pertemuan = jsonObject.getString("kode_pertemuan");
+                        String nim = jsonObject.getString("nim");
+                        String keterangan = jsonObject.getString("keterangan");
+                        dataKeaktifan.add(new Keaktifan(kode_keaktifan, kode_pertemuan, nim, keterangan));
+                    }
+                    kodekeaktifan.setCellValueFactory(new PropertyValueFactory<>("kodeKeaktifan"));
+                    kodepertemuankeaktifan.setCellValueFactory(new PropertyValueFactory<>("kodePertemuan"));
+                    nimkeaktifan.setCellValueFactory(new PropertyValueFactory<>("nim"));
+                    keterangankeaktifan.setCellValueFactory(new PropertyValueFactory<>("keterangan"));
+                    tabelKeaktifan.setItems(dataKeaktifan);
+                }
+                con.disconnect();
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+
+        }
     }
 }

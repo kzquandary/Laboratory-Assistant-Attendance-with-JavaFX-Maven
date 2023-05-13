@@ -52,14 +52,38 @@
          </font>
       </Button>
    </Pane>
-   <Pane fx:id="tabelkonten" layoutX="32.0" layoutY="333.0" prefHeight="329.0" prefWidth="861.0"
-         styleClass="content-pane" stylesheets="@../../../css/style.css" visible="false">
+   <Pane fx:id="tabelkonten" layoutX="32.0" layoutY="333.0" prefHeight="329.0" prefWidth="861.0" styleClass="content-pane" stylesheets="@../../../css/style.css" visible="false">
       <TableView fx:id="tabelAbsen" layoutX="60.0" layoutY="26.0" prefHeight="285.0" prefWidth="758.0" visible="false">
          <columns>
-            <TableColumn fx:id="kodeabsen" prefWidth="177.5999984741211" text="Kode Absen"/>
-            <TableColumn fx:id="kodepertemuanabsen" prefWidth="192.79998779296875" text="Kode Pertemuan"/>
-            <TableColumn fx:id="nimabsen" prefWidth="235.20004272460938" text="NIM"/>
-            <TableColumn fx:id="statusabsen" prefWidth="148.79998779296875" text="Status"/>
+            <TableColumn fx:id="kodeabsen" prefWidth="177.5999984741211" text="Kode Absen" />
+            <TableColumn fx:id="kodepertemuanabsen" prefWidth="192.79998779296875" text="Kode Pertemuan" />
+            <TableColumn fx:id="nimabsen" prefWidth="235.20004272460938" text="NIM" />
+            <TableColumn fx:id="statusabsen" prefWidth="148.79998779296875" text="Status" />
+         </columns>
+      </TableView>
+      <TableView fx:id="tabelLaporan" layoutX="60.0" layoutY="26.0" prefHeight="285.0" prefWidth="758.0" visible="false">
+         <columns>
+            <TableColumn fx:id="kodelaporan" prefWidth="177.5999984741211" text="Kode Laporan" />
+            <TableColumn fx:id="kodepertemuanlaporan" prefWidth="192.79998779296875" text="Kode Pertemuan" />
+            <TableColumn fx:id="nimlaporan" prefWidth="235.20004272460938" text="NIM" />
+            <TableColumn fx:id="statuslaporan" prefWidth="148.79998779296875" text="Status" />
+         </columns>
+      </TableView>
+      <TableView fx:id="tabelNilai" layoutX="60.0" layoutY="26.0" prefHeight="285.0" prefWidth="758.0" visible="false">
+         <columns>
+            <TableColumn fx:id="kodenilai" prefWidth="133.5999984741211" text="Kode Nilai" />
+            <TableColumn fx:id="kodelaporannilai" prefWidth="168.800048828125" text="Kode Laporan" />
+            <TableColumn fx:id="kodepertemuannilai" prefWidth="196.80001831054688" text="Kode Pertemuan" />
+            <TableColumn fx:id="nimnilai" prefWidth="164.79998779296875" text="NIM" />
+            <TableColumn fx:id="nilainilai" prefWidth="90.4000244140625" text="Nilai" />
+         </columns>
+      </TableView>
+      <TableView fx:id="tabelKeaktifan" layoutX="60.0" layoutY="26.0" prefHeight="285.0" prefWidth="758.0" visible="false">
+         <columns>
+            <TableColumn fx:id="kodekeaktifan" prefWidth="177.5999984741211" text="Kode Keaktifan" />
+            <TableColumn fx:id="kodepertemuankeaktifan" prefWidth="112.0" text="Kode Pertemuan" />
+            <TableColumn fx:id="nimkeaktifan" prefWidth="167.20004272460938" text="NIM" />
+            <TableColumn fx:id="keterangankeaktifan" prefWidth="299.20001220703125" text="Keterangan" />
          </columns>
       </TableView>
    </Pane>
