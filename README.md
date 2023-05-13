@@ -35,16 +35,16 @@
     │   ├── Home [✅] 05/11/2023
     │   │   ├── Views [✅] 05/11/2023
     │   │   └── Controller [✅] 05/11/2023
-    │   ├── Search
+    │   ├── Search [✅] 05/13/2023
     │   │   ├── Views [✅] 05/11/2023
     │   │   └── Controller [✅] 05/11/2023
     │   │       ├── Pencarian NIM [✅] 05/11/2023
     │   │       ├── Pencarian Nama [✅] 05/11/2023
     │   │       ├── Pencarian No HP [✅] 05/11/2023
     │   │       ├── Tabel Absensi [✅] 05/12/2023
-    │   │       ├── Tabel Laporan 
-    │   │       ├── Tabel Nilai 
-    │   │       └── Tabel Keaktifan
+    │   │       ├── Tabel Laporan [✅] 05/13/2023
+    │   │       ├── Tabel Nilai [✅] 05/13/2023
+    │   │       └── Tabel Keaktifan [✅] 05/13/2023
     │   ├── Mahasiswa [✅] 05/11/2023
     │   │   ├── Views [✅] 05/11/2023
     │   │   ├── Model [✅] 05/11/2023
@@ -55,7 +55,7 @@
     │   │       └── Delete [✅] 05/11/2023
     │   ├── Pertemuan
     │   │   ├── Views
-    │   │   ├── Model
+    │   │   ├── Model [✅] 05/11/2023
     │   │   └── Controller
     │   │       ├── Create
     │   │       ├── Read
@@ -63,7 +63,7 @@
     │   │       └── Delete
     │   ├── Absensi
     │   │   ├── Views
-    │   │   ├── Model
+    │   │   ├── Model [✅] 05/13/2023
     │   │   └── Controller
     │   │       ├── Create
     │   │       ├── Read
@@ -71,7 +71,7 @@
     │   │       └── Delete
     │   ├── Laporan
     │   │   ├── Views
-    │   │   ├── Model
+    │   │   ├── Model [✅] 05/13/2023
     │   │   └── Controller
     │   │       ├── Create
     │   │       ├── Read
@@ -79,7 +79,7 @@
     │   │       └── Delete
     │   ├── Nilai
     │   │   ├── Views
-    │   │   ├── Model
+    │   │   ├── Model [✅] 05/13/2023
     │   │   └── Controller
     │   │       ├── Create
     │   │       ├── Read
@@ -87,7 +87,7 @@
     │   │       └── Delete
     │   └── Keaktifan
     │       ├── Views
-    │       ├── Model
+    │       ├── Model [✅] 05/13/2023
     │       └── Controller
     │           ├── Create
     │           ├── Read
