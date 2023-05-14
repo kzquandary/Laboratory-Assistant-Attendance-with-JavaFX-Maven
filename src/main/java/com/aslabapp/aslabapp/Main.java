@@ -26,6 +26,7 @@ import controller.InfoHomeController;
 import java.io.IOException;
 import java.util.Objects;
 public class Main extends Application {
+
     public Pane content;
     public Text jmlmahasiswa;
     public Text jmlpertemuan;
@@ -69,7 +70,7 @@ public class Main extends Application {
     }
     public void home() {
         content.getChildren().clear();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("InfoHome.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.InfoHome));
         Action.Move(loader, content);
     }
     public void mahasiswa() throws IOException {
@@ -100,7 +101,7 @@ public class Main extends Application {
                 Thread.sleep(1000); // Simulasi pencarian selama 1 detik
                 Platform.runLater(() -> {
                     try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("Search.fxml"));
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Search));
                         Parent searchRoot = loader.load();
                         SearchController searchController = loader.getController();
                         searchController.setSearch(searchText);
