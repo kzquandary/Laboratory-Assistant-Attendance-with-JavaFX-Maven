@@ -54,13 +54,13 @@
     │   │       ├── Update [✅] 05/11/2023
     │   │       └── Delete [✅] 05/11/2023
     │   ├── Pertemuan
-    │   │   ├── Views
+    │   │   ├── Views [✅] 05/14/2023
     │   │   ├── Model [✅] 05/11/2023
-    │   │   └── Controller
-    │   │       ├── Create
-    │   │       ├── Read
-    │   │       ├── Update
-    │   │       └── Delete
+    │   │   └── Controller [✅] 05/14/2023
+    │   │       ├── Create [✅] 05/14/2023
+    │   │       ├── Read [✅] 05/14/2023
+    │   │       ├── Update [✅] 05/14/2023
+    │   │       └── Delete [✅] 05/14/2023
     │   ├── Absensi
     │   │   ├── Views
     │   │   ├── Model [✅] 05/13/2023

@@ -67,7 +67,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch();
     }
-    public void home() throws IOException {
+    public void home() {
         content.getChildren().clear();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("InfoHome.fxml"));
         Action.Move(loader, content);
@@ -77,7 +77,12 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Mahasiswa));
         Action.Move(loader, content);
     }
-    public void setting() throws IOException {
+    public void pertemuan() throws IOException {
+        content.getChildren().clear();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Pertemuan));
+        Action.Move(loader, content);
+    }
+    public void setting() {
         content.getChildren().clear();
         FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Setting));
         Action.Move(loader, content);
@@ -86,23 +91,13 @@ public class Main extends Application {
         String searchText = search_form.getText();
         content.getChildren().clear();
 
-        // Tampilkan animasi loading GIF
         ImageView loadingImage = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("Loading.gif"))));
-        loadingImage.setFitWidth(100);
-        loadingImage.setFitHeight(100);
-        double loadingImageX = (900 - loadingImage.getFitWidth()) / 2;
-        double loadingImageY = (600 - loadingImage.getFitHeight()) / 2;
-        loadingImage.setLayoutX(loadingImageX);
-        loadingImage.setLayoutY(loadingImageY);
-        content.getChildren().add(loadingImage);
+        Action.LoadingAnimation(content, loadingImage);
 
-        // Buat tugas untuk melakukan pencarian dalam waktu 1 detik
         Task<Void> searchTask = new Task<>() {
             @Override
             protected Void call() throws Exception {
                 Thread.sleep(1000); // Simulasi pencarian selama 1 detik
-
-                // Load Search.fxml setelah pencarian selesai
                 Platform.runLater(() -> {
                     try {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("Search.fxml"));
@@ -120,7 +115,6 @@ public class Main extends Application {
             }
         };
 
-        // Jalankan tugas pencarian
         new Thread(searchTask).start();
     }
 

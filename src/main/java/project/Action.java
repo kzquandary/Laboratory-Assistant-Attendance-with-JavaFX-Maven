@@ -1,17 +1,17 @@
 package project;
 
-import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.ScaleTransition;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class Action {
     private double xOffset = 0;
@@ -40,24 +40,48 @@ public class Action {
     }
 
 
-    public static void Move(FXMLLoader loader, Pane content) throws IOException {
-        Pane pane = loader.load();
-        Animation(pane);
-        content.getChildren().add(pane);
+    public static void Move(FXMLLoader loader, Pane content) {
+        Pane loadingPane = createLoadingPane(content);
+        content.getChildren().add(loadingPane);
+
+        Task<Void> loadingTask = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                Thread.sleep(1000); // Wait for 1 second
+
+                Platform.runLater(() -> {
+                    try {
+                        Pane loadedPane = loader.load();
+                        content.getChildren().remove(loadingPane);
+                        content.getChildren().add(loadedPane);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                return null;
+            }
+        };
+
+        new Thread(loadingTask).start();
     }
-    public static void Animation(Pane pane){
-        pane.setScaleX(0);
-        pane.setScaleY(0);
 
-        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(500), pane);
-        scaleTransition.setToX(1);
-        scaleTransition.setToY(1);
+    public static Pane createLoadingPane(Pane content) {
+        Pane loadingPane = new Pane();
+        loadingPane.setPrefSize(content.getWidth(), content.getHeight());
 
-        FadeTransition fadeTransition = new FadeTransition(Duration.millis(500), pane);
-        fadeTransition.setFromValue(0);
-        fadeTransition.setToValue(1);
+        ImageView loadingImage = new ImageView(new Image(Objects.requireNonNull(Action.class.getResourceAsStream("/com/aslabapp/aslabapp/Loading.gif"))));
+        LoadingAnimation(loadingPane, loadingImage);
+        return loadingPane;
+    }
 
-        ParallelTransition parallelTransition = new ParallelTransition(scaleTransition, fadeTransition);
-        parallelTransition.play();
+    public static void LoadingAnimation(Pane loadingPane, ImageView loadingImage) {
+        loadingImage.setFitWidth(100);
+        loadingImage.setFitHeight(100);
+        double loadingImageX = (900 - loadingImage.getFitWidth()) / 2;
+        double loadingImageY = (600 - loadingImage.getFitHeight()) / 2;
+        loadingImage.setLayoutX(loadingImageX);
+        loadingImage.setLayoutY(loadingImageY);
+        loadingPane.getChildren().add(loadingImage);
     }
 }
