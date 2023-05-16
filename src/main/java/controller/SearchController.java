@@ -388,34 +388,7 @@ public class SearchController {
             String searchnim = keaktifan.getNim();
             try {
                 URL url = new URL(Route.URL + "keaktifan/nim/" + searchnim);
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
-                int status = con.getResponseCode();
-                if (status == 200) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                    String inputLine;
-                    StringBuilder content = new StringBuilder();
-                    while ((inputLine = in.readLine()) != null) {
-                        content.append(inputLine);
-                    }
-                    in.close();
-                    JSONArray jsonArray = new JSONArray(content.toString());
-                    ObservableList<Keaktifan> dataKeaktifan = FXCollections.observableArrayList();
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String kode_keaktifan = jsonObject.getString("kode_keaktifan");
-                        String kode_pertemuan = jsonObject.getString("kode_pertemuan");
-                        String nim = jsonObject.getString("nim");
-                        String keterangan = jsonObject.getString("keterangan");
-                        dataKeaktifan.add(new Keaktifan(kode_keaktifan, kode_pertemuan, nim, keterangan));
-                    }
-                    kodekeaktifan.setCellValueFactory(new PropertyValueFactory<>("kodeKeaktifan"));
-                    kodepertemuankeaktifan.setCellValueFactory(new PropertyValueFactory<>("kodePertemuan"));
-                    nimkeaktifan.setCellValueFactory(new PropertyValueFactory<>("nim"));
-                    keterangankeaktifan.setCellValueFactory(new PropertyValueFactory<>("keterangan"));
-                    tabelKeaktifan.setItems(dataKeaktifan);
-                }
-                con.disconnect();
+                KeaktifanController.ExtractData(url, kodekeaktifan, kodepertemuankeaktifan, nimkeaktifan, keterangankeaktifan, tabelKeaktifan);
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
             }
