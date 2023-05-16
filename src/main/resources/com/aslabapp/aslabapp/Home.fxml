@@ -107,7 +107,7 @@
       </cursor>
     </Button>
     <Line endX="52.79998779296875" endY="-1.52587890625E-5" fill="#ffffff00" layoutX="148.0" layoutY="328.0" opacity="0.2" startX="-100.0" stroke="WHITE" />
-    <Button layoutX="47.0" layoutY="342.0" mnemonicParsing="false" onAction="#absensi"  prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Absen">
+    <Button layoutX="47.0" layoutY="342.0" mnemonicParsing="false" onAction="#absensi" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Absen">
         <font>
             <Font name="Comic Sans MS Bold" size="16.0" />
         </font>
@@ -134,7 +134,7 @@
       </cursor>
     </Button>
     <Line endX="52.79998779296875" endY="-1.52587890625E-5" fill="#ffffff00" layoutX="148.0" layoutY="520.0" opacity="0.2" startX="-100.0" stroke="WHITE" />
-    <Button layoutX="48.0" layoutY="540.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Keaktifan">
+    <Button layoutX="48.0" layoutY="540.0" mnemonicParsing="false" onAction="#keaktifan" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Keaktifan">
         <font>
             <Font name="Comic Sans MS Bold" size="16.0" />
         </font>
