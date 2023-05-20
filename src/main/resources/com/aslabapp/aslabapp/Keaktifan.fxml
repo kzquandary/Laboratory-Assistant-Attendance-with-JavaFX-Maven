@@ -12,13 +12,14 @@
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="925.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.KeaktifanController">
     <TableView id="tabelmahasiswa" fx:id="tabelkeaktifan" layoutX="25.0" layoutY="21.0" prefHeight="639.0" prefWidth="486.0" stylesheets="@../../../css/style.css">
         <columns>
-         <TableColumn id="nim" fx:id="kodekeaktifan" prefWidth="129.60000038146973" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="Kode Keaktifan" />
-            <TableColumn id="nama" fx:id="kodepertemuan" prefWidth="104.0" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="Kode Pertemuan" />
-            <TableColumn id="nim" fx:id="tabelnim" prefWidth="112.0" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="NIM" />
-            <TableColumn id="nohp" fx:id="keterangan" prefWidth="141.60006713867188" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="Keterangan" />
+         <TableColumn id="nim" fx:id="kodekeaktifan" prefWidth="129.60000038146973" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="Kode Keaktifan" visible="false" />
+         <TableColumn id="nohp" fx:id="tablenama" prefWidth="134.3999900817871" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="Nama" />
+            <TableColumn id="nama" fx:id="kodepertemuan" prefWidth="100.00001525878906" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="Kode Pertemuan" />
+            <TableColumn id="nim" fx:id="tabelnim" prefWidth="116.79998779296875" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="NIM" />
+            <TableColumn id="nohp" fx:id="keterangan" prefWidth="134.39996337890625" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="Keterangan" />
         </columns>
     </TableView>
-    <Pane layoutX="526.0" layoutY="491.0" prefHeight="169.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
+    <Pane layoutX="526.0" layoutY="395.0" prefHeight="169.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
         <Button layoutX="31.0" layoutY="36.0" mnemonicParsing="false" onAction="#tambah" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #04ff00; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Tambah Keaktifan">
             <font>
                 <Font name="Comic Sans MS Bold" size="15.0" />
@@ -40,30 +41,25 @@
             </font>
         </Button>
     </Pane>
-    <Pane layoutX="526.0" layoutY="21.0" prefHeight="432.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
-        <TextField fx:id="fieldketerangan" layoutX="28.0" layoutY="359.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan Keterangan" />
-        <Text fill="WHITE" layoutX="166.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NIM" textAlignment="CENTER">
+    <Pane layoutX="526.0" layoutY="24.0" prefHeight="349.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
+        <TextField fx:id="fieldketerangan" layoutX="27.0" layoutY="276.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan Keterangan" />
+        <Text fill="WHITE" layoutX="165.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NIM" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="19.0" />
             </font>
         </Text>
-        <Text fill="WHITE" layoutX="137.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Keterangan" textAlignment="CENTER">
+        <Text fill="WHITE" layoutX="136.0" layoutY="257.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Keterangan" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="19.0" />
             </font>
         </Text>
-        <Text fill="WHITE" layoutX="119.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kode Pertemuan" textAlignment="CENTER">
+        <Text fill="WHITE" layoutX="118.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kode Pertemuan" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="19.0" />
             </font>
         </Text>
-      <ChoiceBox fx:id="fieldnim" layoutX="25.0" layoutY="156.0" prefHeight="44.0" prefWidth="323.0" />
-      <ChoiceBox fx:id="fieldpertemuan" layoutX="25.0" layoutY="259.0" prefHeight="44.0" prefWidth="323.0" />
-      <TextField fx:id="fieldkodekeaktifan" editable="false" focusTraversable="false" layoutX="28.0" layoutY="57.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan Keterangan" />
-      <Text fill="WHITE" layoutX="122.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kode Keaktifan" textAlignment="CENTER">
-         <font>
-            <Font name="Comic Sans MS" size="19.0" />
-         </font>
-      </Text>
+      <ChoiceBox fx:id="fieldnim" layoutX="24.0" layoutY="73.0" prefHeight="44.0" prefWidth="323.0" />
+      <ChoiceBox fx:id="fieldpertemuan" layoutX="24.0" layoutY="176.0" prefHeight="44.0" prefWidth="323.0" />
+      <TextField fx:id="fieldkodekeaktifan" editable="false" focusTraversable="false" layoutX="28.0" layoutY="57.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan Keterangan" visible="false" />
     </Pane>
 </Pane>

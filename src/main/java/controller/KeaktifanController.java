@@ -4,10 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
 import model.Keaktifan;
@@ -20,19 +17,24 @@ import project.Route;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class KeaktifanController implements Initializable {
+    Alert alert;
     @FXML
     public TableView<Keaktifan> tabelkeaktifan;
     @FXML
     public TableColumn<model.Keaktifan, String> kodekeaktifan;
     @FXML
     public TableColumn<model.Keaktifan, String> tabelnim;
+    @FXML
+    public TableColumn<model.Keaktifan, String> tablenama;
     @FXML
     public TableColumn<model.Keaktifan, String> kodepertemuan;
     @FXML
@@ -147,6 +149,7 @@ public class KeaktifanController implements Initializable {
         try {
             URL url = new URL(Route.URL + "keaktifan");
             ExtractData(url, kodekeaktifan, kodepertemuan, tabelnim, keterangan, tabelkeaktifan);
+            tablenama.setCellValueFactory(new PropertyValueFactory<>("nama"));
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -154,7 +157,6 @@ public class KeaktifanController implements Initializable {
             if (newValue != null) {
                 fieldkodekeaktifan.setText(newValue.getKodeKeaktifan());
                 fieldketerangan.setText(newValue.getKeterangan());
-                // Mencari objek Mahasiswa dengan nim yang sesuai
                 Mahasiswa selectedMahasiswa = fieldnim.getItems().stream()
                         .filter(mahasiswa -> mahasiswa.getNim().equals(newValue.getNim()))
                         .findFirst()
@@ -163,7 +165,6 @@ public class KeaktifanController implements Initializable {
                         .filter(pertemuan -> pertemuan.getKode_pertemuan().equals(newValue.getKodePertemuan()))
                         .findFirst()
                         .orElse(null);
-                // Mengatur nilai ChoiceBox dengan objek Mahasiswa yang sesuai
                 fieldnim.setValue(selectedMahasiswa);
                 fieldpertemuan.setValue(selectedPertemuan);
             }
@@ -186,11 +187,12 @@ public class KeaktifanController implements Initializable {
             ObservableList<Keaktifan> dataKeaktifan = FXCollections.observableArrayList();
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String nama = jsonObject.getString("nama");
                 String kode_keaktifan = jsonObject.getString("kode_keaktifan");
                 String kode_pertemuan = jsonObject.getString("kode_pertemuan");
                 String nim = jsonObject.getString("nim");
                 String keterangan = jsonObject.getString("keterangan");
-                dataKeaktifan.add(new Keaktifan(kode_keaktifan, kode_pertemuan, nim, keterangan));
+                dataKeaktifan.add(new Keaktifan(kode_keaktifan, kode_pertemuan, nim, keterangan, nama));
             }
             kodekeaktifan.setCellValueFactory(new PropertyValueFactory<>("kodeKeaktifan"));
             kodepertemuan.setCellValueFactory(new PropertyValueFactory<>("kodePertemuan"));
@@ -202,17 +204,107 @@ public class KeaktifanController implements Initializable {
     }
 
 
-    public void tambah(){
+    public void tambah() throws Exception {
+        Mahasiswa selectedMahasiswa = fieldnim.getValue();
+        Pertemuan selectedPertemuan = fieldpertemuan.getValue();
+        String kodePertemuan = selectedPertemuan.getKode_pertemuan();
+        String nimMahasiswa = selectedMahasiswa.getNim();
+        String keterangan = fieldketerangan.getText();
 
+        URL url = new URL(Route.URL + "keaktifan/store");
+
+        int httpResponseCode = fetchApi(kodePertemuan, nimMahasiswa, keterangan, url);
+
+        if (httpResponseCode == 201) {
+            alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informasi");
+            alert.setHeaderText(null);
+            alert.setContentText("Keaktifan Ditambahkan");
+        } else {
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Gagal Menambahkan Keaktifan");
+        }
+
+        alert.showAndWait();
+        setTabel();
     }
-    public void update(){
 
+    public int fetchApi(String kodePertemuan, String nimMahasiswa, String keterangan, URL url) throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json; utf-8");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setDoOutput(true);
+
+        String requestBody = String.format("{\"kode_pertemuan\":\"%s\",\"nim\":\"%s\",\"keterangan\":\"%s\"}",
+                kodePertemuan, nimMahasiswa, keterangan);
+
+        byte[] requestBodyBytes = requestBody.getBytes(StandardCharsets.UTF_8);
+        conn.setRequestProperty("Content-Length", Integer.toString(requestBodyBytes.length));
+
+        try (OutputStream os = conn.getOutputStream()) {
+            os.write(requestBodyBytes, 0, requestBodyBytes.length);
+        }
+
+        return conn.getResponseCode();
+    }
+
+    public void update() throws Exception{
+        Mahasiswa selectedMahasiswa = fieldnim.getValue();
+        Pertemuan selectedPertemuan = fieldpertemuan.getValue();
+        String kodePertemuan = selectedPertemuan.getKode_pertemuan();
+        String nimMahasiswa = selectedMahasiswa.getNim();
+        String keterangan = fieldketerangan.getText();
+
+        URL url = new URL(Route.URL + "keaktifan/update/" + fieldkodekeaktifan.getText());
+        int httpResponseCode = fetchApi(kodePertemuan, nimMahasiswa, keterangan, url);
+
+        if (httpResponseCode == 201) {
+            alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informasi");
+            alert.setHeaderText(null);
+            alert.setContentText("Keaktifan Berhasil di Update");
+        } else {
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Gagal Mengupdate Keaktifan");
+        }
+
+        alert.showAndWait();
+        setTabel();
     }
     public void hapus(){
+        try {
+            URL url = new URL(Route.URL + "keaktifan/" + fieldkodekeaktifan.getText());
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.connect();
 
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 201) {
+                alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Informasi");
+                alert.setHeaderText(null);
+                alert.setContentText("Keaktifan Berhasil Dihapus");
+            } else {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Gagal Menghapus");
+            }
+            alert.showAndWait();
+            conn.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        setTabel();
     }
     public void clear(){
-
+        fieldkodekeaktifan.clear();
+        fieldketerangan.clear();
     }
 
 

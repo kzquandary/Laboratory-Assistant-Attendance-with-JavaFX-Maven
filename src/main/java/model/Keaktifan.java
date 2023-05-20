@@ -5,8 +5,16 @@ public class Keaktifan {
     private String kodePertemuan;
     private String nim;
     private String keterangan;
+    private String nama;
+    public Keaktifan(){
 
-    public Keaktifan() {
+    }
+    public Keaktifan(String kodeKeaktifan, String kodePertemuan, String nim, String keterangan, String nama) {
+        this.kodeKeaktifan = kodeKeaktifan;
+        this.kodePertemuan = kodePertemuan;
+        this.nim = nim;
+        this.keterangan = keterangan;
+        this.nama = nama;
     }
 
     public Keaktifan(String kodeKeaktifan, String kodePertemuan, String nim, String keterangan) {
@@ -22,6 +30,13 @@ public class Keaktifan {
 
     public void setKodeKeaktifan(String kodeKeaktifan) {
         this.kodeKeaktifan = kodeKeaktifan;
+    }
+    public String getNama() {
+        return nama;
+    }
+
+    public void setNama(String nama) {
+        this.nama = nama;
     }
 
     public String getKodePertemuan() {
