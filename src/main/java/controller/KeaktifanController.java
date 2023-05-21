@@ -21,7 +21,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -101,48 +100,7 @@ public class KeaktifanController implements Initializable {
         }
     }
     public void initFieldPertemuan() {
-        String apiUrl = "http://127.0.0.1:8000/api/pertemuan";
-
-        try {
-            URL url = new URL(apiUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String response = reader.lines().collect(Collectors.joining());
-
-                JSONArray jsonArray = new JSONArray(response);
-                ObservableList<Pertemuan> pertemuanList = FXCollections.observableArrayList();
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String kodePertemuan = jsonObject.getString("kode_pertemuan");
-                    LocalDate tanggalPertemuan = LocalDate.parse(jsonObject.getString("tanggal_pertemuan"));
-
-                    Pertemuan pertemuan = new Pertemuan(kodePertemuan, tanggalPertemuan);
-                    pertemuanList.add(pertemuan);
-                }
-                fieldpertemuan.setItems(pertemuanList);
-                fieldpertemuan.setConverter(new StringConverter<>() {
-                    @Override
-                    public String toString(Pertemuan pertemuan) {
-                        return pertemuan.getKode_pertemuan();
-                    }
-
-                    @Override
-                    public Pertemuan fromString(String s) {
-                        return null;
-                    }
-                });
-                if (!pertemuanList.isEmpty()) {
-                    fieldpertemuan.setValue(pertemuanList.get(0));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        AbsensiController.getKodePertemuan(fieldpertemuan);
     }
 
     public void setTabel(){
