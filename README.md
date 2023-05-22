@@ -61,22 +61,22 @@
     │   │       ├── Read [✅] 05/14/2023
     │   │       ├── Update [✅] 05/14/2023
     │   │       └── Delete [✅] 05/14/2023
-    │   ├── Absensi
-    │   │   ├── Views
+    │   ├── Absensi [✅] 05/21/2023
+    │   │   ├── Views [✅] 05/21/2023
     │   │   ├── Model [✅] 05/13/2023
-    │   │   └── Controller
-    │   │       ├── Create
-    │   │       ├── Read
-    │   │       ├── Update
-    │   │       └── Delete
-    │   ├── Laporan
-    │   │   ├── Views
+    │   │   └── Controller [✅] 05/21/2023
+    │   │       ├── Create [✅] 05/21/2023
+    │   │       ├── Read [✅] 05/21/2023
+    │   │       ├── Update [✅] 05/21/2023
+    │   │       └── Delete [✅] 05/21/2023
+    │   ├── Laporan [✅] 05/22/2023
+    │   │   ├── Views [✅] 05/22/2023
     │   │   ├── Model [✅] 05/13/2023
-    │   │   └── Controller
-    │   │       ├── Create
-    │   │       ├── Read
-    │   │       ├── Update
-    │   │       └── Delete
+    │   │   └── Controller [✅] 05/22/2023
+    │   │       ├── Create [✅] 05/22/2023
+    │   │       ├── Read [✅] 05/22/2023
+    │   │       ├── Update [✅] 05/22/2023
+    │   │       └── Delete [✅] 05/22/2023
     │   ├── Nilai
     │   │   ├── Views
     │   │   ├── Model [✅] 05/13/2023
@@ -85,14 +85,14 @@
     │   │       ├── Read
     │   │       ├── Update
     │   │       └── Delete
-    │   └── Keaktifan
-    │       ├── Views
+    │   └── Keaktifan [✅] 05/16/2023
+    │       ├── Views [✅] 05/16/2023
     │       ├── Model [✅] 05/13/2023
-    │       └── Controller
-    │           ├── Create
-    │           ├── Read
-    │           ├── Update
-    │           └── Delete
+    │       └── Controller [✅] 05/16/2023
+    │           ├── Create [✅] 05/16/2023
+    │           ├── Read [✅] 05/16/2023
+    │           ├── Update [✅] 05/16/2023
+    │           └── Delete [✅] 05/16/2023
     └── Finishing Project
     
 <div align="left">
