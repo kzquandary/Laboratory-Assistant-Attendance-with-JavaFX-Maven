@@ -88,6 +88,11 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Absensi));
         Action.Move(loader, content);
     }
+    public void laporan() throws IOException {
+        content.getChildren().clear();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Laporan));
+        Action.Move(loader, content);
+    }
     public void keaktifan() throws IOException {
         content.getChildren().clear();
         FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Keaktifan));

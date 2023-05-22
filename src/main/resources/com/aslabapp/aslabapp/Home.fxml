@@ -116,7 +116,7 @@
       </cursor>
     </Button>
     <Line endX="52.79998779296875" endY="-1.52587890625E-5" fill="#ffffff00" layoutX="148.0" layoutY="389.0" opacity="0.2" startX="-100.0" stroke="WHITE" />
-    <Button layoutX="46.0" layoutY="407.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Laporan">
+    <Button layoutX="46.0" layoutY="407.0" mnemonicParsing="false" onAction="#laporan" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Laporan">
         <font>
             <Font name="Comic Sans MS Bold" size="16.0" />
         </font>
