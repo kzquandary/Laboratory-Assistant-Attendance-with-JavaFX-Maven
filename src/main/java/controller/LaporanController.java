@@ -1,7 +1,5 @@
 package controller;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -11,7 +9,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.util.StringConverter;
 import model.Pertemuan;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -139,48 +135,7 @@ public class LaporanController implements Initializable {
     }
 
     public static void getKodePertemuan(ChoiceBox<Pertemuan> kodepertemuan) {
-        String apiUrl = "http://127.0.0.1:8000/api/pertemuan";
-
-        try {
-            URL url = new URL(apiUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String response = reader.lines().collect(Collectors.joining());
-
-                JSONArray jsonArray = new JSONArray(response);
-                ObservableList<Pertemuan> pertemuanList = FXCollections.observableArrayList();
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String kodePertemuan = jsonObject.getString("kode_pertemuan");
-                    LocalDate tanggalPertemuan = LocalDate.parse(jsonObject.getString("tanggal_pertemuan"));
-
-                    Pertemuan pertemuan = new Pertemuan(kodePertemuan, tanggalPertemuan);
-                    pertemuanList.add(pertemuan);
-                }
-                kodepertemuan.setItems(pertemuanList);
-                kodepertemuan.setConverter(new StringConverter<>() {
-                    @Override
-                    public String toString(Pertemuan pertemuan) {
-                        return pertemuan.getKode_pertemuan();
-                    }
-
-                    @Override
-                    public Pertemuan fromString(String s) {
-                        return null;
-                    }
-                });
-                if (!pertemuanList.isEmpty()) {
-                    kodepertemuan.setValue(pertemuanList.get(0));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        NilaiController.GetKodePertemuan(kodepertemuan);
     }
 
     @FXML
