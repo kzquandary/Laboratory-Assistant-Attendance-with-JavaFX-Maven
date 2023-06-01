@@ -9,6 +9,7 @@ public class Route {
     public static final String Pertemuan = "Pertemuan.fxml";
     public static final String Absensi = "Absensi.fxml";
     public static final String Laporan = "Laporan.fxml";
+    public static final String Nilai = "Nilai.fxml";
     public static final String Keaktifan = "Keaktifan.fxml";
 
     public static final String Setting = "Setting.fxml";

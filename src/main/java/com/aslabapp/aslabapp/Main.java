@@ -83,7 +83,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Pertemuan));
         Action.Move(loader, content);
     }
-    public void absensi() throws IOException {
+    public void absensi() {
         content.getChildren().clear();
         FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Absensi));
         Action.Move(loader, content);
@@ -93,7 +93,12 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Laporan));
         Action.Move(loader, content);
     }
-    public void keaktifan() throws IOException {
+    public void nilai() {
+        content.getChildren().clear();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Nilai));
+        Action.Move(loader, content);
+    }
+    public void keaktifan() {
         content.getChildren().clear();
         FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Keaktifan));
         Action.Move(loader, content);
