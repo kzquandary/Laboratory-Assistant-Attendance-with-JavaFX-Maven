@@ -1,4 +1,4 @@
-package controller;
+package Controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,10 +8,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import model.Absensi;
-import model.Keaktifan;
-import model.Laporan;
-import model.Nilai;
+import Model.Absensi;
+import Model.Keaktifan;
+import Model.Laporan;
+import Model.Nilai;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import project.Route;
@@ -42,47 +42,47 @@ public class SearchController {
     @FXML
     public Pane tabelkonten;
     @FXML
-    public TableView<model.Absensi> tabelAbsen;
+    public TableView<Model.Absensi> tabelAbsen;
     @FXML
-    public TableColumn<model.Absensi, String> kodeabsen;
+    public TableColumn<Model.Absensi, String> kodeabsen;
     @FXML
-    public TableColumn<model.Absensi, String> nimabsen;
+    public TableColumn<Model.Absensi, String> nimabsen;
     @FXML
-    public TableColumn<model.Absensi, String> statusabsen;
+    public TableColumn<Model.Absensi, String> statusabsen;
     @FXML
-    public TableColumn<model.Absensi, String> kodepertemuanabsen;
+    public TableColumn<Model.Absensi, String> kodepertemuanabsen;
     @FXML
-    public TableView<model.Laporan> tabelLaporan;
+    public TableView<Model.Laporan> tabelLaporan;
     @FXML
-    public TableColumn<model.Laporan, String> kodelaporan;
+    public TableColumn<Model.Laporan, String> kodelaporan;
     @FXML
-    public TableColumn<model.Laporan, String> nimlaporan;
+    public TableColumn<Model.Laporan, String> nimlaporan;
     @FXML
-    public TableColumn<model.Laporan, String> statuslaporan;
+    public TableColumn<Model.Laporan, String> statuslaporan;
     @FXML
-    public TableColumn<model.Laporan, String> kodepertemuanlaporan;
+    public TableColumn<Model.Laporan, String> kodepertemuanlaporan;
     @FXML
-    public TableView<model.Nilai> tabelNilai;
+    public TableView<Model.Nilai> tabelNilai;
     @FXML
-    public TableColumn<model.Nilai, String> kodenilai;
+    public TableColumn<Model.Nilai, String> kodenilai;
     @FXML
-    public TableColumn<model.Nilai, String> kodelaporannilai;
+    public TableColumn<Model.Nilai, String> kodelaporannilai;
     @FXML
-    public TableColumn<model.Nilai, String> kodepertemuannilai;
+    public TableColumn<Model.Nilai, String> kodepertemuannilai;
     @FXML
-    public TableColumn<model.Nilai, String> nimnilai;
+    public TableColumn<Model.Nilai, String> nimnilai;
     @FXML
-    public TableColumn<model.Nilai, String> nilainilai;
+    public TableColumn<Model.Nilai, String> nilainilai;
     @FXML
-    public TableView<model.Keaktifan> tabelKeaktifan;
+    public TableView<Model.Keaktifan> tabelKeaktifan;
     @FXML
-    public TableColumn<model.Keaktifan, String> kodekeaktifan;
+    public TableColumn<Model.Keaktifan, String> kodekeaktifan;
     @FXML
-    public TableColumn<model.Keaktifan, String> kodepertemuankeaktifan;
+    public TableColumn<Model.Keaktifan, String> kodepertemuankeaktifan;
     @FXML
-    public TableColumn<model.Keaktifan, String> nimkeaktifan;
+    public TableColumn<Model.Keaktifan, String> nimkeaktifan;
     @FXML
-    public TableColumn<model.Keaktifan, String> keterangankeaktifan;
+    public TableColumn<Model.Keaktifan, String> keterangankeaktifan;
     private String searchText;
     private boolean isTabelAbsenVisible = false;
     private boolean isTabelLaporanVisible = false;

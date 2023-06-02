@@ -1,4 +1,4 @@
-package model;
+package Model;
 
 public class Laporan {
     private String kodeLaporan;

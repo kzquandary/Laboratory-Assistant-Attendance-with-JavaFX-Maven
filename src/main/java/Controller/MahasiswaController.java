@@ -1,4 +1,4 @@
-package controller;
+package Controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import model.Pertemuan;
+import Model.Mahasiswa;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import project.Route;
@@ -18,25 +18,27 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-public class PertemuanController implements Initializable {
-    public TextField fieldkodepertemuan;
+public class MahasiswaController implements Initializable {
+    public TextField fieldnim;
 
-    public DatePicker fieldtanggalpertemuan;
+    public TextField fieldnama;
+
+    public TextField fieldnohp;
     Alert alert;
     @FXML
-    private TableView<Pertemuan> tabelpertemuan;
+    private TableView<Model.Mahasiswa> tabelmahasiswa;
     @FXML
-    private TableColumn<Pertemuan, String> kodepertemuan;
+    private TableColumn<Model.Mahasiswa, String> nim;
     @FXML
-    private TableColumn<model.Pertemuan, String> tanggalpertemuan;
+    private TableColumn<Model.Mahasiswa, String> nama;
+    @FXML
+    private TableColumn<Model.Mahasiswa, String> nohp;
 
     public void setTabel() {
         try {
-            URL url = new URL(Route.URL + "pertemuan");
+            URL url = new URL(Route.URL + "mahasiswa");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             int status = con.getResponseCode();
@@ -49,25 +51,28 @@ public class PertemuanController implements Initializable {
                 }
                 in.close();
                 JSONArray jsonArray = new JSONArray(content.toString());
-                ObservableList<Pertemuan> dataPertemuan = FXCollections.observableArrayList();
+                ObservableList<Mahasiswa> dataMhs = FXCollections.observableArrayList();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String kode_pertemuan = jsonObject.getString("kode_pertemuan");
-                    LocalDate tanggal_pertemuan = LocalDate.parse(jsonObject.getString("tanggal_pertemuan"));
-                    dataPertemuan.add(new Pertemuan(kode_pertemuan, tanggal_pertemuan));
+                    String nama = jsonObject.getString("nama");
+                    String nim = jsonObject.getString("nim");
+                    String nohp = jsonObject.getString("no_hp");
+                    dataMhs.add(new Mahasiswa(nim, nama, nohp));
                 }
-                kodepertemuan.setCellValueFactory(new PropertyValueFactory<>("kode_pertemuan"));
-                tanggalpertemuan.setCellValueFactory(new PropertyValueFactory<>("tanggal_pertemuan"));
-                tabelpertemuan.setItems(dataPertemuan);
+                nim.setCellValueFactory(new PropertyValueFactory<>("nim"));
+                nama.setCellValueFactory(new PropertyValueFactory<>("nama"));
+                nohp.setCellValueFactory(new PropertyValueFactory<>("nohp"));
+                tabelmahasiswa.setItems(dataMhs);
             }
             con.disconnect();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
-        tabelpertemuan.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        tabelmahasiswa.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                fieldkodepertemuan.setText(newValue.getKode_pertemuan());
-                fieldtanggalpertemuan.setValue(newValue.getTanggal_pertemuan());
+                fieldnim.setText(newValue.getNim());
+                fieldnama.setText(newValue.getNama());
+                fieldnohp.setText(newValue.getNohp());
             }
         });
     }
@@ -78,23 +83,21 @@ public class PertemuanController implements Initializable {
     }
 
 
-    public void clear() {
-        fieldkodepertemuan.clear();
-        fieldtanggalpertemuan.setValue(null);
+    public void clearmhs() {
+        fieldnim.clear();
+        fieldnama.clear();
+        fieldnohp.clear();
     }
 
     public void tambah() throws Exception {
-        URL url = new URL(Route.URL + "pertemuan/store");
+        URL url = new URL(Route.URL + "mahasiswa/store");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json; utf-8");
         conn.setRequestProperty("Accept", "application/json");
         conn.setDoOutput(true);
-        LocalDate date = fieldtanggalpertemuan.getValue();
-        DateTimeFormatter apiDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String apiDate = date.format(apiDateFormatter);
-        String requestBody = String.format("{\"kode_pertemuan\":\"%s\",\"tanggal_pertemuan\":\"%s\"}",
-                fieldkodepertemuan.getText(), apiDate);
+        String requestBody = String.format("{\"nim\":\"%s\",\"nama\":\"%s\",\"no_hp\":\"%s\"}",
+                fieldnim.getText(), fieldnama.getText(), fieldnohp.getText());
         byte[] requestBodyBytes = requestBody.getBytes(StandardCharsets.UTF_8);
         conn.setRequestProperty("Content-Length", Integer.toString(requestBodyBytes.length));
         try (OutputStream os = conn.getOutputStream()) {
@@ -105,7 +108,7 @@ public class PertemuanController implements Initializable {
             alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Informasi");
             alert.setHeaderText(null);
-            alert.setContentText("Pertemuan Ditambahkan");
+            alert.setContentText("Mahasiswa Ditambahkan");
         } else {
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -118,7 +121,7 @@ public class PertemuanController implements Initializable {
 
     public void hapus() {
         try {
-            URL url = new URL(Route.URL + "pertemuan/delete/" + fieldkodepertemuan.getText());
+            URL url = new URL(Route.URL + "mahasiswa/" + fieldnim.getText());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.connect();
@@ -128,7 +131,7 @@ public class PertemuanController implements Initializable {
                 alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Informasi");
                 alert.setHeaderText(null);
-                alert.setContentText("Pertemuan Berhasil Dihapus");
+                alert.setContentText("Mahasiswa Berhasil Dihapus");
             } else {
                 alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -144,17 +147,14 @@ public class PertemuanController implements Initializable {
     }
     public void update() {
         try {
-            URL url = new URL(Route.URL + "pertemuan/" + fieldkodepertemuan.getText());
+            URL url = new URL(Route.URL + "mahasiswa/update/" + fieldnim.getText());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json; utf-8");
             conn.setRequestProperty("Accept", "application/json");
             conn.setDoOutput(true);
-            LocalDate date = fieldtanggalpertemuan.getValue();
-            DateTimeFormatter apiDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            String apiDate = date.format(apiDateFormatter);
-            String requestBody = String.format("{\"kode_pertemuan\":\"%s\",\"tanggal_pertemuan\":\"%s\"}",
-                    fieldkodepertemuan.getText(), apiDate);
+            String requestBody = String.format("{\"nama\":\"%s\",\"no_hp\":\"%s\"}",
+                    fieldnama.getText(), fieldnohp.getText());
             byte[] requestBodyBytes = requestBody.getBytes(StandardCharsets.UTF_8);
             conn.setRequestProperty("Content-Length", Integer.toString(requestBodyBytes.length));
             try (OutputStream os = conn.getOutputStream()) {
@@ -166,7 +166,7 @@ public class PertemuanController implements Initializable {
                 alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Informasi");
                 alert.setHeaderText(null);
-                alert.setContentText("Pertemuan Berhasil Diupdate");
+                alert.setContentText("Mahasiswa Berhasil Diupdate");
             } else {
                 alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");

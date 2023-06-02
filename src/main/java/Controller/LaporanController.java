@@ -1,4 +1,4 @@
-package controller;
+package Controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,7 +9,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import model.Pertemuan;
+import Model.Pertemuan;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,11 +22,11 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class AbsensiController implements Initializable {
+public class LaporanController implements Initializable {
     @FXML
     public ChoiceBox<Pertemuan> kodepertemuan;
     @FXML
-    public Pane absensipane;
+    public Pane laporanpane;
     @FXML
     public ScrollPane scrollpane;
     @FXML
@@ -48,13 +48,13 @@ public class AbsensiController implements Initializable {
 
     }
     private void initializeDataMahasiswa(Pertemuan selectedPertemuan) {
-        textkodepertemuan.setText(selectedPertemuan.getKode_pertemuan());
-        double layoutY = 10;
-        double radioButtonLayoutX = 200;
-        double textLayout = 80;
+        textkodepertemuan.setText("Kode Pertemuan : " + selectedPertemuan.getKode_pertemuan());
+        double layoutY = 5;
+        double radioButtonLayoutX = 130;
+        double textLayout = 5;
 
         String kodePertemuan = selectedPertemuan.getKode_pertemuan();
-        JSONArray dataMahasiswa = getAbsensiData(kodePertemuan);
+        JSONArray dataMahasiswa = getLaporanData(kodePertemuan);
 
         // Clear previous state
         anchorabsen.getChildren().clear();
@@ -63,8 +63,8 @@ public class AbsensiController implements Initializable {
         for (int i = 0; i < dataMahasiswa.length(); i++) {
             JSONObject mahasiswaObj = dataMahasiswa.getJSONObject(i);
             String namaMahasiswa = mahasiswaObj.getString("nama");
-            String statusKehadiran = mahasiswaObj.getString("status");
-            String kodeabsensi = mahasiswaObj.getString("kode_absen");
+            String statuslaporan = mahasiswaObj.getString("status");
+            String kodeLaporan = mahasiswaObj.getString("kode_laporan");
 
             Text namaText = new Text(namaMahasiswa);
             namaText.setFont(new Font("Comic Sans MS", 12));
@@ -75,33 +75,33 @@ public class AbsensiController implements Initializable {
             ToggleGroup toggleGroup = new ToggleGroup(); // Membuat ToggleGroup baru untuk setiap mahasiswa
             toggleGroups.add(toggleGroup); // Add the toggleGroup to the class member
 
-            RadioButton hadirRadioButton = new RadioButton("Hadir");
-            RadioButton izinRadioButton = new RadioButton("Izin");
-            RadioButton alphaRadioButton = new RadioButton("Alpha");
+            RadioButton mengumpulkanRadioButton = new RadioButton("Mengumpulkan");
+            RadioButton telatRadioButton = new RadioButton("Telat");
+            RadioButton tidakMengumpulkanRadioButton = new RadioButton("Tidak Mengumpulkan");
 
-            hadirRadioButton.setToggleGroup(toggleGroup);
-            izinRadioButton.setToggleGroup(toggleGroup);
-            alphaRadioButton.setToggleGroup(toggleGroup);
-            hadirRadioButton.setId(kodeabsensi);
-            izinRadioButton.setId(kodeabsensi);
-            alphaRadioButton.setId(kodeabsensi);
+            mengumpulkanRadioButton.setToggleGroup(toggleGroup);
+            telatRadioButton.setToggleGroup(toggleGroup);
+            tidakMengumpulkanRadioButton.setToggleGroup(toggleGroup);
+            mengumpulkanRadioButton.setId(kodeLaporan);
+            telatRadioButton.setId(kodeLaporan);
+            tidakMengumpulkanRadioButton.setId(kodeLaporan);
 
-            if (statusKehadiran.equalsIgnoreCase("Hadir")) {
-                toggleGroup.selectToggle(hadirRadioButton);
-            } else if (statusKehadiran.equalsIgnoreCase("Izin")) {
-                toggleGroup.selectToggle(izinRadioButton);
-            } else if (statusKehadiran.equalsIgnoreCase("Alpha")) {
-                toggleGroup.selectToggle(alphaRadioButton);
+            if (statuslaporan.equalsIgnoreCase("Mengumpulkan")) {
+                toggleGroup.selectToggle(mengumpulkanRadioButton);
+            } else if (statuslaporan.equalsIgnoreCase("Telat")) {
+                toggleGroup.selectToggle(telatRadioButton);
+            } else if (statuslaporan.equalsIgnoreCase("Tidak Mengumpulkan")) {
+                toggleGroup.selectToggle(tidakMengumpulkanRadioButton);
             }
 
-            hadirRadioButton.setLayoutX(radioButtonLayoutX);
-            izinRadioButton.setLayoutX(radioButtonLayoutX + 60);
-            alphaRadioButton.setLayoutX(radioButtonLayoutX + 120);
-            hadirRadioButton.setLayoutY(layoutY);
-            izinRadioButton.setLayoutY(layoutY);
-            alphaRadioButton.setLayoutY(layoutY);
+            mengumpulkanRadioButton.setLayoutX(radioButtonLayoutX);
+            telatRadioButton.setLayoutX(radioButtonLayoutX + 120);
+            tidakMengumpulkanRadioButton.setLayoutX(radioButtonLayoutX + 180);
+            mengumpulkanRadioButton.setLayoutY(layoutY);
+            telatRadioButton.setLayoutY(layoutY);
+            tidakMengumpulkanRadioButton.setLayoutY(layoutY);
 
-            anchorabsen.getChildren().addAll(namaText, hadirRadioButton, izinRadioButton, alphaRadioButton);
+            anchorabsen.getChildren().addAll(namaText, mengumpulkanRadioButton, telatRadioButton, tidakMengumpulkanRadioButton);
 
             layoutY += 30;
         }
@@ -109,9 +109,13 @@ public class AbsensiController implements Initializable {
         scrollpane.setContent(anchorabsen);
     }
 
-    private JSONArray getAbsensiData(String kodePertemuan) {
-        String apiUrl = "http://127.0.0.1:8000/api/absensi/" + kodePertemuan;
+    private JSONArray getLaporanData(String kodePertemuan) {
+        String apiUrl = "http://127.0.0.1:8000/api/laporan/" + kodePertemuan;
 
+        return getObjects(apiUrl);
+    }
+
+    static JSONArray getObjects(String apiUrl) {
         try {
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -142,7 +146,7 @@ public class AbsensiController implements Initializable {
     public void setAllHadir() {
         for (Node node : anchorabsen.getChildren()) {
             if (node instanceof RadioButton radioButton) {
-                radioButton.setSelected(radioButton.getText().equals("Hadir"));
+                radioButton.setSelected(radioButton.getText().equals("Mengumpulkan"));
             }
         }
     }
@@ -152,16 +156,16 @@ public class AbsensiController implements Initializable {
         for (ToggleGroup toggleGroup : toggleGroups) {
             Toggle selectedToggle = toggleGroup.getSelectedToggle();
             if (selectedToggle instanceof RadioButton radioButton) {
-                String kodeabsensi = radioButton.getId();
+                String kodelaporan = radioButton.getId();
                 String toggleValue = radioButton.getText();
 
-                dataMap.put(kodeabsensi, toggleValue);
+                dataMap.put(kodelaporan, toggleValue);
             }
         }
 
         try {
             // Create the HTTP connection
-            URL url = new URL("http://127.0.0.1:8000/api/absensi/update");
+            URL url = new URL("http://127.0.0.1:8000/api/laporan/update");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -169,10 +173,10 @@ public class AbsensiController implements Initializable {
             // Build the request body
             StringBuilder requestBody = new StringBuilder();
             for (Map.Entry<String, String> entry : dataMap.entrySet()) {
-                String kodeabsensi = entry.getKey();
+                String kodelaporan = entry.getKey();
                 String toggleValue = entry.getValue();
 
-                requestBody.append(kodeabsensi).append("=").append(toggleValue).append("&");
+                requestBody.append(kodelaporan).append("=").append(toggleValue).append("&");
             }
 
             // Send the request body
@@ -190,12 +194,12 @@ public class AbsensiController implements Initializable {
                 alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Informasi");
                 alert.setHeaderText(null);
-                alert.setContentText("Absensi Diupdate");
+                alert.setContentText("Laporan Berhasil Diupdate");
             } else {
                 alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
-                alert.setContentText("Gagal Mengupdate Absensi");
+                alert.setContentText("Gagal Mengupdate Laporan");
             }
             alert.showAndWait();
 

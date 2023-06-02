@@ -1,6 +1,7 @@
 package com.aslabapp.aslabapp;
 
-import controller.SearchController;
+import Controller.InfoHomeController;
+import Controller.SearchController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -15,14 +16,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.LinearGradient;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import project.Action;
 import project.Route;
-import controller.InfoHomeController;
+
 import java.io.IOException;
 import java.util.Objects;
 public class Main extends Application {
@@ -50,9 +50,6 @@ public class Main extends Application {
         ihc.initTextFields(loader);
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-    public static void changebg(LinearGradient color) {
-        background.setFill(color);
     }
     public void mainClose(MouseEvent mouseEvent) {
         Action action = new Action();

@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="925.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LaporanController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="925.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.LaporanController">
     <Pane layoutX="526.0" layoutY="211.0" prefHeight="169.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
         <Button layoutX="31.0" layoutY="28.0" mnemonicParsing="false" onAction="#submit" prefHeight="40.0" prefWidth="323.0" style="-fx-background-color: #34cf0e; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Update Laporan">
             <font>

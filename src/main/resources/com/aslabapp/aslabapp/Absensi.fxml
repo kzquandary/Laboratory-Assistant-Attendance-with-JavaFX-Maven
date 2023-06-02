@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="925.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AbsensiController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="925.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.AbsensiController">
     <Pane layoutX="526.0" layoutY="211.0" prefHeight="169.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
         <Button layoutX="31.0" layoutY="28.0" mnemonicParsing="false" onAction="#submit" prefHeight="40.0" prefWidth="323.0" style="-fx-background-color: #34cf0e; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Update Absensi">
             <font>
@@ -39,23 +39,13 @@
             <Cursor fx:constant="HAND" />
          </cursor></ChoiceBox>
     </Pane>
-    <Pane fx:id="absensipane" layoutX="33.0" layoutY="21.0" prefHeight="635.0" prefWidth="460.0"
-          styleClass="content-pane" stylesheets="@../../../css/style.css">
-        <Text fill="WHITE" layoutX="88.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kode Pertemuan : "
-              textAlignment="CENTER">
-           <font>
-               <Font name="Comic Sans MS" size="19.0"/>
-           </font>
-        </Text>
-        <ScrollPane fx:id="scrollpane" layoutY="94.0" prefHeight="537.0" prefWidth="460.0"
-                    style="-fx-background-color: transparent; -fx-background-radius: 25 25 25 25; -fx-border-radius: 25 25 25 25;">
-            <AnchorPane fx:id="anchorabsen" prefHeight="521.0" prefWidth="446.0"
-                        style="-fx-background-color: transparent;"/>
+    <Pane fx:id="absensipane" layoutX="33.0" layoutY="21.0" prefHeight="635.0" prefWidth="460.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
+        <ScrollPane fx:id="scrollpane" layoutY="94.0" prefHeight="537.0" prefWidth="460.0" style="-fx-background-color: transparent; -fx-background-radius: 25 25 25 25; -fx-border-radius: 25 25 25 25;">
+            <AnchorPane fx:id="anchorabsen" prefHeight="521.0" prefWidth="446.0" style="-fx-background-color: transparent;" />
         </ScrollPane>
-        <Text fx:id="textkodepertemuan" fill="WHITE" layoutX="248.0" layoutY="55.0" strokeType="OUTSIDE"
-              strokeWidth="0.0" textAlignment="CENTER">
+        <Text fx:id="textkodepertemuan" fill="WHITE" layoutX="113.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER">
            <font>
-               <Font name="Comic Sans MS" size="19.0"/>
+               <Font name="Comic Sans MS" size="19.0" />
            </font>
         </Text>
     </Pane>

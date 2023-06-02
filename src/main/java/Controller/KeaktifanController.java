@@ -1,4 +1,4 @@
-package controller;
+package Controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -7,9 +7,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
-import model.Keaktifan;
-import model.Mahasiswa;
-import model.Pertemuan;
+import Model.Keaktifan;
+import Model.Mahasiswa;
+import Model.Pertemuan;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import project.Route;
@@ -29,15 +29,15 @@ public class KeaktifanController implements Initializable {
     @FXML
     public TableView<Keaktifan> tabelkeaktifan;
     @FXML
-    public TableColumn<model.Keaktifan, String> kodekeaktifan;
+    public TableColumn<Model.Keaktifan, String> kodekeaktifan;
     @FXML
-    public TableColumn<model.Keaktifan, String> tabelnim;
+    public TableColumn<Model.Keaktifan, String> tabelnim;
     @FXML
-    public TableColumn<model.Keaktifan, String> tablenama;
+    public TableColumn<Model.Keaktifan, String> tablenama;
     @FXML
-    public TableColumn<model.Keaktifan, String> kodepertemuan;
+    public TableColumn<Model.Keaktifan, String> kodepertemuan;
     @FXML
-    public TableColumn<model.Keaktifan, String> keterangan;
+    public TableColumn<Model.Keaktifan, String> keterangan;
     @FXML
     public TextField fieldkodekeaktifan;
     @FXML
