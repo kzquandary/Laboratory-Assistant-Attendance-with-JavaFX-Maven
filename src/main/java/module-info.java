@@ -4,7 +4,8 @@ module com.aslabapp.aslabapp {
     requires org.json;
     requires org.apache.poi.poi;
     requires org.apache.poi.ooxml;
-
+    requires commons.math3;
+    requires SparseBitSet;
 
     opens com.aslabapp.aslabapp to javafx.fxml;
     exports com.aslabapp.aslabapp;
