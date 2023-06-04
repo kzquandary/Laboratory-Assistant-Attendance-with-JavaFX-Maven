@@ -17,6 +17,7 @@ import javafx.util.StringConverter;
 import Model.Pertemuan;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import project.Route;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -63,9 +64,8 @@ public class NilaiController implements Initializable {
         String kodePertemuan = selectedPertemuan.getKode_pertemuan();
         JSONArray dataMahasiswa = getAbsensiData(kodePertemuan);
 
-        // Clear previous state
         anchorabsen.getChildren().clear();
-        nilaiFields.clear(); // Clear nilaiFields before initializing
+        nilaiFields.clear();
 
         for (int i = 0; i < dataMahasiswa.length(); i++) {
             JSONObject mahasiswaObj = dataMahasiswa.getJSONObject(i);
@@ -80,14 +80,14 @@ public class NilaiController implements Initializable {
             namaText.setLayoutX(textLayout);
 
             TextField nilaiField = new TextField(Integer.toString(nilaiMahasiswa));
-            nilaiField.setPrefWidth(250); // Menentukan lebar TextField
-            nilaiField.setPrefHeight(20); // Menentukan tinggi TextField
+            nilaiField.setPrefWidth(250);
+            nilaiField.setPrefHeight(20);
             nilaiField.setLayoutX(formLayoutX);
             nilaiField.setLayoutY(layoutY);
             nilaiField.setId(kodeNilai);
 
             anchorabsen.getChildren().addAll(namaText, nilaiField);
-            nilaiFields.add(nilaiField); // Add nilaiField to nilaiFields
+            nilaiFields.add(nilaiField);
 
             layoutY += 30;
         }
@@ -96,7 +96,7 @@ public class NilaiController implements Initializable {
     }
 
     private JSONArray getAbsensiData(String kodePertemuan) {
-        String apiUrl = "http://127.0.0.1:8000/api/nilai/" + kodePertemuan;
+        String apiUrl = Route.URL + "nilai/" + kodePertemuan;
 
         return getObjects(apiUrl);
     }
@@ -110,7 +110,7 @@ public class NilaiController implements Initializable {
     }
 
     static void GetKodePertemuan(ChoiceBox<Pertemuan> kodepertemuan) {
-        String apiUrl = "http://127.0.0.1:8000/api/pertemuan";
+        String apiUrl = Route.URL + "pertemuan";
 
         try {
             URL url = new URL(apiUrl);
@@ -170,7 +170,7 @@ public class NilaiController implements Initializable {
 
         try {
             // Create the HTTP connection
-            URL url = new URL("http://127.0.0.1:8000/api/nilai/update");
+            URL url = new URL(Route.URL + "nilai/update");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");

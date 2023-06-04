@@ -9,10 +9,12 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import project.Route;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -32,6 +34,10 @@ public class SettingController implements Initializable {
             if (selectedFile.getName().endsWith(".csv")) {
                 try (Scanner scanner = new Scanner(selectedFile)) {
                     JSONArray jsonArray = new JSONArray();
+                    if (scanner.hasNextLine()) {
+                        // Skip header line
+                        scanner.nextLine();
+                    }
                     while (scanner.hasNextLine()) {
                         String line = scanner.nextLine();
                         jsonArray.put(parseLineToJson(line));
@@ -45,14 +51,16 @@ public class SettingController implements Initializable {
                     Sheet sheet = workbook.getSheetAt(0);
                     JSONArray jsonArray = new JSONArray();
                     for (Row row : sheet) {
-                        StringBuilder lineBuilder = new StringBuilder();
-                        for (Cell cell : row) {
-                            String cellValue = getCellValue(cell);
-                            lineBuilder.append(cellValue).append(",");
+                        if (row.getRowNum() != 0) {
+                            StringBuilder lineBuilder = new StringBuilder();
+                            for (Cell cell : row) {
+                                String cellValue = getCellValue(cell);
+                                lineBuilder.append(cellValue).append(",");
+                            }
+                            String line = lineBuilder.toString();
+                            line = line.substring(0, line.length() - 1);
+                            jsonArray.put(parseLineToJson(line));
                         }
-                        String line = lineBuilder.toString();
-                        line = line.substring(0, line.length() - 1);
-                        jsonArray.put(parseLineToJson(line));
                     }
                     sendBatchData(jsonArray);
                 } catch (IOException | InvalidFormatException e) {
@@ -67,15 +75,19 @@ public class SettingController implements Initializable {
     private JSONObject parseLineToJson(String line) {
         String[] values = line.split(",");
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("nim", values[0]);
+
+        DecimalFormat decimalFormat = new DecimalFormat("0");
+
+        String nim = decimalFormat.format(Double.parseDouble(values[0]));
+        jsonObject.put("nim", nim);
         jsonObject.put("nama", values[1]);
         jsonObject.put("no_hp", values[2]);
+
         return jsonObject;
     }
-
     private void sendBatchData(JSONArray jsonArray) {
         try {
-            URL url = new URL("http://127.0.0.1:8000/api/mahasiswa/batchstore");
+            URL url = new URL(Route.URL + "mahasiswa/batchstore");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");

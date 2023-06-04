@@ -115,7 +115,7 @@ public class SearchController {
         if (searchText.startsWith("62")) {
             nohp = "0" + nohp.substring(2);
         }
-        String apiUrl = "http://127.0.0.1:8000/api/mahasiswa/nohp/" + nohp;
+        String apiUrl = Route.URL + "mahasiswa/nohp/" + nohp;
         extractData(apiUrl);
     }
 
@@ -168,7 +168,7 @@ public class SearchController {
 
     private void searchByNIM() {
         String nim = searchText;
-        String link = "http://127.0.0.1:8000/api/mahasiswa/nim/" + nim;
+        String link = Route.URL + "mahasiswa/nim/" + nim;
         try {
             URL url = new URL(link);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -198,7 +198,7 @@ public class SearchController {
     private void searchByName() {
         String name = searchText;
         String param = name.replace(" ", "%20");
-        String apiUrl = "http://127.0.0.1:8000/api/mahasiswa/nama/" + param;
+        String apiUrl = Route.URL + "mahasiswa/nama/" + param;
 
         extractData(apiUrl);
     }

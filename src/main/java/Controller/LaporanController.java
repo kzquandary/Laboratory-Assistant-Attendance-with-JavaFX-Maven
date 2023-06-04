@@ -12,6 +12,7 @@ import javafx.scene.text.TextAlignment;
 import Model.Pertemuan;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import project.Route;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -110,7 +111,7 @@ public class LaporanController implements Initializable {
     }
 
     private JSONArray getLaporanData(String kodePertemuan) {
-        String apiUrl = "http://127.0.0.1:8000/api/laporan/" + kodePertemuan;
+        String apiUrl = Route.URL + "laporan/" + kodePertemuan;
 
         return getObjects(apiUrl);
     }
@@ -165,7 +166,7 @@ public class LaporanController implements Initializable {
 
         try {
             // Create the HTTP connection
-            URL url = new URL("http://127.0.0.1:8000/api/laporan/update");
+            URL url = new URL(Route.URL + "laporan/update");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");

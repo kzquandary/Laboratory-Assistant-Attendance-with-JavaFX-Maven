@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.text.Text;
 import org.json.JSONArray;
+import project.Route;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class InfoHomeController implements Initializable {
 
     public void setMahassiwa() {
         try {
-            URL url = new URL("http://127.0.0.1:8000/api/mahasiswa");
+            URL url = new URL(Route.URL + "mahasiswa");
             getApi(url, jmlmahasiswa);
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,7 +64,7 @@ public class InfoHomeController implements Initializable {
 
     public void setPeretmuan() {
         try {
-            URL url = new URL("http://127.0.0.1:8000/api/pertemuan");
+            URL url = new URL(Route.URL + "pertemuan");
             getApi(url, jmlpertemuan);
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,7 +73,7 @@ public class InfoHomeController implements Initializable {
 
     public void setLaporan() {
         try {
-            URL url = new URL("http://127.0.0.1:8000/api/laporan");
+            URL url = new URL(Route.URL + "laporan");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Content-Type", "application/json");

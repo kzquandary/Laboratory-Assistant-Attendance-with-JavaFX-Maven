@@ -12,6 +12,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import project.Route;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -157,7 +158,7 @@ public class AbsensiController implements Initializable {
 
 
     private JSONArray getAbsensiData(String kodePertemuan) {
-        String apiUrl = "http://127.0.0.1:8000/api/absensi/" + kodePertemuan;
+        String apiUrl = Route.URL + "absensi/" + kodePertemuan;
 
         return getObjects(apiUrl);
     }
@@ -194,7 +195,7 @@ public class AbsensiController implements Initializable {
     public void submit() {
         try {
             // Create the HTTP connection
-            URL url = new URL("http://127.0.0.1:8000/api/absensi/update");
+            URL url = new URL(Route.URL + "absensi/update");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
