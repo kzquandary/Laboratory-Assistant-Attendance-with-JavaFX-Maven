@@ -1,15 +1,15 @@
 package Controller;
 
+import Model.Pertemuan;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import Model.Pertemuan;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import project.Route;
@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,15 +29,12 @@ public class LaporanController implements Initializable {
     @FXML
     public ChoiceBox<Pertemuan> kodepertemuan;
     @FXML
-    public Pane laporanpane;
-    @FXML
-    public ScrollPane scrollpane;
-    @FXML
-    public AnchorPane anchorabsen;
-    @FXML
     public Text textkodepertemuan;
-    private final List<ToggleGroup> toggleGroups = new ArrayList<>(); // Declare toggleGroups as a class member
-
+    private final List<ToggleGroup> toggleGroups = new ArrayList<>();
+    public Pane contentPane = new Pane();
+    private final Map<Integer, Map<String, String>> radioButtonStatusMap = new HashMap<>();
+    public Map<String, String> tempMhs = new HashMap<>();
+    public Pagination pagination;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initPertemuan();
@@ -49,65 +48,109 @@ public class LaporanController implements Initializable {
 
     }
     private void initializeDataMahasiswa(Pertemuan selectedPertemuan) {
+        pagination.setVisible(true);
         textkodepertemuan.setText("Kode Pertemuan : " + selectedPertemuan.getKode_pertemuan());
-        double layoutY = 5;
-        double radioButtonLayoutX = 130;
+        final double[] layoutY = {10};
+        double radioButtonLayoutX = 140;
         double textLayout = 5;
 
         String kodePertemuan = selectedPertemuan.getKode_pertemuan();
         JSONArray dataMahasiswa = getLaporanData(kodePertemuan);
-
-        // Clear previous state
-        anchorabsen.getChildren().clear();
-        toggleGroups.clear();
-
         for (int i = 0; i < dataMahasiswa.length(); i++) {
-            JSONObject mahasiswaObj = dataMahasiswa.getJSONObject(i);
-            String namaMahasiswa = mahasiswaObj.getString("nama");
-            String statuslaporan = mahasiswaObj.getString("status");
-            String kodeLaporan = mahasiswaObj.getString("kode_laporan");
-
-            Text namaText = new Text(namaMahasiswa);
-            namaText.setFont(new Font("Comic Sans MS", 12));
-            namaText.setTextAlignment(TextAlignment.RIGHT);
-            namaText.setLayoutY(layoutY + 12);
-            namaText.setLayoutX(textLayout);
-
-            ToggleGroup toggleGroup = new ToggleGroup(); // Membuat ToggleGroup baru untuk setiap mahasiswa
-            toggleGroups.add(toggleGroup); // Add the toggleGroup to the class member
-
-            RadioButton mengumpulkanRadioButton = new RadioButton("Mengumpulkan");
-            RadioButton telatRadioButton = new RadioButton("Telat");
-            RadioButton tidakMengumpulkanRadioButton = new RadioButton("Tidak Mengumpulkan");
-
-            mengumpulkanRadioButton.setToggleGroup(toggleGroup);
-            telatRadioButton.setToggleGroup(toggleGroup);
-            tidakMengumpulkanRadioButton.setToggleGroup(toggleGroup);
-            mengumpulkanRadioButton.setId(kodeLaporan);
-            telatRadioButton.setId(kodeLaporan);
-            tidakMengumpulkanRadioButton.setId(kodeLaporan);
-
-            if (statuslaporan.equalsIgnoreCase("Mengumpulkan")) {
-                toggleGroup.selectToggle(mengumpulkanRadioButton);
-            } else if (statuslaporan.equalsIgnoreCase("Telat")) {
-                toggleGroup.selectToggle(telatRadioButton);
-            } else if (statuslaporan.equalsIgnoreCase("Tidak Mengumpulkan")) {
-                toggleGroup.selectToggle(tidakMengumpulkanRadioButton);
-            }
-
-            mengumpulkanRadioButton.setLayoutX(radioButtonLayoutX);
-            telatRadioButton.setLayoutX(radioButtonLayoutX + 120);
-            tidakMengumpulkanRadioButton.setLayoutX(radioButtonLayoutX + 180);
-            mengumpulkanRadioButton.setLayoutY(layoutY);
-            telatRadioButton.setLayoutY(layoutY);
-            tidakMengumpulkanRadioButton.setLayoutY(layoutY);
-
-            anchorabsen.getChildren().addAll(namaText, mengumpulkanRadioButton, telatRadioButton, tidakMengumpulkanRadioButton);
-
-            layoutY += 30;
+            JSONObject dataMhs = dataMahasiswa.getJSONObject(i);
+            tempMhs.put(dataMhs.getString("kode_laporan"), dataMhs.getString("status"));
         }
+        int mahasiswaPerHalaman = 16;
+        int jumlahHalaman = (int) Math.ceil((double) dataMahasiswa.length() / mahasiswaPerHalaman);
+        pagination.setPageCount(jumlahHalaman);
 
-        scrollpane.setContent(anchorabsen);
+        toggleGroups.clear();
+        pagination.setPageFactory(pageIndex -> {
+            if (pageIndex >= 0 && pageIndex < pagination.getPageCount()) {
+                int halaman = pageIndex;
+                int awal = halaman * mahasiswaPerHalaman;
+                int akhir = Math.min(awal + mahasiswaPerHalaman, dataMahasiswa.length());
+
+                contentPane.getChildren().clear();
+                toggleGroups.clear();
+                layoutY[0] = 10;
+
+                Map<String, String> statusMap = radioButtonStatusMap.getOrDefault(pageIndex, new HashMap<>());
+
+                for (int i = awal; i < akhir; i++) {
+                    JSONObject mahasiswaObj = dataMahasiswa.getJSONObject(i);
+                    String namaMahasiswa = mahasiswaObj.getString("nama");
+                    String statusLaporan = statusMap.getOrDefault(mahasiswaObj.getString("kode_laporan"),"Telat");
+                    String kodeLaporan = mahasiswaObj.getString("kode_laporan");
+
+                    Text namaText = new Text(namaMahasiswa);
+                    namaText.setFont(Font.font("Comic Sans MS", FontWeight.BOLD, 12));
+                    namaText.setTextAlignment(TextAlignment.RIGHT);
+                    namaText.setLayoutY(layoutY[0] + 12);
+                    namaText.setLayoutX(textLayout);
+                    namaText.setFill(Color.WHITE);
+
+                    ToggleGroup toggleGroup = new ToggleGroup();
+                    toggleGroups.add(toggleGroup);
+
+                    RadioButton mengumpulkanRadioButton = new RadioButton("Mengumpulkan");
+                    RadioButton telatRadioButton = new RadioButton("Telat");
+                    RadioButton tidakMengumpulkanRadioButton = new RadioButton("Tidak Mengumpulkan");
+
+                    mengumpulkanRadioButton.setToggleGroup(toggleGroup);
+                    telatRadioButton.setToggleGroup(toggleGroup);
+                    tidakMengumpulkanRadioButton.setToggleGroup(toggleGroup);
+                    mengumpulkanRadioButton.setId(kodeLaporan);
+                    telatRadioButton.setId(kodeLaporan);
+                    tidakMengumpulkanRadioButton.setId(kodeLaporan);
+
+                    Toggle selectedToggle = null;
+                    if (statusLaporan.equalsIgnoreCase("Mengumpulkan")) {
+                        selectedToggle = mengumpulkanRadioButton;
+                    } else if (statusLaporan.equalsIgnoreCase("Telat")) {
+                        selectedToggle = telatRadioButton;
+                    } else if (statusLaporan.equalsIgnoreCase("Tidak Mengumpulkan")) {
+                        selectedToggle = tidakMengumpulkanRadioButton;
+                    }
+
+                    mengumpulkanRadioButton.setOnAction(event -> {
+                        statusMap.put(kodeLaporan, "Mengumpulkan");
+                        tempMhs.put(kodeLaporan, "Mengumpulkan");
+                    });
+                    telatRadioButton.setOnAction(event -> {
+                        statusMap.put(kodeLaporan, "Telat");
+                        tempMhs.put(kodeLaporan, "Telat");
+                    });
+                    tidakMengumpulkanRadioButton.setOnAction(event -> {
+                        statusMap.put(kodeLaporan, "Tidak Mengumpulkan");
+                        tempMhs.put(kodeLaporan, "Tidak Mengumpulkan");
+                    });
+
+                    toggleGroup.selectToggle(selectedToggle);
+
+
+                    mengumpulkanRadioButton.setLayoutX(radioButtonLayoutX);
+                    telatRadioButton.setLayoutX(radioButtonLayoutX + 120);
+                    tidakMengumpulkanRadioButton.setLayoutX(radioButtonLayoutX + 180);
+                    mengumpulkanRadioButton.setLayoutY(layoutY[0]);
+                    telatRadioButton.setLayoutY(layoutY[0]);
+                    tidakMengumpulkanRadioButton.setLayoutY(layoutY[0]);
+
+                    mengumpulkanRadioButton.setTextFill(Color.WHITE);
+                    telatRadioButton.setTextFill(Color.WHITE);
+                    tidakMengumpulkanRadioButton.setTextFill(Color.WHITE);
+                    contentPane.getChildren().addAll(namaText, mengumpulkanRadioButton, telatRadioButton, tidakMengumpulkanRadioButton);
+
+                    layoutY[0] += 30;
+                }
+
+                radioButtonStatusMap.put(pageIndex, statusMap);
+
+                return contentPane;
+            } else {
+                return null;
+            }
+        });
     }
 
     private JSONArray getLaporanData(String kodePertemuan) {
@@ -145,25 +188,25 @@ public class LaporanController implements Initializable {
 
     @FXML
     public void setAllHadir() {
-        for (Node node : anchorabsen.getChildren()) {
-            if (node instanceof RadioButton radioButton) {
-                radioButton.setSelected(radioButton.getText().equals("Mengumpulkan"));
+        for (int pageIndex = 0; pageIndex < pagination.getPageCount(); pageIndex++) {
+            Map<String, String> statusMap = radioButtonStatusMap.getOrDefault(pageIndex, new HashMap<>());
+
+            for (ToggleGroup toggleGroup : toggleGroups) {
+                for (Toggle toggle : toggleGroup.getToggles()) {
+                    if (toggle instanceof RadioButton radioButton) {
+                        String kodelaporan = radioButton.getId();
+                        if (!statusMap.getOrDefault(kodelaporan, "").equalsIgnoreCase("Mengumpulkan")) {
+                            statusMap.put(kodelaporan, "Mengumpulkan");
+                            tempMhs.put(kodelaporan, "Mengumpulkan");
+                            radioButton.setSelected(true);
+                        }
+                    }
+                }
             }
+            radioButtonStatusMap.put(pageIndex, statusMap);
         }
     }
     public void submit() {
-        Map<String, String> dataMap = new HashMap<>();
-
-        for (ToggleGroup toggleGroup : toggleGroups) {
-            Toggle selectedToggle = toggleGroup.getSelectedToggle();
-            if (selectedToggle instanceof RadioButton radioButton) {
-                String kodelaporan = radioButton.getId();
-                String toggleValue = radioButton.getText();
-
-                dataMap.put(kodelaporan, toggleValue);
-            }
-        }
-
         try {
             // Create the HTTP connection
             URL url = new URL(Route.URL + "laporan/update");
@@ -173,11 +216,14 @@ public class LaporanController implements Initializable {
 
             // Build the request body
             StringBuilder requestBody = new StringBuilder();
-            for (Map.Entry<String, String> entry : dataMap.entrySet()) {
+            for (Map.Entry<String, String> entry : tempMhs.entrySet()) {
                 String kodelaporan = entry.getKey();
                 String toggleValue = entry.getValue();
 
-                requestBody.append(kodelaporan).append("=").append(toggleValue).append("&");
+                requestBody.append(URLEncoder.encode(kodelaporan, StandardCharsets.UTF_8))
+                        .append("=")
+                        .append(URLEncoder.encode(toggleValue, StandardCharsets.UTF_8))
+                        .append("&");
             }
 
             // Send the request body

@@ -64,7 +64,7 @@ public class AbsensiController implements Initializable {
 //            System.out.println(tempMhs);
         }
 //        System.out.println(tempMhs.size());
-        int mahasiswaPerHalaman = 12;
+        int mahasiswaPerHalaman = 16;
         int jumlahHalaman = (int) Math.ceil((double) dataMahasiswa.length() / mahasiswaPerHalaman);
         pagination.setPageCount(jumlahHalaman);
 
