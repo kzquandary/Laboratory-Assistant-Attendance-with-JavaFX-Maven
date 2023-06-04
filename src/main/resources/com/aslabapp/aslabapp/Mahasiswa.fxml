@@ -9,12 +9,15 @@
 <?import javafx.scene.text.Text?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="925.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MahasiswaController">
-   <TableView id="tabelmahasiswa" fx:id="tabelmahasiswa" layoutX="25.0" layoutY="21.0" prefHeight="639.0" prefWidth="486.0" stylesheets="@../../../css/style.css">
+   <TableView id="tabelmahasiswa" fx:id="tabelmahasiswa" layoutX="18.0" layoutY="14.0" prefHeight="624.0" prefWidth="494.0" stylesheets="@../../../css/style.css">
       <columns>
-         <TableColumn id="nim" fx:id="nim" prefWidth="143.19998168945312" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="NIM" />
-         <TableColumn id="nama" fx:id="nama" prefWidth="196.79998779296875" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="Nama" />
-         <TableColumn id="nohp" fx:id="nohp" prefWidth="141.60003662109375" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="No HP" />
+         <TableColumn id="nim" fx:id="nim" prefWidth="125.60000038146973" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="NIM" />
+         <TableColumn id="nama" fx:id="nama" prefWidth="71.20001220703125" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="Nama" />
+         <TableColumn id="nohp" fx:id="nohp" prefWidth="252.80001831054688" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="No HP" />
       </columns>
+      <columnResizePolicy>
+         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+      </columnResizePolicy>
    </TableView>
    <Pane fx:id="clearmhs" layoutX="526.0" layoutY="404.0" prefHeight="169.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
       <Button layoutX="31.0" layoutY="36.0" mnemonicParsing="false" onAction="#tambah" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #04ff00; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Tambah Mahasiswa">

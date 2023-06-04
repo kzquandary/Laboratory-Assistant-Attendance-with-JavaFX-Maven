@@ -50,6 +50,6 @@
                 <Font name="Comic Sans MS" size="19.0" />
             </font>
         </Text>
-      <DatePicker fx:id="fieldtanggalpertemuan" layoutX="25.0" layoutY="175.0" prefHeight="44.0" prefWidth="323.0" />
+      <DatePicker fx:id="fieldtanggalpertemuan" layoutX="25.0" layoutY="175.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan Tanggal Pertemuan" showWeekNumbers="true" />
     </Pane>
 </Pane>

@@ -76,7 +76,7 @@
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor></MaterialIcon>
-    <TextField fx:id="search_form" focusTraversable="false" layoutX="904.0" layoutY="50.0" onAction="#search_form" promptText="Cari Sesuatu" styleClass="form-cari" stylesheets="@../../../css/style.css" />
+    <TextField fx:id="search_form" focusTraversable="false" layoutX="902.0" layoutY="47.0" onAction="#search_form" prefHeight="33.0" prefWidth="161.0" promptText="Cari Sesuatu" />
     <!-- End Header -->
     <!-- Sidebar -->
     <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#380257b2" height="680.0" layoutX="25.0" layoutY="106.0" stroke="#fff7f700" strokeType="INSIDE" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" width="200.0" />
@@ -172,9 +172,9 @@
                 <Font name="Comic Sans MS" size="21.0" />
             </font>
         </Text>
-        <MaterialIcon color="WHITE" content="SCHOOL" layoutX="33.0" layoutY="70.0" prefHeight="75.0" prefWidth="76.0" size="80" />
-        <MaterialIcon color="WHITE" content="BOOK" layoutX="343.0" layoutY="74.0" size="80" />
-        <MaterialIcon color="WHITE" content="CHECK_BOX" layoutX="658.0" layoutY="74.0" size="80" />
+        <MaterialIcon color="#0aff06" content="SCHOOL" layoutX="35.0" layoutY="67.0" prefHeight="75.0" prefWidth="76.0" size="80" />
+        <MaterialIcon color="#f6ff00" content="BOOK" layoutX="343.0" layoutY="74.0" size="80" />
+        <MaterialIcon color="#c90505" content="CHECK_BOX" layoutX="658.0" layoutY="74.0" size="80" />
         <Text fx:id="jmlmahasiswa" fill="WHITE" layoutX="182.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="45" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="35.0" />

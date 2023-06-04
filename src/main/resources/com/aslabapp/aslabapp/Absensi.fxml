@@ -39,7 +39,7 @@
          </cursor></ChoiceBox>
     </Pane>
     <Pane layoutX="33.0" layoutY="21.0" prefHeight="635.0" prefWidth="460.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
-        <Text fx:id="textkodepertemuan" fill="WHITE" layoutX="113.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" visible="false">
+        <Text fx:id="textkodepertemuan" fill="WHITE" layoutX="113.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER">
            <font>
                <Font name="Comic Sans MS" size="19.0" />
            </font>
