@@ -1,20 +1,21 @@
 package Controller;
 
+import Model.Pertemuan;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.StringConverter;
-import Model.Pertemuan;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import project.Route;
@@ -35,14 +36,12 @@ public class NilaiController implements Initializable {
     @FXML
     public ChoiceBox<Pertemuan> kodepertemuan;
     @FXML
-    public Pane absensipane;
-    @FXML
-    public ScrollPane scrollpane;
-    @FXML
-    public AnchorPane anchorabsen;
-    @FXML
     public Text textkodepertemuan;
-    private final List<TextField> nilaiFields = new ArrayList<>();
+    public Pagination pagination;
+    public Pane contentPane = new Pane();
+    private final Map<Integer, Map<String, String>> nilaiFieldMap = new HashMap<>();
+
+    public Map<String, String> tempMhs = new HashMap<>();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initPertemuan();
@@ -50,49 +49,79 @@ public class NilaiController implements Initializable {
         kodepertemuan.getSelectionModel().selectFirst();
         kodepertemuan.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                initializeDataMahasiswa(newValue);
+                if (newValue.getKode_pertemuan().equals("Pilih Pertemuan")) {
+                    pagination.setVisible(false);
+                    textkodepertemuan.setVisible(false);
+                } else {
+                    initializeDataMahasiswa(newValue);
+                }
             }
         });
-
     }
     private void initializeDataMahasiswa(Pertemuan selectedPertemuan) {
+        pagination.setVisible(true);
         textkodepertemuan.setText("Kode Pertemuan : " + selectedPertemuan.getKode_pertemuan());
-        double layoutY = 10;
+        final double[] layoutY = {10};
         double textLayout = 10;
         double formLayoutX = 180;
 
         String kodePertemuan = selectedPertemuan.getKode_pertemuan();
         JSONArray dataMahasiswa = getAbsensiData(kodePertemuan);
-
-        anchorabsen.getChildren().clear();
-        nilaiFields.clear();
-
         for (int i = 0; i < dataMahasiswa.length(); i++) {
-            JSONObject mahasiswaObj = dataMahasiswa.getJSONObject(i);
-            String namaMahasiswa = mahasiswaObj.getString("nama");
-            int nilaiMahasiswa = mahasiswaObj.getInt("nilai");
-            String kodeNilai = mahasiswaObj.getString("kode_nilai");
-
-            Text namaText = new Text(namaMahasiswa);
-            namaText.setFont(new Font("Comic Sans MS", 12));
-            namaText.setTextAlignment(TextAlignment.RIGHT);
-            namaText.setLayoutY(layoutY + 12);
-            namaText.setLayoutX(textLayout);
-
-            TextField nilaiField = new TextField(Integer.toString(nilaiMahasiswa));
-            nilaiField.setPrefWidth(250);
-            nilaiField.setPrefHeight(20);
-            nilaiField.setLayoutX(formLayoutX);
-            nilaiField.setLayoutY(layoutY);
-            nilaiField.setId(kodeNilai);
-
-            anchorabsen.getChildren().addAll(namaText, nilaiField);
-            nilaiFields.add(nilaiField);
-
-            layoutY += 30;
+            JSONObject dataMhs = dataMahasiswa.getJSONObject(i);
+            tempMhs.put(dataMhs.getString("kode_nilai"), String.valueOf(dataMhs.getInt("nilai")));
         }
+        int mahasiswaPerHalaman = 12;
+        int jumlahHalaman = (int) Math.ceil((double) dataMahasiswa.length() / mahasiswaPerHalaman);
+        pagination.setPageCount(jumlahHalaman);
 
-        scrollpane.setContent(anchorabsen);
+        pagination.setPageFactory(pageIndex -> {
+            if (pageIndex >= 0 && pageIndex < pagination.getPageCount()) {
+                int halaman = pageIndex;
+                int awal = halaman * mahasiswaPerHalaman;
+                int akhir = Math.min(awal + mahasiswaPerHalaman, dataMahasiswa.length());
+
+                contentPane.getChildren().clear();
+                layoutY[0] = 10;
+
+                Map<String, String> nilaiMap = nilaiFieldMap.getOrDefault(pageIndex, new HashMap<>());
+
+                for (int i = awal; i < akhir; i++) {
+                    JSONObject mahasiswaObj = dataMahasiswa.getJSONObject(i);
+                    String namaMahasiswa = mahasiswaObj.getString("nama");
+                    String kodenilai = mahasiswaObj.getString("kode_nilai");
+
+                    Text namaText = new Text(namaMahasiswa);
+                    namaText.setFont(Font.font("Comic Sans MS", FontWeight.BOLD, 12));
+                    namaText.setTextAlignment(TextAlignment.RIGHT);
+                    namaText.setLayoutY(layoutY[0] + 24);
+                    namaText.setLayoutX(textLayout);
+                    namaText.setFill(Color.WHITE);
+
+                    TextField nilaiField = new TextField(nilaiMap.getOrDefault(kodenilai, String.valueOf(mahasiswaObj.getInt("nilai"))));
+                    nilaiField.setPrefWidth(250);
+                    nilaiField.setPrefHeight(20);
+                    nilaiField.setLayoutX(formLayoutX);
+                    nilaiField.setLayoutY(layoutY[0]);
+                    nilaiField.setId(kodenilai);
+                    nilaiField.setOnKeyReleased(keyEvent -> {
+                        nilaiMap.put(kodenilai, nilaiField.getText());
+                        tempMhs.put(kodenilai, nilaiField.getText());
+                        }
+                    );
+
+                    contentPane.getChildren().addAll(namaText, nilaiField);
+
+                    layoutY[0] += 30;
+                }
+
+                nilaiFieldMap.put(pageIndex, nilaiMap);
+
+                return contentPane;
+            } else {
+                return null;
+            }
+        });
     }
 
     private JSONArray getAbsensiData(String kodePertemuan) {
@@ -159,15 +188,6 @@ public class NilaiController implements Initializable {
     }
 
     public void submit() {
-        Map<String, String> dataMap = new HashMap<>();
-
-        for (TextField nilaiField : nilaiFields) {
-            String kodeNilai = nilaiField.getId();
-            String nilai = nilaiField.getText();
-
-            dataMap.put(kodeNilai, nilai);
-        }
-
         try {
             // Create the HTTP connection
             URL url = new URL(Route.URL + "nilai/update");
@@ -177,7 +197,7 @@ public class NilaiController implements Initializable {
 
             // Build the request body
             StringBuilder requestBody = new StringBuilder();
-            for (Map.Entry<String, String> entry : dataMap.entrySet()) {
+            for (Map.Entry<String, String> entry : tempMhs.entrySet()) {
                 String kodeNilai = entry.getKey();
                 String nilai = entry.getValue();
 

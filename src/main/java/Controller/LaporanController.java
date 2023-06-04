@@ -42,7 +42,12 @@ public class LaporanController implements Initializable {
         kodepertemuan.getSelectionModel().selectFirst();
         kodepertemuan.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                initializeDataMahasiswa(newValue);
+                if (newValue.getKode_pertemuan().equals("Pilih Pertemuan")) {
+                    pagination.setVisible(false);
+                    textkodepertemuan.setVisible(false);
+                } else {
+                    initializeDataMahasiswa(newValue);
+                }
             }
         });
 
