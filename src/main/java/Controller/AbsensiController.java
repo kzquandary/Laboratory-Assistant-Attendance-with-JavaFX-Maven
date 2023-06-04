@@ -1,15 +1,15 @@
 package Controller;
 
+import Model.Pertemuan;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import Model.Pertemuan;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -25,14 +25,12 @@ public class AbsensiController implements Initializable {
     @FXML
     public ChoiceBox<Pertemuan> kodepertemuan;
     @FXML
-    public Pane absensipane;
-    @FXML
-    public ScrollPane scrollpane;
-    @FXML
-    public AnchorPane anchorabsen;
-    @FXML
     public Text textkodepertemuan;
-    private final List<ToggleGroup> toggleGroups = new ArrayList<>(); // Declare toggleGroups as a class member
+    private final List<ToggleGroup> toggleGroups = new ArrayList<>();
+    public Pagination pagination;
+    public Pane contentPane = new Pane();
+    private final Map<Integer, Map<String, String>> radioButtonStatusMap = new HashMap<>();
+    public Map<String, String> tempMhs = new HashMap<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -45,68 +43,111 @@ public class AbsensiController implements Initializable {
             }
         });
 
+
     }
     private void initializeDataMahasiswa(Pertemuan selectedPertemuan) {
+        pagination.setVisible(true);
         textkodepertemuan.setText("Kode Pertemuan : " + selectedPertemuan.getKode_pertemuan());
-        double layoutY = 10;
+
+        final double[] layoutY = {10};
         double radioButtonLayoutX = 200;
         double textLayout = 10;
 
         String kodePertemuan = selectedPertemuan.getKode_pertemuan();
         JSONArray dataMahasiswa = getAbsensiData(kodePertemuan);
+        int mahasiswaPerHalaman = 12;
+        int jumlahHalaman = (int) Math.ceil((double) dataMahasiswa.length() / mahasiswaPerHalaman);
+        pagination.setPageCount(jumlahHalaman);
 
-        // Clear previous state
-        anchorabsen.getChildren().clear();
-        toggleGroups.clear();
+        pagination.setPageFactory(pageIndex -> {
+            if (pageIndex >= 0 && pageIndex < pagination.getPageCount()) {
+                int halaman = pageIndex;
+                int awal = halaman * mahasiswaPerHalaman;
+                int akhir = Math.min(awal + mahasiswaPerHalaman, dataMahasiswa.length());
 
-        for (int i = 0; i < dataMahasiswa.length(); i++) {
-            JSONObject mahasiswaObj = dataMahasiswa.getJSONObject(i);
-            String namaMahasiswa = mahasiswaObj.getString("nama");
-            String statusKehadiran = mahasiswaObj.getString("status");
-            String kodeabsensi = mahasiswaObj.getString("kode_absen");
+                contentPane.getChildren().clear();
+                toggleGroups.clear();
+                layoutY[0] = 10;
 
-            Text namaText = new Text(namaMahasiswa);
-            namaText.setFont(new Font("Comic Sans MS", 12));
-            namaText.setTextAlignment(TextAlignment.RIGHT);
-            namaText.setLayoutY(layoutY + 12);
-            namaText.setLayoutX(textLayout);
+                Map<String, String> statusMap = radioButtonStatusMap.getOrDefault(pageIndex, new HashMap<>());
 
-            ToggleGroup toggleGroup = new ToggleGroup(); // Membuat ToggleGroup baru untuk setiap mahasiswa
-            toggleGroups.add(toggleGroup); // Add the toggleGroup to the class member
+                for (int i = awal; i < akhir; i++) {
+                    JSONObject mahasiswaObj = dataMahasiswa.getJSONObject(i);
+                    String namaMahasiswa = mahasiswaObj.getString("nama");
+                    String statusKehadiran = statusMap.getOrDefault(mahasiswaObj.getString("kode_absen"),"Alpha");
+                    String kodeabsensi = mahasiswaObj.getString("kode_absen");
 
-            RadioButton hadirRadioButton = new RadioButton("Hadir");
-            RadioButton izinRadioButton = new RadioButton("Izin");
-            RadioButton alphaRadioButton = new RadioButton("Alpha");
+                    Text namaText = new Text(namaMahasiswa);
+                    namaText.setFont(Font.font("Comic Sans MS", FontWeight.BOLD, 12));
+                    namaText.setTextAlignment(TextAlignment.RIGHT);
+                    namaText.setLayoutY(layoutY[0] + 12);
+                    namaText.setLayoutX(textLayout);
+                    namaText.setFill(Color.WHITE);
 
-            hadirRadioButton.setToggleGroup(toggleGroup);
-            izinRadioButton.setToggleGroup(toggleGroup);
-            alphaRadioButton.setToggleGroup(toggleGroup);
-            hadirRadioButton.setId(kodeabsensi);
-            izinRadioButton.setId(kodeabsensi);
-            alphaRadioButton.setId(kodeabsensi);
+                    ToggleGroup toggleGroup = new ToggleGroup();
+                    toggleGroups.add(toggleGroup);
 
-            if (statusKehadiran.equalsIgnoreCase("Hadir")) {
-                toggleGroup.selectToggle(hadirRadioButton);
-            } else if (statusKehadiran.equalsIgnoreCase("Izin")) {
-                toggleGroup.selectToggle(izinRadioButton);
-            } else if (statusKehadiran.equalsIgnoreCase("Alpha")) {
-                toggleGroup.selectToggle(alphaRadioButton);
+                    RadioButton hadirRadioButton = new RadioButton("Hadir");
+                    RadioButton izinRadioButton = new RadioButton("Izin");
+                    RadioButton alphaRadioButton = new RadioButton("Alpha");
+
+                    hadirRadioButton.setToggleGroup(toggleGroup);
+                    izinRadioButton.setToggleGroup(toggleGroup);
+                    alphaRadioButton.setToggleGroup(toggleGroup);
+                    hadirRadioButton.setId(kodeabsensi);
+                    izinRadioButton.setId(kodeabsensi);
+                    alphaRadioButton.setId(kodeabsensi);
+
+                    Toggle selectedToggle = null;
+                    if (statusKehadiran.equalsIgnoreCase("Hadir")) {
+                        selectedToggle = hadirRadioButton;
+                    } else if (statusKehadiran.equalsIgnoreCase("Izin")) {
+                        selectedToggle = izinRadioButton;
+                    } else if (statusKehadiran.equalsIgnoreCase("Alpha")) {
+                        selectedToggle = alphaRadioButton;
+                    }
+
+                    // Create listeners for radio buttons to update the statusMap and tempMhs
+                    hadirRadioButton.setOnAction(event -> {
+                        statusMap.put(kodeabsensi, "Hadir");
+                        tempMhs.put(kodeabsensi, "Hadir");
+                    });
+                    izinRadioButton.setOnAction(event -> {
+                        statusMap.put(kodeabsensi, "Izin");
+                        tempMhs.put(kodeabsensi, "Izin");
+                    });
+                    alphaRadioButton.setOnAction(event -> {
+                        statusMap.put(kodeabsensi, "Alpha");
+                        tempMhs.put(kodeabsensi, "Alpha");
+                    });
+
+                    toggleGroup.selectToggle(selectedToggle);
+
+
+                    hadirRadioButton.setLayoutX(radioButtonLayoutX);
+                    izinRadioButton.setLayoutX(radioButtonLayoutX + 60);
+                    alphaRadioButton.setLayoutX(radioButtonLayoutX + 120);
+                    hadirRadioButton.setLayoutY(layoutY[0]);
+                    izinRadioButton.setLayoutY(layoutY[0]);
+                    alphaRadioButton.setLayoutY(layoutY[0]);
+
+                    hadirRadioButton.setTextFill(Color.WHITE);
+                    izinRadioButton.setTextFill(Color.WHITE);
+                    alphaRadioButton.setTextFill(Color.WHITE);
+                    contentPane.getChildren().addAll(namaText, hadirRadioButton, izinRadioButton, alphaRadioButton);
+
+                    layoutY[0] += 30;
+                }
+
+                radioButtonStatusMap.put(pageIndex, statusMap);
+
+                return contentPane;
+            } else {
+                return null;
             }
-
-            hadirRadioButton.setLayoutX(radioButtonLayoutX);
-            izinRadioButton.setLayoutX(radioButtonLayoutX + 60);
-            alphaRadioButton.setLayoutX(radioButtonLayoutX + 120);
-            hadirRadioButton.setLayoutY(layoutY);
-            izinRadioButton.setLayoutY(layoutY);
-            alphaRadioButton.setLayoutY(layoutY);
-
-            anchorabsen.getChildren().addAll(namaText, hadirRadioButton, izinRadioButton, alphaRadioButton);
-
-            layoutY += 30;
-        }
-
-        scrollpane.setContent(anchorabsen);
+        });
     }
+
 
     private JSONArray getAbsensiData(String kodePertemuan) {
         String apiUrl = "http://127.0.0.1:8000/api/absensi/" + kodePertemuan;
@@ -122,14 +163,32 @@ public class AbsensiController implements Initializable {
         NilaiController.GetKodePertemuan(kodepertemuan);
     }
 
-    @FXML
     public void setAllHadir() {
-        for (Node node : anchorabsen.getChildren()) {
-            if (node instanceof RadioButton radioButton) {
-                radioButton.setSelected(radioButton.getText().equals("Hadir"));
+        // Iterate through all pages
+        for (int pageIndex = 0; pageIndex < pagination.getPageCount(); pageIndex++) {
+            // Get the status map for the current page
+            Map<String, String> statusMap = radioButtonStatusMap.getOrDefault(pageIndex, new HashMap<>());
+
+            // Iterate through the radio buttons on the current page
+            for (ToggleGroup toggleGroup : toggleGroups) {
+                for (Toggle toggle : toggleGroup.getToggles()) {
+                    if (toggle instanceof RadioButton radioButton) {
+                        String kodeabsensi = radioButton.getId();
+                        // Set the value to "Hadir" only if it is not already "Hadir"
+                        if (!statusMap.getOrDefault(kodeabsensi, "").equalsIgnoreCase("Hadir")) {
+                            statusMap.put(kodeabsensi, "Hadir");
+                            radioButton.setSelected(true);
+                        }
+                    }
+                }
             }
+
+            // Update the status map for the current page
+            radioButtonStatusMap.put(pageIndex, statusMap);
         }
     }
+
+
     public void submit() {
         Map<String, String> dataMap = new HashMap<>();
 
@@ -188,4 +247,5 @@ public class AbsensiController implements Initializable {
             e.printStackTrace();
         }
     }
+
 }
