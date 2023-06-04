@@ -17,6 +17,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static Controller.LaporanController.getObjects;
@@ -55,6 +57,12 @@ public class AbsensiController implements Initializable {
 
         String kodePertemuan = selectedPertemuan.getKode_pertemuan();
         JSONArray dataMahasiswa = getAbsensiData(kodePertemuan);
+        for (int i = 0; i < dataMahasiswa.length(); i++) {
+            JSONObject dataMhs = dataMahasiswa.getJSONObject(i);
+            tempMhs.put(dataMhs.getString("kode_absen"), dataMhs.getString("status"));
+//            System.out.println(tempMhs);
+        }
+//        System.out.println(tempMhs.size());
         int mahasiswaPerHalaman = 12;
         int jumlahHalaman = (int) Math.ceil((double) dataMahasiswa.length() / mahasiswaPerHalaman);
         pagination.setPageCount(jumlahHalaman);
@@ -107,7 +115,6 @@ public class AbsensiController implements Initializable {
                         selectedToggle = alphaRadioButton;
                     }
 
-                    // Create listeners for radio buttons to update the statusMap and tempMhs
                     hadirRadioButton.setOnAction(event -> {
                         statusMap.put(kodeabsensi, "Hadir");
                         tempMhs.put(kodeabsensi, "Hadir");
@@ -164,44 +171,27 @@ public class AbsensiController implements Initializable {
     }
 
     public void setAllHadir() {
-        // Iterate through all pages
         for (int pageIndex = 0; pageIndex < pagination.getPageCount(); pageIndex++) {
-            // Get the status map for the current page
             Map<String, String> statusMap = radioButtonStatusMap.getOrDefault(pageIndex, new HashMap<>());
 
-            // Iterate through the radio buttons on the current page
             for (ToggleGroup toggleGroup : toggleGroups) {
                 for (Toggle toggle : toggleGroup.getToggles()) {
                     if (toggle instanceof RadioButton radioButton) {
                         String kodeabsensi = radioButton.getId();
-                        // Set the value to "Hadir" only if it is not already "Hadir"
                         if (!statusMap.getOrDefault(kodeabsensi, "").equalsIgnoreCase("Hadir")) {
                             statusMap.put(kodeabsensi, "Hadir");
+                            tempMhs.put(kodeabsensi, "Hadir");
                             radioButton.setSelected(true);
                         }
                     }
                 }
             }
-
-            // Update the status map for the current page
             radioButtonStatusMap.put(pageIndex, statusMap);
         }
     }
 
 
     public void submit() {
-        Map<String, String> dataMap = new HashMap<>();
-
-        for (ToggleGroup toggleGroup : toggleGroups) {
-            Toggle selectedToggle = toggleGroup.getSelectedToggle();
-            if (selectedToggle instanceof RadioButton radioButton) {
-                String kodeabsensi = radioButton.getId();
-                String toggleValue = radioButton.getText();
-
-                dataMap.put(kodeabsensi, toggleValue);
-            }
-        }
-
         try {
             // Create the HTTP connection
             URL url = new URL("http://127.0.0.1:8000/api/absensi/update");
@@ -211,11 +201,14 @@ public class AbsensiController implements Initializable {
 
             // Build the request body
             StringBuilder requestBody = new StringBuilder();
-            for (Map.Entry<String, String> entry : dataMap.entrySet()) {
+            for (Map.Entry<String, String> entry : tempMhs.entrySet()) {
                 String kodeabsensi = entry.getKey();
                 String toggleValue = entry.getValue();
 
-                requestBody.append(kodeabsensi).append("=").append(toggleValue).append("&");
+                requestBody.append(URLEncoder.encode(kodeabsensi, StandardCharsets.UTF_8))
+                        .append("=")
+                        .append(URLEncoder.encode(toggleValue, StandardCharsets.UTF_8))
+                        .append("&");
             }
 
             // Send the request body
@@ -247,5 +240,6 @@ public class AbsensiController implements Initializable {
             e.printStackTrace();
         }
     }
+
 
 }
