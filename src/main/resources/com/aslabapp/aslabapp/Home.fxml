@@ -68,15 +68,15 @@
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor></MaterialIcon>
-    <MaterialIcon color="WHITE" content="BOOK" layoutX="124.0" layoutY="49.0" size="30">
+    <MaterialIcon color="WHITE" content="BOOK" layoutX="124.0" layoutY="49.0" onMouseClicked="#pertemuan" size="30">
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor></MaterialIcon>
-    <MaterialIcon color="WHITE" content="SEARCH" layoutX="1064.0" layoutY="50.0" onMouseClicked="#search_form" size="30">
+    <MaterialIcon color="WHITE" content="SEARCH" layoutX="1064.0" layoutY="50.0" onMouseClicked="#carimahasiswa" size="30">
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor></MaterialIcon>
-    <TextField fx:id="search_form" focusTraversable="false" layoutX="902.0" layoutY="47.0" onAction="#search_form" prefHeight="33.0" prefWidth="161.0" promptText="Cari Sesuatu" />
+    <TextField fx:id="search_form" focusTraversable="false" layoutX="902.0" layoutY="47.0" onAction="#carimahasiswa" prefHeight="33.0" prefWidth="161.0" promptText="Cari Sesuatu" />
     <!-- End Header -->
     <!-- Sidebar -->
     <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#380257b2" height="680.0" layoutX="25.0" layoutY="106.0" stroke="#fff7f700" strokeType="INSIDE" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" width="200.0" />

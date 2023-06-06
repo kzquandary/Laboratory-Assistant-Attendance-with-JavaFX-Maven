@@ -25,9 +25,9 @@
          <Font name="Comic Sans MS" size="21.0" />
       </font>
    </Text>
-   <MaterialIcon color="WHITE" content="SCHOOL" layoutX="46.0" layoutY="58.0" prefHeight="75.0" prefWidth="76.0" size="80" />
-   <MaterialIcon color="WHITE" content="BOOK" layoutX="356.0" layoutY="62.0" size="80" />
-   <MaterialIcon color="WHITE" content="CHECK_BOX" layoutX="671.0" layoutY="62.0" size="80" />
+   <MaterialIcon color="#0aff06" content="SCHOOL" layoutX="46.0" layoutY="58.0" prefHeight="75.0" prefWidth="76.0" size="80" />
+   <MaterialIcon color="#f6ff00" content="BOOK" layoutX="356.0" layoutY="62.0" size="80" />
+   <MaterialIcon color="#c90505" content="CHECK_BOX" layoutX="671.0" layoutY="62.0" size="80" />
    <Text fx:id="jmlmahasiswa" fill="WHITE" layoutX="204.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="45">
       <font>
          <Font name="Comic Sans MS" size="35.0" />
