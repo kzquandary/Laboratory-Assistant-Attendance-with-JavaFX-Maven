@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.regex.Pattern;
 
 public class SearchController {
     private final Absensi absensi = new Absensi();
@@ -95,19 +96,14 @@ public class SearchController {
 
     private void performSearch() {
         if (searchText != null && !searchText.isEmpty()) {
-            if (searchText.startsWith("62") || searchText.startsWith("08")) {
+            if (Pattern.matches(Route.RegNoHP, searchText)) {
                 searchByNohp();
-            } else if (isNumeric(searchText)) {
+            } else if (Pattern.matches(Route.RegNIM, searchText)) {
                 searchByNIM();
             } else {
                 searchByName();
             }
         }
-    }
-
-
-    private boolean isNumeric(String str) {
-        return str.matches("\\d+");
     }
 
     private void searchByNohp() {
