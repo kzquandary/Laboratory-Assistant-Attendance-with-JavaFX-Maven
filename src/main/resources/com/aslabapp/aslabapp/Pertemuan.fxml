@@ -16,7 +16,7 @@
             <TableColumn id="nama" fx:id="tanggalpertemuan" prefWidth="241.60003662109375" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="Tanggal Pertemuan" />
         </columns>
     </TableView>
-    <Pane layoutX="526.0" layoutY="304.0" prefHeight="169.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
+    <Pane layoutX="526.0" layoutY="211.0" prefHeight="169.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
         <Button layoutX="31.0" layoutY="36.0" mnemonicParsing="false" onAction="#tambah" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #04ff00; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Tambah Pertemuan">
             <font>
                 <Font name="Comic Sans MS Bold" size="15.0" />
@@ -38,18 +38,13 @@
             </font>
         </Button>
     </Pane>
-    <Pane layoutX="526.0" layoutY="21.0" prefHeight="254.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
-        <TextField fx:id="fieldkodepertemuan" layoutX="26.0" layoutY="80.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan kode Pertemuan" />
-        <Text fill="WHITE" layoutX="116.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kode Pertemuan" textAlignment="CENTER">
+    <Pane layoutX="526.0" layoutY="21.0" prefHeight="160.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
+        <TextField fx:id="fieldkodepertemuan" layoutX="26.0" layoutY="80.0" prefHeight="44.0" prefWidth="323.0" promptText="Kode Pertemuan" visible="false" />
+        <Text fill="WHITE" layoutX="104.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tanggal Pertemuan" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="19.0" />
             </font>
         </Text>
-        <Text fill="WHITE" layoutX="103.0" layoutY="159.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tanggal Pertemuan" textAlignment="CENTER">
-            <font>
-                <Font name="Comic Sans MS" size="19.0" />
-            </font>
-        </Text>
-      <DatePicker fx:id="fieldtanggalpertemuan" layoutX="25.0" layoutY="175.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan Tanggal Pertemuan" showWeekNumbers="true" />
+      <DatePicker fx:id="fieldtanggalpertemuan" layoutX="26.0" layoutY="76.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan Tanggal Pertemuan" />
     </Pane>
 </Pane>

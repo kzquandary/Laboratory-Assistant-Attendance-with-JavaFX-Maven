@@ -93,8 +93,7 @@ public class PertemuanController implements Initializable {
         LocalDate date = fieldtanggalpertemuan.getValue();
         DateTimeFormatter apiDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String apiDate = date.format(apiDateFormatter);
-        String requestBody = String.format("{\"kode_pertemuan\":\"%s\",\"tanggal_pertemuan\":\"%s\"}",
-                fieldkodepertemuan.getText(), apiDate);
+        String requestBody = String.format("{\"tanggal_pertemuan\":\"%s\"}", apiDate);
         byte[] requestBodyBytes = requestBody.getBytes(StandardCharsets.UTF_8);
         conn.setRequestProperty("Content-Length", Integer.toString(requestBodyBytes.length));
         try (OutputStream os = conn.getOutputStream()) {
@@ -122,8 +121,21 @@ public class PertemuanController implements Initializable {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.connect();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            reader.close();
 
             int responseCode = conn.getResponseCode();
+
+            String jsonResponse = response.toString();
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            String message = jsonObject.getString("message");
+
+            System.out.println(message);
             if (responseCode == 201) {
                 alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Informasi");
