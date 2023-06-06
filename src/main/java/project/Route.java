@@ -14,4 +14,8 @@ public class Route {
 
     public static final String Setting = "Setting.fxml";
 
+    public static final String RegNama = "^[^0-9]*$";
+    public static final String RegNIM = "^3411211\\d+$";
+    public static final String RegNoHP = "^(62|0)\\d+$";
+
 }
