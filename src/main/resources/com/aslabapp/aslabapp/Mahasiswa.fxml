@@ -19,7 +19,7 @@
          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
       </columnResizePolicy>
    </TableView>
-   <Pane fx:id="clearmhs" layoutX="526.0" layoutY="404.0" prefHeight="169.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
+   <Pane fx:id="clearmhs" layoutX="526.0" layoutY="436.0" prefHeight="169.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
       <Button layoutX="31.0" layoutY="36.0" mnemonicParsing="false" onAction="#tambah" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #04ff00; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Tambah Mahasiswa">
          <font>
             <Font name="Comic Sans MS Bold" size="15.0" />
@@ -41,23 +41,53 @@
          </font>
       </Button>
    </Pane>
-   <Pane layoutX="526.0" layoutY="21.0" prefHeight="362.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
+   <Pane layoutX="526.0" layoutY="21.0" prefHeight="386.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
       <TextField fx:id="fieldnim" layoutX="26.0" layoutY="80.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan NIM" />
-      <TextField fx:id="fieldnama" layoutX="28.0" layoutY="181.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan Nama" />
-      <TextField fx:id="fieldnohp" layoutX="28.0" layoutY="281.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan No HP" />
+      <TextField fx:id="fieldnama" layoutX="28.0" layoutY="186.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan Nama" />
+      <TextField fx:id="fieldnohp" layoutX="28.0" layoutY="302.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan No HP" />
       <Text fill="WHITE" layoutX="166.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NIM" textAlignment="CENTER">
          <font>
             <Font name="Comic Sans MS" size="19.0" />
          </font>
       </Text>
-      <Text fill="WHITE" layoutX="162.0" layoutY="264.0" strokeType="OUTSIDE" strokeWidth="0.0" text="No HP" textAlignment="CENTER">
+      <Text fill="WHITE" layoutX="162.0" layoutY="285.0" strokeType="OUTSIDE" strokeWidth="0.0" text="No HP" textAlignment="CENTER">
          <font>
             <Font name="Comic Sans MS" size="19.0" />
          </font>
       </Text>
-      <Text fill="WHITE" layoutX="162.0" layoutY="164.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nama" textAlignment="CENTER">
+      <Text fill="WHITE" layoutX="162.0" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nama" textAlignment="CENTER">
          <font>
             <Font name="Comic Sans MS" size="19.0" />
+         </font>
+      </Text>
+      <Text fx:id="warningNIM" fill="#ff0707" layoutX="26.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="* Masukan NIM dengan format yang sesuai" visible="false">
+         <font>
+            <Font name="Comic Sans MS Bold Italic" size="12.0" />
+         </font>
+      </Text>
+      <Text fx:id="warningNAMA" fill="#ff0707" layoutX="26.0" layoutY="249.0" strokeType="OUTSIDE" strokeWidth="0.0" text="* Masukan Nama dengan format yang sesuai" visible="false">
+         <font>
+            <Font name="Comic Sans MS Bold Italic" size="12.0" />
+         </font>
+      </Text>
+      <Text fx:id="warningNoHP" fill="#ff0707" layoutX="26.0" layoutY="362.0" strokeType="OUTSIDE" strokeWidth="0.0" text="* Masukan No HP dengan format yang sesuai" visible="false">
+         <font>
+            <Font name="Comic Sans MS Bold Italic" size="12.0" />
+         </font>
+      </Text>
+      <Text fx:id="emptyNIM" fill="#ff0707" layoutX="26.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="* Harap isi bidang ini" visible="false">
+         <font>
+            <Font name="Comic Sans MS Bold Italic" size="12.0" />
+         </font>
+      </Text>
+      <Text fx:id="emptyNAMA" fill="#ff0707" layoutX="26.0" layoutY="249.0" strokeType="OUTSIDE" strokeWidth="0.0" text="* Harap isi bidang ini" visible="false">
+         <font>
+            <Font name="Comic Sans MS Bold Italic" size="12.0" />
+         </font>
+      </Text>
+      <Text fx:id="emptyNoHP" fill="#ff0707" layoutX="26.0" layoutY="362.0" strokeType="OUTSIDE" strokeWidth="0.0" text="* Harap isi bidang ini" visible="false">
+         <font>
+            <Font name="Comic Sans MS Bold Italic" size="12.0" />
          </font>
       </Text>
    </Pane>
