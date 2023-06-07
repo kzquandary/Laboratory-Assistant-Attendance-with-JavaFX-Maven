@@ -121,7 +121,7 @@ public class Main extends Application {
     public void carimahasiswa() {
         if (!search_form.getText().isEmpty()) {
             String searchText = search_form.getText();
-            if (searchText.matches("^[a-zA-Z0-9]+$")) {
+            if (searchText.matches(Route.RegNama)) {
 
                 content.getChildren().clear();
 
