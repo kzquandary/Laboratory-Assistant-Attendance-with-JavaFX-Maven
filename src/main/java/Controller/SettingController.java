@@ -1,7 +1,9 @@
 package Controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -29,13 +31,16 @@ public class SettingController implements Initializable {
     private void Upload() {
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter allFilter = new FileChooser.ExtensionFilter("File CSV atau Excel", "*.csv", "*.xlsx");
+        fileChooser.getExtensionFilters().add(allFilter);
+
         File selectedFile = fileChooser.showOpenDialog(stage);
         if (selectedFile != null) {
             if (selectedFile.getName().endsWith(".csv")) {
                 try (Scanner scanner = new Scanner(selectedFile)) {
                     JSONArray jsonArray = new JSONArray();
                     if (scanner.hasNextLine()) {
-                        // Skip header line
                         scanner.nextLine();
                     }
                     while (scanner.hasNextLine()) {
@@ -124,4 +129,52 @@ public class SettingController implements Initializable {
         return cellValue;
     }
 
+    public void backup(ActionEvent event) {
+        Node source = (Node) event.getSource();
+        Stage stage = (Stage) source.getScene().getWindow();
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Simpan File Backup");
+        fileChooser.setInitialFileName("Mahasiswa");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+        // Menampilkan dialog untuk memilih lokasi penyimpanan file
+        java.io.File selectedFile = fileChooser.showSaveDialog(stage);
+        if (selectedFile != null) {
+            try {
+                String apiURL = "http://127.0.0.1:8000/api/mahasiswa/backup";
+                URL url = new URL(apiURL);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    InputStream inputStream = connection.getInputStream();
+
+                    // Membuka file untuk menyimpan data CSV
+                    FileOutputStream outputStream = new FileOutputStream(selectedFile);
+
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+
+                    // Menutup file
+                    outputStream.close();
+                    inputStream.close();
+
+                    System.out.println("File backup berhasil disimpan: " + selectedFile.getAbsolutePath());
+                } else {
+                    System.out.println("Gagal melakukan backup. Response code: " + responseCode);
+                }
+
+                connection.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Batal menyimpan file backup.");
+        }
+    }
 }
