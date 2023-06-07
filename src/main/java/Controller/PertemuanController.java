@@ -1,26 +1,28 @@
 package Controller;
 
+import Model.Pertemuan;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import Model.Pertemuan;
+import javafx.scene.text.Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import project.Route;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+
 
 public class PertemuanController implements Initializable {
     public TextField fieldkodepertemuan;
@@ -33,6 +35,8 @@ public class PertemuanController implements Initializable {
     private TableColumn<Pertemuan, String> kodepertemuan;
     @FXML
     private TableColumn<Model.Pertemuan, String> tanggalpertemuan;
+    @FXML
+    private Text warningTanggal;
 
     public void setTabel() {
         try {
@@ -61,6 +65,12 @@ public class PertemuanController implements Initializable {
                 tabelpertemuan.setItems(dataPertemuan);
             }
             con.disconnect();
+        } catch (ConnectException e) {
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+            alert.showAndWait();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -83,114 +93,179 @@ public class PertemuanController implements Initializable {
         fieldtanggalpertemuan.setValue(null);
     }
 
-    public void tambah() throws Exception {
-        URL url = new URL(Route.URL + "pertemuan/store");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json; utf-8");
-        conn.setRequestProperty("Accept", "application/json");
-        conn.setDoOutput(true);
-        LocalDate date = fieldtanggalpertemuan.getValue();
-        DateTimeFormatter apiDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String apiDate = date.format(apiDateFormatter);
-        String requestBody = String.format("{\"tanggal_pertemuan\":\"%s\"}", apiDate);
-        byte[] requestBodyBytes = requestBody.getBytes(StandardCharsets.UTF_8);
-        conn.setRequestProperty("Content-Length", Integer.toString(requestBodyBytes.length));
-        try (OutputStream os = conn.getOutputStream()) {
-            os.write(requestBodyBytes, 0, requestBodyBytes.length);
-        }
-        int httpResponseCode = conn.getResponseCode();
-        if (httpResponseCode == 201) {
-            alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Informasi");
-            alert.setHeaderText(null);
-            alert.setContentText("Pertemuan Ditambahkan");
+    public void tambah() {
+        if (fieldtanggalpertemuan.getValue() != null) {
+            warningTanggal.setVisible(false);
+            try {
+                URL url = new URL(Route.URL + "pertemuan/store");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+
+                LocalDate date = fieldtanggalpertemuan.getValue();
+                DateTimeFormatter apiDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                String apiDate = date.format(apiDateFormatter);
+                String requestBody = String.format("{\"tanggal_pertemuan\":\"%s\"}", apiDate);
+                byte[] requestBodyBytes = requestBody.getBytes(StandardCharsets.UTF_8);
+                conn.setRequestProperty("Content-Length", Integer.toString(requestBodyBytes.length));
+                try (OutputStream os = conn.getOutputStream()) {
+                    os.write(requestBodyBytes, 0, requestBodyBytes.length);
+                }
+
+                int httpResponseCode = conn.getResponseCode();
+                if (httpResponseCode == 201) {
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Informasi");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Pertemuan Ditambahkan");
+                } else {
+                    alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Gagal Menambahkan");
+                }
+                alert.showAndWait();
+                setTabel();
+            } catch (ConnectException e) {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+                alert.showAndWait();
+            } catch (Exception e) {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Error Saat Menambahkan Pertemuan");
+                alert.showAndWait();
+            }
         } else {
+            warningTanggal.setVisible(true);
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
-            alert.setContentText("Gagal Menambahkan");
+            alert.setContentText("Harap isi form sesuai dengan format");
+            alert.showAndWait();
         }
-        alert.showAndWait();
-        setTabel();
     }
 
     public void hapus() {
-        try {
-            URL url = new URL(Route.URL + "pertemuan/delete/" + fieldkodepertemuan.getText());
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.connect();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-            reader.close();
+        if (!fieldkodepertemuan.getText().isEmpty()) {
+            warningTanggal.setVisible(false);
+            try {
+                URL url = new URL(Route.URL + "pertemuan/delete/" + fieldkodepertemuan.getText());
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.connect();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
 
-            int responseCode = conn.getResponseCode();
+                int responseCode = conn.getResponseCode();
 
-            String jsonResponse = response.toString();
-            JSONObject jsonObject = new JSONObject(jsonResponse);
-            String message = jsonObject.getString("message");
+                String jsonResponse = response.toString();
+                JSONObject jsonObject = new JSONObject(jsonResponse);
+                String message = jsonObject.getString("message");
 
-            System.out.println(message);
-            if (responseCode == 201) {
-                alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Informasi");
-                alert.setHeaderText(null);
-                alert.setContentText("Pertemuan Berhasil Dihapus");
-            } else {
+                System.out.println(message);
+                if (responseCode == 201) {
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Informasi");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Pertemuan Berhasil Dihapus");
+                } else {
+                    alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Gagal Menghapus");
+                }
+                alert.showAndWait();
+                conn.disconnect();
+                setTabel();
+            } catch (ConnectException e) {
                 alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
-                alert.setContentText("Gagal Menghapus");
+                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+                alert.showAndWait();
+            } catch (Exception e) {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Error Saat Menghapus Pertemuan");
+                alert.showAndWait();
             }
+        } else {
+            warningTanggal.setVisible(false);
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Harap Pilih Pertemuan Yang Ingin Dihapus");
             alert.showAndWait();
-            conn.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        setTabel();
     }
-    public void update() {
-        try {
-            URL url = new URL(Route.URL + "pertemuan/" + fieldkodepertemuan.getText());
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json; utf-8");
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setDoOutput(true);
-            LocalDate date = fieldtanggalpertemuan.getValue();
-            DateTimeFormatter apiDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            String apiDate = date.format(apiDateFormatter);
-            String requestBody = String.format("{\"kode_pertemuan\":\"%s\",\"tanggal_pertemuan\":\"%s\"}",
-                    fieldkodepertemuan.getText(), apiDate);
-            byte[] requestBodyBytes = requestBody.getBytes(StandardCharsets.UTF_8);
-            conn.setRequestProperty("Content-Length", Integer.toString(requestBodyBytes.length));
-            try (OutputStream os = conn.getOutputStream()) {
-                os.write(requestBodyBytes, 0, requestBodyBytes.length);
-            }
 
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 201) {
-                alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Informasi");
-                alert.setHeaderText(null);
-                alert.setContentText("Pertemuan Berhasil Diupdate");
-            } else {
+    public void update() {
+        if (!fieldkodepertemuan.getText().isEmpty() && fieldtanggalpertemuan.getValue() != null) {
+            warningTanggal.setVisible(false);
+            try {
+                URL url = new URL(Route.URL + "pertemuan/" + fieldkodepertemuan.getText());
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+                LocalDate date = fieldtanggalpertemuan.getValue();
+                DateTimeFormatter apiDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                String apiDate = date.format(apiDateFormatter);
+                String requestBody = String.format("{\"kode_pertemuan\":\"%s\",\"tanggal_pertemuan\":\"%s\"}",
+                        fieldkodepertemuan.getText(), apiDate);
+                byte[] requestBodyBytes = requestBody.getBytes(StandardCharsets.UTF_8);
+                conn.setRequestProperty("Content-Length", Integer.toString(requestBodyBytes.length));
+                try (OutputStream os = conn.getOutputStream()) {
+                    os.write(requestBodyBytes, 0, requestBodyBytes.length);
+                }
+                int responseCode = conn.getResponseCode();
+                if (responseCode == 201) {
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Informasi");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Pertemuan Berhasil Diupdate");
+                } else {
+                    alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Gagal Mengupdate");
+                }
+                alert.showAndWait();
+                conn.disconnect();
+                setTabel();
+            } catch (ConnectException e) {
                 alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
-                alert.setContentText("Gagal Mengupdate");
+                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+                alert.showAndWait();
+            } catch (Exception e) {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Error Saat Menambahkan Pertemuan");
+                alert.showAndWait();
             }
+        } else {
+            warningTanggal.setVisible(true);
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Harap Pilih Pertemuan dan Isi Form dengan Benar");
             alert.showAndWait();
-            conn.disconnect();
-        } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Terjadi masalah saat melakukan update data mahasiswa!");
         }
-        setTabel();
     }
 }
