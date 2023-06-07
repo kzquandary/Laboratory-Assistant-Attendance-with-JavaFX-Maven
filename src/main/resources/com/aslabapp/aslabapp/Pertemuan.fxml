@@ -16,7 +16,7 @@
             <TableColumn id="nama" fx:id="tanggalpertemuan" prefWidth="241.60003662109375" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="Tanggal Pertemuan" />
         </columns>
     </TableView>
-    <Pane layoutX="526.0" layoutY="211.0" prefHeight="169.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
+    <Pane layoutX="526.0" layoutY="221.0" prefHeight="169.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
         <Button layoutX="31.0" layoutY="36.0" mnemonicParsing="false" onAction="#tambah" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #04ff00; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Tambah Pertemuan">
             <font>
                 <Font name="Comic Sans MS Bold" size="15.0" />
@@ -38,7 +38,7 @@
             </font>
         </Button>
     </Pane>
-    <Pane layoutX="526.0" layoutY="21.0" prefHeight="160.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
+    <Pane layoutX="526.0" layoutY="21.0" prefHeight="169.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
         <TextField fx:id="fieldkodepertemuan" layoutX="26.0" layoutY="80.0" prefHeight="44.0" prefWidth="323.0" promptText="Kode Pertemuan" visible="false" />
         <Text fill="WHITE" layoutX="104.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tanggal Pertemuan" textAlignment="CENTER">
             <font>
@@ -46,5 +46,10 @@
             </font>
         </Text>
       <DatePicker fx:id="fieldtanggalpertemuan" layoutX="26.0" layoutY="76.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan Tanggal Pertemuan" />
+      <Text fx:id="warningTanggal" fill="#df0000" layoutX="26.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="* Harap isi tanggal sesuai format" visible="false">
+         <font>
+            <Font name="Comic Sans MS Bold" size="12.0" />
+         </font>
+      </Text>
     </Pane>
 </Pane>
