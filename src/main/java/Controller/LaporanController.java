@@ -16,7 +16,6 @@ import project.Route;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -33,7 +32,7 @@ public class LaporanController implements Initializable {
     private final List<ToggleGroup> toggleGroups = new ArrayList<>();
     public Pane contentPane = new Pane();
     private final Map<Integer, Map<String, String>> radioButtonStatusMap = new HashMap<>();
-    public Map<String, String> tempMhs = new HashMap<>();
+    private final  Map<String, String> tempMhs = new HashMap<>();
     public Pagination pagination;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -45,6 +44,7 @@ public class LaporanController implements Initializable {
                 if (newValue.getKode_pertemuan().equals("Pilih Pertemuan")) {
                     pagination.setVisible(false);
                     textkodepertemuan.setVisible(false);
+                    tempMhs.clear();
                 } else {
                     initializeDataMahasiswa(newValue);
                 }
@@ -85,8 +85,8 @@ public class LaporanController implements Initializable {
                 for (int i = awal; i < akhir; i++) {
                     JSONObject mahasiswaObj = dataMahasiswa.getJSONObject(i);
                     String namaMahasiswa = mahasiswaObj.getString("nama");
-                    String statusLaporan = statusMap.getOrDefault(mahasiswaObj.getString("kode_laporan"),"Telat");
                     String kodeLaporan = mahasiswaObj.getString("kode_laporan");
+                    String statusLaporan = statusMap.getOrDefault(mahasiswaObj.getString("kode_laporan"), tempMhs.get(kodeLaporan));
 
                     Text namaText = new Text(namaMahasiswa);
                     namaText.setFont(Font.font("Comic Sans MS", FontWeight.BOLD, 12));
@@ -212,52 +212,60 @@ public class LaporanController implements Initializable {
         }
     }
     public void submit() {
-        try {
-            // Create the HTTP connection
-            URL url = new URL(Route.URL + "laporan/update");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        if(!tempMhs.isEmpty()) {
+            try {
+                URL url = new URL(Route.URL + "laporan/update");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-            // Build the request body
-            StringBuilder requestBody = new StringBuilder();
-            for (Map.Entry<String, String> entry : tempMhs.entrySet()) {
-                String kodelaporan = entry.getKey();
-                String toggleValue = entry.getValue();
+                StringBuilder requestBody = new StringBuilder();
+                for (Map.Entry<String, String> entry : tempMhs.entrySet()) {
+                    String kodelaporan = entry.getKey();
+                    String toggleValue = entry.getValue();
 
-                requestBody.append(URLEncoder.encode(kodelaporan, StandardCharsets.UTF_8))
-                        .append("=")
-                        .append(URLEncoder.encode(toggleValue, StandardCharsets.UTF_8))
-                        .append("&");
-            }
+                    requestBody.append(URLEncoder.encode(kodelaporan, StandardCharsets.UTF_8))
+                            .append("=")
+                            .append(URLEncoder.encode(toggleValue, StandardCharsets.UTF_8))
+                            .append("&");
+                }
 
-            // Send the request body
-            connection.setDoOutput(true);
-            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-            outputStream.writeBytes(requestBody.toString());
-            outputStream.flush();
-            outputStream.close();
+                connection.setDoOutput(true);
+                DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+                outputStream.writeBytes(requestBody.toString());
+                outputStream.flush();
+                outputStream.close();
 
-            // Get the response
-            int responseCode = connection.getResponseCode();
+                int responseCode = connection.getResponseCode();
 
-            Alert alert;
-            if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Informasi");
-                alert.setHeaderText(null);
-                alert.setContentText("Laporan Berhasil Diupdate");
-            } else {
-                alert = new Alert(Alert.AlertType.ERROR);
+                Alert alert;
+                if (responseCode == HttpURLConnection.HTTP_CREATED) {
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Informasi");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Laporan Berhasil Diupdate");
+                } else {
+                    alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Gagal Mengupdate Laporan");
+                }
+                alert.showAndWait();
+
+                connection.disconnect();
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
-                alert.setContentText("Gagal Mengupdate Laporan");
+                alert.setContentText("Pilih Pertemuan Terlebih Dahulu");
+                alert.showAndWait();
             }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Pilih Pertemuan Terlebih Dahulu");
             alert.showAndWait();
-
-            connection.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

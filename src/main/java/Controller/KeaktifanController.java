@@ -1,5 +1,8 @@
 package Controller;
 
+import Model.Keaktifan;
+import Model.Mahasiswa;
+import Model.Pertemuan;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -7,9 +10,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
-import Model.Keaktifan;
-import Model.Mahasiswa;
-import Model.Pertemuan;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import project.Route;
@@ -46,12 +46,14 @@ public class KeaktifanController implements Initializable {
     public ChoiceBox<Mahasiswa> fieldnim;
     @FXML
     public ChoiceBox<Pertemuan> fieldpertemuan;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initFieldNim();
         initFieldPertemuan();
         setTabel();
     }
+
     public void initFieldNim() {
         String apiUrl = Route.URL + "mahasiswa";
 
@@ -99,11 +101,12 @@ public class KeaktifanController implements Initializable {
             e.printStackTrace();
         }
     }
+
     public void initFieldPertemuan() {
         AbsensiController.getKodePertemuan(fieldpertemuan);
     }
 
-    public void setTabel(){
+    public void setTabel() {
         try {
             URL url = new URL(Route.URL + "keaktifan");
             ExtractData(url, kodekeaktifan, kodepertemuan, tabelnim, keterangan, tabelkeaktifan);
@@ -165,28 +168,44 @@ public class KeaktifanController implements Initializable {
     public void tambah() throws Exception {
         Mahasiswa selectedMahasiswa = fieldnim.getValue();
         Pertemuan selectedPertemuan = fieldpertemuan.getValue();
-        String kodePertemuan = selectedPertemuan.getKode_pertemuan();
-        String nimMahasiswa = selectedMahasiswa.getNim();
-        String keterangan = fieldketerangan.getText();
+        if (selectedPertemuan != null) {
+            if (!fieldketerangan.getText().isEmpty()) {
+                String kodePertemuan = selectedPertemuan.getKode_pertemuan();
+                String nimMahasiswa = selectedMahasiswa.getNim();
+                String keterangan = fieldketerangan.getText();
 
-        URL url = new URL(Route.URL + "keaktifan/store");
+                URL url = new URL(Route.URL + "keaktifan/store");
 
-        int httpResponseCode = fetchApi(kodePertemuan, nimMahasiswa, keterangan, url);
+                int httpResponseCode = fetchApi(kodePertemuan, nimMahasiswa, keterangan, url);
 
-        if (httpResponseCode == 201) {
-            alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Informasi");
-            alert.setHeaderText(null);
-            alert.setContentText("Keaktifan Ditambahkan");
+                if (httpResponseCode == 201) {
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Informasi");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Keaktifan Ditambahkan");
+                } else {
+                    alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Gagal Menambahkan Keaktifan");
+                }
+
+                alert.showAndWait();
+                setTabel();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Harap isi form keterangan terlebih dahulu");
+                alert.showAndWait();
+            }
         } else {
-            alert = new Alert(Alert.AlertType.ERROR);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
-            alert.setContentText("Gagal Menambahkan Keaktifan");
+            alert.setContentText("Pilih Pertemuan Terlebih Dahulu");
+            alert.showAndWait();
         }
-
-        alert.showAndWait();
-        setTabel();
     }
 
     public int fetchApi(String kodePertemuan, String nimMahasiswa, String keterangan, URL url) throws IOException {
@@ -209,58 +228,88 @@ public class KeaktifanController implements Initializable {
         return conn.getResponseCode();
     }
 
-    public void update() throws Exception{
-        Mahasiswa selectedMahasiswa = fieldnim.getValue();
-        Pertemuan selectedPertemuan = fieldpertemuan.getValue();
-        String kodePertemuan = selectedPertemuan.getKode_pertemuan();
-        String nimMahasiswa = selectedMahasiswa.getNim();
-        String keterangan = fieldketerangan.getText();
+    public void update() throws Exception {
+        if (!fieldkodekeaktifan.getText().isEmpty()) {
+            if (!fieldketerangan.getText().isEmpty()) {
+                Mahasiswa selectedMahasiswa = fieldnim.getValue();
+                Pertemuan selectedPertemuan = fieldpertemuan.getValue();
+                String kodePertemuan = selectedPertemuan.getKode_pertemuan();
+                String nimMahasiswa = selectedMahasiswa.getNim();
+                String keterangan = fieldketerangan.getText();
 
-        URL url = new URL(Route.URL + "keaktifan/update/" + fieldkodekeaktifan.getText());
-        int httpResponseCode = fetchApi(kodePertemuan, nimMahasiswa, keterangan, url);
+                URL url = new URL(Route.URL + "keaktifan/update/" + fieldkodekeaktifan.getText());
+                int httpResponseCode = fetchApi(kodePertemuan, nimMahasiswa, keterangan, url);
 
-        if (httpResponseCode == 201) {
-            alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Informasi");
-            alert.setHeaderText(null);
-            alert.setContentText("Keaktifan Berhasil di Update");
-        } else {
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Gagal Mengupdate Keaktifan");
-        }
+                if (httpResponseCode == 201) {
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Informasi");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Keaktifan Berhasil di Update");
+                } else {
+                    alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Gagal Mengupdate Keaktifan");
+                }
 
-        alert.showAndWait();
-        setTabel();
-    }
-    public void hapus(){
-        try {
-            URL url = new URL(Route.URL + "keaktifan/" + fieldkodekeaktifan.getText());
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.connect();
-
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 201) {
-                alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Informasi");
-                alert.setHeaderText(null);
-                alert.setContentText("Keaktifan Berhasil Dihapus");
+                alert.showAndWait();
+                setTabel();
             } else {
-                alert = new Alert(Alert.AlertType.ERROR);
+                Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
-                alert.setContentText("Gagal Menghapus");
+                alert.setContentText("Harap isi form keterangan terlebih dahulu");
+                alert.showAndWait();
             }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Pilih Mahasiswa Terlebih Dahulu");
             alert.showAndWait();
-            conn.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        setTabel();
     }
-    public void clear(){
+
+    public void hapus() {
+        if (!fieldkodekeaktifan.getText().isEmpty()) {
+            try {
+                URL url = new URL(Route.URL + "keaktifan/" + fieldkodekeaktifan.getText());
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.connect();
+
+                int responseCode = conn.getResponseCode();
+                if (responseCode == 201) {
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Informasi");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Keaktifan Berhasil Dihapus");
+                } else {
+                    alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Gagal Menghapus");
+                }
+                alert.showAndWait();
+                conn.disconnect();
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+                alert.showAndWait();
+            }
+            setTabel();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Pilih Mahasiswa Terlebih Dahulu");
+            alert.showAndWait();
+        }
+    }
+
+    public void clear() {
         fieldkodekeaktifan.clear();
         fieldketerangan.clear();
     }

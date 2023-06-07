@@ -1,17 +1,18 @@
 package Controller;
 
+import Model.Absensi;
+import Model.Keaktifan;
+import Model.Laporan;
+import Model.Nilai;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import Model.Absensi;
-import Model.Keaktifan;
-import Model.Laporan;
-import Model.Nilai;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import project.Route;
@@ -89,6 +90,7 @@ public class SearchController {
     private boolean isTabelLaporanVisible = false;
     private boolean isTabelNilaiVisible = false;
     private boolean isTabelKeaktifanVisible = false;
+
     public void setSearch(String searchText) {
         this.searchText = searchText;
         performSearch();
@@ -144,7 +146,11 @@ public class SearchController {
                 System.out.println("Error: " + responseCode);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+            alert.showAndWait();
         }
     }
 
@@ -249,11 +255,16 @@ public class SearchController {
                 }
                 con.disconnect();
             } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+                alert.showAndWait();
             }
         }
     }
-    public void laporan(){
+
+    public void laporan() {
         if (isTabelAbsenVisible) {
             tabelAbsen.setVisible(false);
             isTabelAbsenVisible = false;
@@ -303,11 +314,16 @@ public class SearchController {
                 }
                 con.disconnect();
             } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+                alert.showAndWait();
             }
         }
     }
-    public void nilai(){
+
+    public void nilai() {
         if (isTabelAbsenVisible) {
             tabelAbsen.setVisible(false);
             isTabelAbsenVisible = false;
@@ -347,7 +363,7 @@ public class SearchController {
                         String kode_laporan = jsonObject.getString("kode_laporan");
                         String kode_pertemuan = jsonObject.getString("kode_pertemuan");
                         String nim = jsonObject.getString("nim");
-                        int nilai  = jsonObject.getInt("nilai");
+                        int nilai = jsonObject.getInt("nilai");
                         dataNilai.add(new Nilai(kode_nilai, kode_laporan, kode_pertemuan, nim, nilai));
                     }
                     kodenilai.setCellValueFactory(new PropertyValueFactory<>("kodeNilai"));
@@ -359,11 +375,16 @@ public class SearchController {
                 }
                 con.disconnect();
             } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+                alert.showAndWait();
             }
         }
     }
-    public void keaktifan(){
+
+    public void keaktifan() {
         if (isTabelAbsenVisible) {
             tabelAbsen.setVisible(false);
             isTabelAbsenVisible = false;
@@ -386,7 +407,11 @@ public class SearchController {
                 URL url = new URL(Route.URL + "keaktifan/nim/" + searchnim);
                 KeaktifanController.ExtractData(url, kodekeaktifan, kodepertemuankeaktifan, nimkeaktifan, keterangankeaktifan, tabelKeaktifan);
             } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+                alert.showAndWait();
             }
 
         }
