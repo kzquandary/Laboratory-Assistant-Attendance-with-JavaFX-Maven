@@ -89,7 +89,11 @@ public class MahasiswaController implements Initializable {
             }
             con.disconnect();
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+            alert.showAndWait();
         }
         tabelmahasiswa.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
