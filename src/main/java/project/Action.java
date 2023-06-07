@@ -12,10 +12,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Action {
     private double xOffset = 0;
     private double yOffset = 0;
+    private static final AtomicBoolean isMoving = new AtomicBoolean(false);
 
     public void handleMouseDragged(MouseEvent event) {
             Node node = (Node) event.getSource();
@@ -41,29 +43,37 @@ public class Action {
 
 
     public static void Move(FXMLLoader loader, Pane content) {
-        Pane loadingPane = createLoadingPane(content);
-        content.getChildren().add(loadingPane);
+        if (!isMoving.get()) {
+            isMoving.set(true);
 
-        Task<Void> loadingTask = new Task<>() {
-            @Override
-            protected Void call() throws Exception {
-                Thread.sleep(1000); // Wait for 1 second
+            Pane loadingPane = createLoadingPane(content);
+            content.getChildren().add(loadingPane);
 
-                Platform.runLater(() -> {
-                    try {
-                        Pane loadedPane = loader.load();
-                        content.getChildren().remove(loadingPane);
-                        content.getChildren().add(loadedPane);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+            Task<Void> loadingTask = new Task<>() {
+                @Override
+                protected Void call() throws Exception {
+                    Thread.sleep(1000);
 
-                return null;
-            }
-        };
+                    Platform.runLater(() -> {
+                        try {
+                            Pane loadedPane = loader.load();
+                            content.getChildren().remove(loadingPane);
+                            content.getChildren().add(loadedPane);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } finally {
+                            isMoving.set(false);
+                        }
+                    });
 
-        new Thread(loadingTask).start();
+                    return null;
+                }
+            };
+
+            Thread loadingThread = new Thread(loadingTask);
+            loadingThread.setDaemon(true);
+            loadingThread.start();
+        }
     }
 
     public static Pane createLoadingPane(Pane content) {
