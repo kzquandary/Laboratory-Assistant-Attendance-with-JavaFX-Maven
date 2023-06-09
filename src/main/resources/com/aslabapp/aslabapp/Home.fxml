@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aslabapp.aslabapp.Main">
-    <Rectangle fx:id="background" arcHeight="50.0" arcWidth="50.0" height="801.0" layoutY="1.0" width="1200.0">
+    <Rectangle arcHeight="50.0" arcWidth="50.0" height="801.0" layoutY="1.0" width="1200.0">
         <fill>
             <LinearGradient>
                 <stops>
@@ -64,7 +64,7 @@
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor></MaterialIcon>
-    <MaterialIcon color="WHITE" content="SETTINGS" layoutX="1112.0" layoutY="49.0" onMousePressed="#setting" size="30">
+    <MaterialIcon color="WHITE" content="SETTINGS" layoutX="1071.0" layoutY="49.0" onMousePressed="#setting" size="30">
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor></MaterialIcon>
@@ -72,11 +72,11 @@
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor></MaterialIcon>
-    <MaterialIcon color="WHITE" content="SEARCH" layoutX="1064.0" layoutY="50.0" onMouseClicked="#carimahasiswa" size="30">
+    <MaterialIcon color="WHITE" content="SEARCH" layoutX="1027.0" layoutY="50.0" onMouseClicked="#carimahasiswa" size="30">
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor></MaterialIcon>
-    <TextField fx:id="search_form" focusTraversable="false" layoutX="902.0" layoutY="47.0" onAction="#carimahasiswa" prefHeight="33.0" prefWidth="161.0" promptText="Cari Sesuatu" />
+    <TextField fx:id="search_form" focusTraversable="false" layoutX="865.0" layoutY="47.0" onAction="#carimahasiswa" prefHeight="33.0" prefWidth="161.0" promptText="Cari Sesuatu" />
     <!-- End Header -->
     <!-- Sidebar -->
     <Rectangle arcHeight="50.0" arcWidth="50.0" fill="#380257b2" height="680.0" layoutX="25.0" layoutY="106.0" stroke="#fff7f700" strokeType="INSIDE" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" width="200.0" />
@@ -143,7 +143,7 @@
       </cursor>
     </Button>
     <Line endX="52.79998779296875" endY="-1.52587890625E-5" fill="#ffffff00" layoutX="148.0" layoutY="586.0" opacity="0.2" startX="-100.0" stroke="WHITE" />
-    <Button layoutX="48.0" layoutY="610.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Logout">
+    <Button layoutX="48.0" layoutY="610.0" mnemonicParsing="false" onAction="#logout" prefHeight="26.0" prefWidth="154.0" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Logout">
         <font>
             <Font name="Comic Sans MS Bold" size="16.0" />
         </font>
@@ -191,6 +191,11 @@
             </font>
         </Text>
     </Pane>
+   <MaterialIcon color="WHITE" content="LOCK" layoutX="1113.0" layoutY="49.0" onMousePressed="#lock" size="30">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+   </MaterialIcon>
 <!--       <Pane layoutX="238.0" layoutY="290.0" prefHeight="293.0" prefWidth="538.0" styleClass="content-pane" stylesheets="@../../../css/style.css" />-->
     <stylesheets>
         <URL value="@../../../css/style.css" />
