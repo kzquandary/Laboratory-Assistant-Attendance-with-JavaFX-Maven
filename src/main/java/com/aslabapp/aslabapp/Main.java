@@ -10,6 +10,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -17,29 +19,35 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import project.Action;
 import project.Route;
+import project.VarTemp;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public class Main extends Application {
-
     public Pane content;
     public Text jmlmahasiswa;
     public Text jmlpertemuan;
     public TextField search_form;
     public Text jmllaporan;
     @FXML
-    public static Rectangle background;
+    private PasswordField fieldpassword;
+    @FXML
+    private TextField fieldusername;
+    @FXML
+    private CheckBox rememberme;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Home));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Login));
         AnchorPane root = loader.load();
         Scene scene = new Scene(root);
         scene.setFill(Color.TRANSPARENT);
@@ -49,10 +57,161 @@ public class Main extends Application {
         Action act = new Action();
         root.setOnMouseDragged(act::handleMouseDragged);
         root.setOnMousePressed(act::handleMousePressed);
-        InfoHomeController ihc = new InfoHomeController();
-        ihc.initTextFields(loader);
         primaryStage.setScene(scene);
-        primaryStage.show();
+
+        Path file = Paths.get(VarTemp.filePath);
+        if (Files.exists(file)) {
+            try {
+                String token = Files.readString(file);
+
+                boolean isValid = Action.validateToken(token);
+
+                if (isValid) {
+                    homepage();
+                } else {
+                    loginpage();
+                }
+
+                primaryStage.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            primaryStage.show();
+        }
+    }
+
+    @FXML
+    private void login() throws IOException {
+        String username = fieldusername.getText();
+        String password = fieldpassword.getText();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Username dan Password harus diisi");
+            alert.showAndWait();
+            return;
+        }
+
+        if (rememberme.isSelected()) {
+            String token = Action.loginWithToken(username, password);
+
+            if (token != null) {
+                Stage loginStage = (Stage) fieldusername.getScene().getWindow();
+                loginStage.close();
+                homepage();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Info");
+                alert.setHeaderText(null);
+                alert.setContentText("Berhasil Login");
+                alert.showAndWait();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("User dan Password salah");
+                alert.showAndWait();
+            }
+        } else {
+            boolean loginResult = Action.loginWithCredentials(username, password);
+
+            if (loginResult) {
+                VarTemp.username = username;
+                VarTemp.password = password;
+
+                Stage loginStage = (Stage) fieldusername.getScene().getWindow();
+                loginStage.close();
+                homepage();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Info");
+                alert.setHeaderText(null);
+                alert.setContentText("Berhasil Login");
+                alert.showAndWait();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("User dan Password salah");
+                alert.showAndWait();
+            }
+        }
+    }
+    public static void homepage() throws IOException {
+        Stage homeStage = new Stage();
+        FXMLLoader homeLoader = new FXMLLoader(Main.class.getResource(Route.Home));
+        AnchorPane homeRoot = homeLoader.load();
+        Scene homeScene = new Scene(homeRoot);
+        homeStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("logo.png"))));
+        homeStage.initStyle(StageStyle.TRANSPARENT);
+        homeScene.setFill(Color.TRANSPARENT);
+        homeStage.setTitle("Asisten Laboratorium");
+        Action act = new Action();
+        homeRoot.setOnMouseDragged(act::handleMouseDragged);
+        homeRoot.setOnMousePressed(act::handleMousePressed);
+        InfoHomeController ihc = new InfoHomeController();
+        ihc.initTextFields(homeLoader);
+        homeStage.setScene(homeScene);
+        homeStage.show();
+    }
+    public void loginpage() throws IOException {
+        Stage loginStage = new Stage();
+        FXMLLoader loginLoader = new FXMLLoader(getClass().getResource(Route.Login));
+        AnchorPane loginRoot = loginLoader.load();
+        Scene loginScene = new Scene(loginRoot);
+        loginScene.setFill(Color.TRANSPARENT);
+        loginStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("logo.png"))));
+        loginStage.initStyle(StageStyle.TRANSPARENT);
+        loginStage.setTitle("Login");
+        loginStage.setScene(loginScene);
+        Action act = new Action();
+        loginRoot.setOnMouseDragged(act::handleMouseDragged);
+        loginRoot.setOnMousePressed(act::handleMousePressed);
+        loginStage.setScene(loginScene);
+        loginStage.show();
+    }
+    public void lockpage() throws IOException {
+        Stage lockStage = new Stage();
+        FXMLLoader lockLoader = new FXMLLoader(getClass().getResource(Route.Lock));
+        AnchorPane lockroot = lockLoader.load();
+        Scene lockScene = new Scene(lockroot);
+        lockScene.setFill(Color.TRANSPARENT);
+        lockStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("logo.png"))));
+        lockStage.initStyle(StageStyle.TRANSPARENT);
+        lockStage.setTitle("Login");
+        lockStage.setScene(lockScene);
+        Action act = new Action();
+        lockroot.setOnMouseDragged(act::handleMouseDragged);
+        lockroot.setOnMousePressed(act::handleMousePressed);
+        lockStage.setScene(lockScene);
+        lockStage.show();
+    }
+    public void logout() throws IOException {
+        Stage homeStage = (Stage) content.getScene().getWindow();
+        homeStage.close();
+        Action.deleteTokenFile();
+        Action.logoutFromAPI(VarTemp.username);
+        loginpage();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Info");
+        alert.setHeaderText(null);
+        alert.setContentText("Berhasil logout");
+        alert.showAndWait();
+    }
+
+
+
+
+    public void lock() throws IOException {
+        Stage homeStage = (Stage) content.getScene().getWindow();
+        homeStage.close();
+        lockpage();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Info");
+        alert.setHeaderText(null);
+        alert.setContentText("Akun telah dikunci");
+        alert.showAndWait();
     }
 
     public void mainClose(MouseEvent mouseEvent) {
