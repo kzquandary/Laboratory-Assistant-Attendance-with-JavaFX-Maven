@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="600.0" prefWidth="500.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aslabapp.aslabapp.Main">
+   <stylesheets>
+      <URL value="@../../../css/style.css" />
+   </stylesheets>
+   <Rectangle arcHeight="50.0" arcWidth="50.0" height="600.0" layoutY="1.0" width="500.0">
+      <fill>
+         <LinearGradient>
+            <stops>
+               <Stop>
+                  <color>
+                     <Color red="0.13317738473415375" green="0.2396465241909027" blue="0.5894736647605896" />
+                  </color>
+               </Stop>
+               <Stop offset="0.006729475100942127">
+                  <color>
+                     <Color red="0.03898635506629944" green="0.13450291752815247" blue="0.42105263471603394" />
+                  </color>
+               </Stop>
+               <Stop offset="0.5100942126514133">
+                  <color>
+                     <Color red="0.6901960968971252" green="0.4156862795352936" blue="0.7019608020782471" />
+                  </color>
+               </Stop>
+               <Stop offset="1.0">
+                  <color>
+                     <Color red="0.19607843458652496" green="0.5333333611488342" blue="0.7882353067398071" />
+                  </color>
+               </Stop>
+            </stops>
+         </LinearGradient>
+      </fill>
+   </Rectangle>
+   <Button layoutX="26.0" layoutY="490.0" mnemonicParsing="false" onAction="#login" prefHeight="26.0" prefWidth="462.0" style="-fx-background-color: blue; -fx-background-radius: 25;" styleClass="sidebar-butotn" text="Login" textFill="WHITE">
+      <font>
+         <Font name="Comic Sans MS Bold" size="18.0" />
+      </font>
+   </Button>
+   <Circle fill="#ff3b30" layoutX="469.0" layoutY="24.0" onMouseClicked="#mainClose" radius="10.0" stroke="#ff3b30" strokeType="INSIDE">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+   </Circle>
+   <Circle fill="#4cd964" layoutX="444.0" layoutY="24.0" onMouseClicked="#mainMinimize" radius="10.0" stroke="#4cd964" strokeType="INSIDE">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+   </Circle>
+   <ImageView fitHeight="129.0" fitWidth="121.0" layoutX="190.0" layoutY="71.0" pickOnBounds="true" preserveRatio="true">
+      <Image url="@logo.png" />
+   </ImageView>
+   <Text fill="WHITE" layoutX="142.0" layoutY="268.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asisten Laboratorium">
+      <font>
+         <Font name="Comic Sans MS Bold" size="21.0" />
+      </font>
+   </Text>
+   <Text fill="WHITE" layoutX="225.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login">
+      <font>
+         <Font name="Comic Sans MS Bold" size="21.0" />
+      </font>
+   </Text>
+   <TextField fx:id="fieldusername" layoutX="18.0" layoutY="320.0" prefHeight="34.0" prefWidth="462.0" promptText="Masukan Username" style="-fx-border-color: blue;" />
+   <PasswordField fx:id="fieldpassword" layoutX="19.0" layoutY="396.0" prefHeight="34.0" prefWidth="462.0" promptText="Masukan Password" style="-fx-border-color: blue;" />
+   <CheckBox fx:id="rememberme" layoutX="26.0" layoutY="440.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="142.0" text="Tetap Login" textAlignment="CENTER" textFill="WHITE">
+      <font>
+         <Font name="Comic Sans MS Bold" size="16.0" />
+      </font>
+   </CheckBox>
+</AnchorPane>
