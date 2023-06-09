@@ -22,12 +22,13 @@ import project.Route;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import static Controller.LaporanController.getObjects;
@@ -40,8 +41,8 @@ public class NilaiController implements Initializable {
     public Pagination pagination;
     public Pane contentPane = new Pane();
     private final Map<Integer, Map<String, String>> nilaiFieldMap = new HashMap<>();
+    private final Map<String, String> tempMhs = new HashMap<>();
 
-    public Map<String, String> tempMhs = new HashMap<>();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initPertemuan();
@@ -52,12 +53,14 @@ public class NilaiController implements Initializable {
                 if (newValue.getKode_pertemuan().equals("Pilih Pertemuan")) {
                     pagination.setVisible(false);
                     textkodepertemuan.setVisible(false);
+                    tempMhs.clear();
                 } else {
                     initializeDataMahasiswa(newValue);
                 }
             }
         });
     }
+
     private void initializeDataMahasiswa(Pertemuan selectedPertemuan) {
         pagination.setVisible(true);
         textkodepertemuan.setText("Kode Pertemuan : " + selectedPertemuan.getKode_pertemuan());
@@ -105,9 +108,31 @@ public class NilaiController implements Initializable {
                     nilaiField.setLayoutY(layoutY[0]);
                     nilaiField.setId(kodenilai);
                     nilaiField.setOnKeyReleased(keyEvent -> {
-                        nilaiMap.put(kodenilai, nilaiField.getText());
-                        tempMhs.put(kodenilai, nilaiField.getText());
-                        }
+                                try {
+                                    String input = nilaiField.getText();
+                                    if (!input.matches("\\d*")) {
+                                        nilaiField.setText("0");
+                                        tempMhs.put(kodenilai, null);
+                                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                                        alert.setTitle("Error");
+                                        alert.setHeaderText(null);
+                                        alert.setContentText("Harap Masukan Nilai Sesuai Dengan Format");
+                                        alert.showAndWait();
+                                    } else {
+                                        int nilai = Integer.parseInt(input);
+                                        if (nilai > 100) {
+                                            nilaiField.setText("100");
+                                        } else if (nilai < 0) {
+                                            nilaiField.setText("0");
+                                        }
+
+                                        nilaiMap.put(kodenilai, nilaiField.getText());
+                                        tempMhs.put(kodenilai, nilaiField.getText());
+                                    }
+                                } catch (NumberFormatException e) {
+                                    tempMhs.put(kodenilai, null);
+                                }
+                            }
                     );
 
                     contentPane.getChildren().addAll(namaText, nilaiField);
@@ -183,54 +208,84 @@ public class NilaiController implements Initializable {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+            alert.showAndWait();
         }
     }
 
     public void submit() {
-        try {
-            // Create the HTTP connection
-            URL url = new URL(Route.URL + "nilai/update");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-            // Build the request body
-            StringBuilder requestBody = new StringBuilder();
+        if (!tempMhs.isEmpty()) {
+            boolean hasNullValues = false;
             for (Map.Entry<String, String> entry : tempMhs.entrySet()) {
-                String kodeNilai = entry.getKey();
-                String nilai = entry.getValue();
-
-                requestBody.append(kodeNilai).append("=").append(nilai).append("&");
+                if (entry.getValue() == null) {
+                    hasNullValues = true;
+                    break;
+                }
             }
-
-            // Send the request body
-            connection.setDoOutput(true);
-            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-            outputStream.writeBytes(requestBody.toString());
-            outputStream.flush();
-            outputStream.close();
-
-            // Get the response
-            int responseCode = connection.getResponseCode();
-
-            Alert alert;
-            if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Informasi");
-                alert.setHeaderText(null);
-                alert.setContentText("Nilai Diupdate");
-            } else {
-                alert = new Alert(Alert.AlertType.ERROR);
+            if (hasNullValues) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
-                alert.setContentText("Gagal Mengupdate Nilai");
-            }
-            alert.showAndWait();
+                alert.setContentText("Isi form sesuai dengan format");
+                alert.showAndWait();
+            } else {
+                try {
+                    URL url = new URL(Route.URL + "nilai/update");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-            connection.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
+                    StringBuilder requestBody = new StringBuilder();
+                    for (Map.Entry<String, String> entry : tempMhs.entrySet()) {
+                        String kodeNilai = entry.getKey();
+                        String nilai = entry.getValue();
+
+                        // Skip null values
+                        if (nilai != null) {
+                            requestBody.append(kodeNilai).append("=").append(nilai).append("&");
+                        }
+                    }
+
+                    connection.setDoOutput(true);
+                    DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+                    outputStream.writeBytes(requestBody.toString());
+                    outputStream.flush();
+                    outputStream.close();
+
+                    int responseCode = connection.getResponseCode();
+
+                    Alert alert;
+                    if (responseCode == HttpURLConnection.HTTP_CREATED) {
+                        alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Informasi");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Nilai Diupdate");
+                    } else {
+                        alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Gagal Mengupdate Nilai");
+                    }
+                    alert.showAndWait();
+
+                    connection.disconnect();
+                } catch (Exception e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Pilih Pertemuan Terlebih Dahulu");
+                    alert.showAndWait();
+                }
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Pilih Pertemuan Terlebih Dahulu");
+            alert.showAndWait();
         }
     }
 
