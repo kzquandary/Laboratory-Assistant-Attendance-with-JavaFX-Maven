@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -13,7 +12,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import project.Action;
+import project.ApiRoute;
 import project.Route;
+import project.StringVariable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,7 +33,6 @@ public class MahasiswaController implements Initializable {
     public TextField fieldnama;
 
     public TextField fieldnohp;
-    Alert alert;
     @FXML
     private TableView<Model.Mahasiswa> tabelmahasiswa;
     @FXML
@@ -61,9 +62,9 @@ public class MahasiswaController implements Initializable {
 
     public void setTabel() {
         try {
-            URL url = new URL(Route.URL + "mahasiswa");
+            URL url = new URL(ApiRoute.GetMahasiswa);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
+            con.setRequestMethod(StringVariable.GET);
             int status = con.getResponseCode();
             if (status == 200) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -89,11 +90,7 @@ public class MahasiswaController implements Initializable {
             }
             con.disconnect();
         } catch (Exception e) {
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.ApiError);
         }
         tabelmahasiswa.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -113,9 +110,9 @@ public class MahasiswaController implements Initializable {
     public void tambah() throws Exception {
         if (checkEmpty()) {
             if (validasiMahasiswa()) {
-                URL url = new URL(Route.URL + "mahasiswa/store");
+                URL url = new URL(ApiRoute.StoreMahasiswa);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
+                conn.setRequestMethod(StringVariable.POST);
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoOutput(true);
@@ -128,27 +125,17 @@ public class MahasiswaController implements Initializable {
                 }
                 int httpResponseCode = conn.getResponseCode();
                 if (httpResponseCode == 201) {
-                    alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Informasi");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Mahasiswa Ditambahkan");
+                    Action.alertinfo(StringVariable.BerhasilTambah(StringVariable.Mahasiswa));
+                    clearmhs();
                 } else {
-                    alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Gagal Menambahkan");
+                    Action.alerterror(StringVariable.GagalTambah(StringVariable.Mahasiswa));
                 }
-                alert.showAndWait();
                 setTabel();
             } else {
                 emptyNIM.setVisible(false);
                 emptyNAMA.setVisible(false);
                 emptyNoHP.setVisible(false);
-                alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Masukan data dengan format yang sesuai");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.FormatError);
             }
         } else {
             warningNIM.setVisible(false);
@@ -157,40 +144,33 @@ public class MahasiswaController implements Initializable {
             emptyNIM.setVisible(fieldnim.getText().isEmpty());
             emptyNAMA.setVisible(fieldnama.getText().isEmpty());
             emptyNoHP.setVisible(fieldnohp.getText().isEmpty());
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Silahkan isi form terlebih dahulu");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.EmptyForm);
         }
     }
 
     public void hapus() {
         if (!fieldnim.getText().isEmpty()) {
-            try {
-                URL url = new URL(Route.URL + "mahasiswa/" + fieldnim.getText());
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.connect();
+            boolean confirmed = Action.alertkonfir(StringVariable.DeleteData);
+            if (confirmed) {
+                try {
+                    URL url = new URL(ApiRoute.setDeleteMahasiswa(fieldnim.getText()));
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod(StringVariable.POST);
+                    conn.connect();
 
-                int responseCode = conn.getResponseCode();
-                if (responseCode == 201) {
-                    alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Informasi");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Mahasiswa Berhasil Dihapus");
-                } else {
-                    alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Gagal Menghapus");
+                    int responseCode = conn.getResponseCode();
+                    if (responseCode == 201) {
+                        Action.alertinfo(StringVariable.BerhasilHapus(StringVariable.Mahasiswa));
+                        clearmhs();
+                    } else {
+                        Action.alerterror(StringVariable.GagalHapus(StringVariable.Mahasiswa));
+                    }
+                    conn.disconnect();
+                } catch (IOException e) {
+                    Action.alerterror(StringVariable.ErrorHapus(StringVariable.Mahasiswa));
                 }
-                alert.showAndWait();
-                conn.disconnect();
-            } catch (IOException e) {
-                e.printStackTrace();
+                setTabel();
             }
-            setTabel();
         } else {
             emptyNIM.setVisible(true);
             emptyNAMA.setVisible(false);
@@ -198,22 +178,18 @@ public class MahasiswaController implements Initializable {
             warningNIM.setVisible(false);
             warningNAMA.setVisible(false);
             warningNoHP.setVisible(false);
-
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Silahkan isi form terlebih dahulu");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.EmptyForm);
         }
     }
+
 
     public void update() {
         if (checkEmpty()) {
             if (validasiMahasiswa()) {
                 try {
-                    URL url = new URL(Route.URL + "mahasiswa/update/" + fieldnim.getText());
+                    URL url = new URL(ApiRoute.setUpdateMahasiswa(fieldnim.getText()));
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
+                    conn.setRequestMethod(StringVariable.POST);
                     conn.setRequestProperty("Content-Type", "application/json; utf-8");
                     conn.setRequestProperty("Accept", "application/json");
                     conn.setDoOutput(true);
@@ -227,32 +203,21 @@ public class MahasiswaController implements Initializable {
 
                     int responseCode = conn.getResponseCode();
                     if (responseCode == 201) {
-                        alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Informasi");
-                        alert.setHeaderText(null);
-                        alert.setContentText("Mahasiswa Berhasil Diupdate");
+                        Action.alertinfo(StringVariable.BerhasilUpdate(StringVariable.Mahasiswa));
+                        clearmhs();
                     } else {
-                        alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Error");
-                        alert.setHeaderText(null);
-                        alert.setContentText("Gagal Mengupdate");
+                        Action.alerterror(StringVariable.GagalUpdate(StringVariable.Mahasiswa));
                     }
-                    alert.showAndWait();
                     conn.disconnect();
                 } catch (Exception e) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Terjadi masalah saat melakukan update data mahasiswa!");
+                    Action.alerterror(StringVariable.GagalUpdate(StringVariable.Mahasiswa));
                 }
                 setTabel();
             } else {
                 emptyNIM.setVisible(false);
                 emptyNAMA.setVisible(false);
                 emptyNoHP.setVisible(false);
-                alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Masukan data dengan format yang sesuai");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.FormatError);
             }
         } else {
             warningNIM.setVisible(false);
@@ -261,11 +226,7 @@ public class MahasiswaController implements Initializable {
             emptyNIM.setVisible(fieldnim.getText().isEmpty());
             emptyNAMA.setVisible(fieldnama.getText().isEmpty());
             emptyNoHP.setVisible(fieldnohp.getText().isEmpty());
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Silahkan isi form terlebih dahulu");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.EmptyForm);
         }
     }
 
