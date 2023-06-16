@@ -1,14 +1,23 @@
 package project;
 
+import Model.Pertemuan;
+import com.aslabapp.aslabapp.Main;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,14 +28,46 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class Action {
     private double xOffset = 0;
     private double yOffset = 0;
     private static final AtomicBoolean isMoving = new AtomicBoolean(false);
 
+    public static void alerterror(String content){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image((Objects.requireNonNull(Main.class.getResourceAsStream("logo.png")))));
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+    public static boolean alertkonfir(String content) {
+        Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationDialog.setTitle("Konfirmasi");
+        confirmationDialog.setHeaderText(null);
+        confirmationDialog.setContentText(content);
+        Stage stage = (Stage) confirmationDialog.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("logo.png"))));
+
+        Optional<ButtonType> result = confirmationDialog.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+    public static void alertinfo(String content){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Info");
+        alert.setHeaderText(null);
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image((Objects.requireNonNull(Main.class.getResourceAsStream("logo.png")))));
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
     public void handleMouseDragged(MouseEvent event) {
         Node node = (Node) event.getSource();
         Stage stage = (Stage) node.getScene().getWindow();
@@ -106,23 +147,20 @@ public class Action {
 
     public static boolean loginWithCredentials(String username, String password) {
         try {
-            String urlString = Route.URL + "login/";
+            String urlString = ApiRoute.Login;
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod(StringVariable.POST);
             connection.setDoOutput(true);
 
-            // Set request parameters
             String parameters = "username=" + username
                     + "&password=" + password;
             byte[] postData = parameters.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
 
-            // Set request headers
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.setRequestProperty("Content-Length", String.valueOf(postDataLength));
 
-            // Send request
             try (DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream())) {
                 dataOutputStream.write(postData);
             }
@@ -148,30 +186,27 @@ public class Action {
                 return false;
             }
         } catch (IOException | JSONException e) {
-            e.printStackTrace();
+            Action.alerterror(StringVariable.ApiError);
             return false;
         }
     }
 
     public static String loginWithToken(String username, String password) {
         try {
-            String urlString = Route.URL + "login/logintoken";
+            String urlString = ApiRoute.LoginToken;
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod(StringVariable.POST);
             connection.setDoOutput(true);
 
-            // Set request parameters
             String parameters = "username=" + username
                     + "&password=" + password;
             byte[] postData = parameters.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
 
-            // Set request headers
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.setRequestProperty("Content-Length", String.valueOf(postDataLength));
 
-            // Send request
             try (DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream())) {
                 dataOutputStream.write(postData);
             }
@@ -203,7 +238,7 @@ public class Action {
                 return null;
             }
         } catch (IOException | JSONException e) {
-            e.printStackTrace();
+            Action.alerterror(StringVariable.ApiError);
             return null;
         }
     }
@@ -241,13 +276,12 @@ public class Action {
     }
 
 
-
     public static void logoutFromAPI(String username) {
         try {
-            String urlString = Route.URL + "login/logout";
+            String urlString = ApiRoute.Logout;
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod(StringVariable.POST);
             connection.setDoOutput(true);
             String parameters = "username=" + username;
             byte[] postData = parameters.getBytes(StandardCharsets.UTF_8);
@@ -268,41 +302,116 @@ public class Action {
             e.printStackTrace();
         }
     }
+
+    public static boolean checkAPIStatus() {
+        try {
+            URL url = new URL(Route.URL);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(StringVariable.GET);
+
+            int responseCode = connection.getResponseCode();
+            return responseCode == HttpURLConnection.HTTP_OK;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
     public static boolean validateToken(String token) {
         try {
-            // Build the URL with token
-            String url = "http://127.0.0.1:8000/api/login/token/" + token;
+            String url = ApiRoute.setCheckToken(token);
             URL apiUrl = new URL(url);
 
             HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod(StringVariable.GET);
 
             int responseCode = connection.getResponseCode();
 
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                // Token is valid
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String responseBody = reader.readLine();
 
-                // Parse the response body and extract username and password
-                // Assuming the response is in JSON format
                 JSONObject json = new JSONObject(responseBody);
                 String username = json.getString("username");
                 String password = json.getString("password");
 
-                // Store the username, password, and token in VarTemp
                 VarTemp.username = username;
                 VarTemp.password = password;
                 VarTemp.token = token;
 
                 return true;
             } else {
-                // Token is invalid or expired
                 return false;
             }
         } catch (IOException | JSONException e) {
-            e.printStackTrace();
+            Action.alerterror(StringVariable.ApiError);
             return false;
         }
     }
+    public static void GetKodePertemuan(ChoiceBox<Pertemuan> kodepertemuan) {
+        String apiUrl = ApiRoute.GetPertemuan;
+
+        try {
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(StringVariable.GET);
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String response = reader.lines().collect(Collectors.joining());
+
+                JSONArray jsonArray = new JSONArray(response);
+                ObservableList<Pertemuan> pertemuanList = FXCollections.observableArrayList();
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String kodePertemuan = jsonObject.getString("kode_pertemuan");
+                    LocalDate tanggalPertemuan = LocalDate.parse(jsonObject.getString("tanggal_pertemuan"));
+
+                    Pertemuan pertemuan = new Pertemuan(kodePertemuan, tanggalPertemuan);
+                    pertemuanList.add(pertemuan);
+                }
+                kodepertemuan.setItems(pertemuanList);
+                kodepertemuan.setConverter(new StringConverter<>() {
+                    @Override
+                    public String toString(Pertemuan pertemuan) {
+                        if (pertemuan != null) {
+                            return pertemuan.getKode_pertemuan();
+                        } else {
+                            return "Pertemuan kosong";
+                        }
+                    }
+
+                    @Override
+                    public Pertemuan fromString(String s) {
+                        return null;
+                    }
+                });
+                if (!pertemuanList.isEmpty()) {
+                    kodepertemuan.setValue(pertemuanList.get(0));
+                }
+            }
+        } catch (Exception e) {
+            Action.alerterror(StringVariable.ApiError);
+        }
+    }
+    public static JSONArray getObjects(String apiUrl) {
+        try {
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(StringVariable.GET);
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String response = reader.lines().collect(Collectors.joining());
+
+                return new JSONArray(response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new JSONArray();
+    }
+
 }
