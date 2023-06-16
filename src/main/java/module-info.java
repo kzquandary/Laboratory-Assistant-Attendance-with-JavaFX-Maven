@@ -6,6 +6,10 @@ module com.aslabapp.aslabapp {
     requires org.apache.poi.ooxml;
     requires commons.math3;
     requires SparseBitSet;
+    requires com.swardana.materialiconfx;
+    requires java.net.http;
+    requires java.desktop;
+
 
     opens com.aslabapp.aslabapp to javafx.fxml;
     exports com.aslabapp.aslabapp;
