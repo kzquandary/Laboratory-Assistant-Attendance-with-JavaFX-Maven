@@ -5,12 +5,12 @@ public class Nilai {
     private String kodeLaporan;
     private String kodePertemuan;
     private String nim;
-    private int nilai;
+    private String nilai;
 
     public Nilai(){
 
     }
-    public Nilai(String kodeNilai, String kodeLaporan, String kodePertemuan, String nim, int nilai) {
+    public Nilai(String kodeNilai, String kodeLaporan, String kodePertemuan, String nim, String nilai) {
         this.kodeNilai = kodeNilai;
         this.kodeLaporan = kodeLaporan;
         this.kodePertemuan = kodePertemuan;
@@ -49,11 +49,11 @@ public class Nilai {
         this.nim = nim;
     }
 
-    public int getNilai() {
+    public String getNilai() {
         return nilai;
     }
 
-    public void setNilai(int nilai) {
+    public void setNilai(String nilai) {
         this.nilai = nilai;
     }
 }
