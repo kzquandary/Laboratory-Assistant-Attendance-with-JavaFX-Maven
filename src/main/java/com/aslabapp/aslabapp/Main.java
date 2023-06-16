@@ -9,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -24,6 +23,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import project.Action;
 import project.Route;
+import project.StringVariable;
 import project.VarTemp;
 
 import java.io.IOException;
@@ -46,19 +46,7 @@ public class Main extends Application {
     private CheckBox rememberme;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Login));
-        AnchorPane root = loader.load();
-        Scene scene = new Scene(root);
-        scene.setFill(Color.TRANSPARENT);
-        primaryStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("logo.png"))));
-        primaryStage.initStyle(StageStyle.TRANSPARENT);
-        primaryStage.setTitle("Asisten Laboratorium");
-        Action act = new Action();
-        root.setOnMouseDragged(act::handleMouseDragged);
-        root.setOnMousePressed(act::handleMousePressed);
-        primaryStage.setScene(scene);
-
+    public void start(Stage primaryStage) throws IOException {
         Path file = Paths.get(VarTemp.filePath);
         if (Files.exists(file)) {
             try {
@@ -71,13 +59,11 @@ public class Main extends Application {
                 } else {
                     loginpage();
                 }
-
-                primaryStage.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            primaryStage.show();
+           loginpage();
         }
     }
 
@@ -87,11 +73,7 @@ public class Main extends Application {
         String password = fieldpassword.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Username dan Password harus diisi");
-            alert.showAndWait();
+           Action.alerterror("Username dan Password harus diisi");
             return;
         }
 
@@ -102,17 +84,9 @@ public class Main extends Application {
                 Stage loginStage = (Stage) fieldusername.getScene().getWindow();
                 loginStage.close();
                 homepage();
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Info");
-                alert.setHeaderText(null);
-                alert.setContentText("Berhasil Login");
-                alert.showAndWait();
+                Action.alertinfo("Berhasil Login");
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("User dan Password salah");
-                alert.showAndWait();
+                Action.alerterror("User dan Password salah");
             }
         } else {
             boolean loginResult = Action.loginWithCredentials(username, password);
@@ -124,17 +98,9 @@ public class Main extends Application {
                 Stage loginStage = (Stage) fieldusername.getScene().getWindow();
                 loginStage.close();
                 homepage();
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Info");
-                alert.setHeaderText(null);
-                alert.setContentText("Berhasil Login");
-                alert.showAndWait();
+                Action.alertinfo("Berhasil Login");
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("User dan Password salah");
-                alert.showAndWait();
+                Action.alerterror("User dan Password salah");
             }
         }
     }
@@ -188,30 +154,27 @@ public class Main extends Application {
         lockStage.show();
     }
     public void logout() throws IOException {
-        Stage homeStage = (Stage) content.getScene().getWindow();
-        homeStage.close();
-        Action.deleteTokenFile();
-        Action.logoutFromAPI(VarTemp.username);
+        boolean apiActive = Action.checkAPIStatus();
+        if (apiActive) {
+            Stage homeStage = (Stage) content.getScene().getWindow();
+            homeStage.close();
+
+            Action.deleteTokenFile();
+            Action.logoutFromAPI(VarTemp.username);
+        } else {
+            Action.alerterror(StringVariable.ApiError);
+            return;
+        }
+
         loginpage();
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Info");
-        alert.setHeaderText(null);
-        alert.setContentText("Berhasil logout");
-        alert.showAndWait();
+        Action.alertinfo("Berhasil logout");
     }
-
-
-
 
     public void lock() throws IOException {
         Stage homeStage = (Stage) content.getScene().getWindow();
         homeStage.close();
         lockpage();
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Info");
-        alert.setHeaderText(null);
-        alert.setContentText("Akun telah dikunci");
-        alert.showAndWait();
+        Action.alertinfo("Akun telah dikunci");
     }
 
     public void mainClose(MouseEvent mouseEvent) {
@@ -290,7 +253,7 @@ public class Main extends Application {
                 Task<Void> searchTask = new Task<>() {
                     @Override
                     protected Void call() throws Exception {
-                        Thread.sleep(1000); // Simulasi pencarian selama 1 detik
+                        Thread.sleep(1000);
                         Platform.runLater(() -> {
                             try {
                                 FXMLLoader loader = new FXMLLoader(getClass().getResource(Route.Search));
@@ -310,18 +273,10 @@ public class Main extends Application {
 
                 new Thread(searchTask).start();
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Input tidak valid. Harap masukkan input yang sesuai dengan format.");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.FormatError);
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Silahkan isi form terlebih dahulu");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.EmptyForm);
         }
     }
 
