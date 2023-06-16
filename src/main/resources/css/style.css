@@ -10,6 +10,7 @@
 .sidebar-butotn{
     -fx-background-color: #3288c9;
     -fx-cursor: hand;
+    -fx-background-radius: 10;
 }
 .button:pressed {
     -fx-background-color: #1565C0;
@@ -100,4 +101,18 @@
 .check-box:selected .box {
 
     -fx-background-color: blue;
+}
+
+
+#SettingPane {
+    -fx-background-color: linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #390159b2 0.0%, #390159b2 0.6729%, #390159b2 51.0094%, #390159b2 100.0%);
+    -fx-background-radius: 30;
+    -fx-border-color:  #651FFF;
+    -fx-border-radius: 25;
+    -fx-border-width: 8;
+}
+
+#HeaderSetting {
+    -fx-background-color: #651FFF;
+    -fx-background-radius: 25 25 0 0;
 }
