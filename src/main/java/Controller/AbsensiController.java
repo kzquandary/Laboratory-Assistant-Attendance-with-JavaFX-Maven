@@ -12,7 +12,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import project.Route;
+import project.Action;
+import project.ApiRoute;
+import project.StringVariable;
 
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
@@ -20,9 +22,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-
-import static Controller.LaporanController.getObjects;
-
 public class AbsensiController implements Initializable {
     @FXML
     public ChoiceBox<Pertemuan> kodepertemuan;
@@ -33,6 +32,7 @@ public class AbsensiController implements Initializable {
     public Pane contentPane = new Pane();
     private final Map<Integer, Map<String, String>> radioButtonStatusMap = new HashMap<>();
     private final Map<String, String> tempMhs = new HashMap<>();
+    private final Map<String, String> statusMap = new HashMap<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -67,9 +67,7 @@ public class AbsensiController implements Initializable {
         for (int i = 0; i < dataMahasiswa.length(); i++) {
             JSONObject dataMhs = dataMahasiswa.getJSONObject(i);
             tempMhs.put(dataMhs.getString("kode_absen"), dataMhs.getString("status"));
-//            System.out.println(tempMhs);
         }
-//        System.out.println(tempMhs.size());
         int mahasiswaPerHalaman = 16;
         int jumlahHalaman = (int) Math.ceil((double) dataMahasiswa.length() / mahasiswaPerHalaman);
         pagination.setPageCount(jumlahHalaman);
@@ -84,7 +82,7 @@ public class AbsensiController implements Initializable {
                 toggleGroups.clear();
                 layoutY[0] = 10;
 
-                Map<String, String> statusMap = radioButtonStatusMap.getOrDefault(pageIndex, new HashMap<>());
+//                Map<String, String> statusMap = radioButtonStatusMap.getOrDefault(pageIndex, new HashMap<>());
 
                 for (int i = awal; i < akhir; i++) {
                     JSONObject mahasiswaObj = dataMahasiswa.getJSONObject(i);
@@ -164,9 +162,9 @@ public class AbsensiController implements Initializable {
 
 
     private JSONArray getAbsensiData(String kodePertemuan) {
-        String apiUrl = Route.URL + "absensi/" + kodePertemuan;
+        String apiUrl = ApiRoute.setGetAbsensiById(kodePertemuan);
 
-        return getObjects(apiUrl);
+        return Action.getObjects(apiUrl);
     }
 
     public void initPertemuan() {
@@ -174,7 +172,7 @@ public class AbsensiController implements Initializable {
     }
 
     public static void getKodePertemuan(ChoiceBox<Pertemuan> kodepertemuan) {
-        NilaiController.GetKodePertemuan(kodepertemuan);
+        Action.GetKodePertemuan(kodepertemuan);
     }
 
     public void setAllHadir() {
@@ -201,9 +199,9 @@ public class AbsensiController implements Initializable {
     public void submit() {
         if (!tempMhs.isEmpty()) {
             try {
-                URL url = new URL(Route.URL + "absensi/update");
+                URL url = new URL(ApiRoute.UpdateAbsensi);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
+                connection.setRequestMethod(StringVariable.POST);
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
                 StringBuilder requestBody = new StringBuilder();
@@ -222,37 +220,18 @@ public class AbsensiController implements Initializable {
                 outputStream.writeBytes(requestBody.toString());
                 outputStream.flush();
                 outputStream.close();
-
                 int responseCode = connection.getResponseCode();
-
-                Alert alert;
                 if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                    alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Informasi");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Absensi Diupdate");
-//                    radioButtonStatusMap.clear();
+                    Action.alertinfo(StringVariable.BerhasilUpdate(StringVariable.Laporan));
                 } else {
-                    alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Gagal Mengupdate Absensi");
+                    Action.alerterror(StringVariable.GagalUpdate(StringVariable.Absensi));
                 }
-                alert.showAndWait();
-
                 connection.disconnect();
             } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
-                alert.showAndWait();            }
+                Action.alerterror(StringVariable.ApiError);
+            }
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Pilih Pertemuan Terlebih Dahulu");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.EmptyData(StringVariable.Pertemuan));
         }
     }
 

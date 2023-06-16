@@ -7,7 +7,6 @@ import Model.Nilai;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -15,7 +14,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import project.Action;
+import project.ApiRoute;
 import project.Route;
+import project.StringVariable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -113,7 +115,7 @@ public class SearchController {
         if (searchText.startsWith("62")) {
             nohp = "0" + nohp.substring(2);
         }
-        String apiUrl = Route.URL + "mahasiswa/nohp/" + nohp;
+        String apiUrl = ApiRoute.setGetMahasiswaByNohp(nohp);
         extractData(apiUrl);
     }
 
@@ -121,7 +123,7 @@ public class SearchController {
         try {
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod(StringVariable.GET);
 
             int responseCode = connection.getResponseCode();
             if (responseCode == 200) {
@@ -146,11 +148,7 @@ public class SearchController {
                 System.out.println("Error: " + responseCode);
             }
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.ApiError);
         }
     }
 
@@ -170,7 +168,7 @@ public class SearchController {
 
     private void searchByNIM() {
         String nim = searchText;
-        String link = Route.URL + "mahasiswa/nim/" + nim;
+        String link = ApiRoute.setGetMahasiswaByNim(nim);
         try {
             URL url = new URL(link);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -193,14 +191,14 @@ public class SearchController {
             }
             con.disconnect();
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            Action.alerterror(StringVariable.ExceptionE(String.valueOf(e)));
         }
     }
 
     private void searchByName() {
         String name = searchText;
         String param = name.replace(" ", "%20");
-        String apiUrl = Route.URL + "mahasiswa/nama/" + param;
+        String apiUrl = ApiRoute.setGetMahasiswaByNama(param);
 
         extractData(apiUrl);
     }
@@ -225,9 +223,9 @@ public class SearchController {
             isTabelAbsenVisible = true;
             String searchnim = absensi.getNim();
             try {
-                URL url = new URL(Route.URL + "absensi/nim/" + searchnim);
+                URL url = new URL(ApiRoute.setGetAbsensiByNim(searchnim));
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
+                con.setRequestMethod(StringVariable.GET);
                 int status = con.getResponseCode();
                 if (status == 200) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -255,11 +253,7 @@ public class SearchController {
                 }
                 con.disconnect();
             } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.ApiError);
             }
         }
     }
@@ -284,7 +278,7 @@ public class SearchController {
             isTabelLaporanVisible = true;
             String searchnim = laporan.getNim();
             try {
-                URL url = new URL(Route.URL + "laporan/nim/" + searchnim);
+                URL url = new URL(ApiRoute.setGetLaporanByNim(searchnim));
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("GET");
                 int status = con.getResponseCode();
@@ -314,11 +308,7 @@ public class SearchController {
                 }
                 con.disconnect();
             } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.ApiError);
             }
         }
     }
@@ -343,9 +333,9 @@ public class SearchController {
             isTabelNilaiVisible = true;
             String searchnim = nilai.getNim();
             try {
-                URL url = new URL(Route.URL + "nilai/nim/" + searchnim);
+                URL url = new URL(ApiRoute.setGetNilaiByNim(searchnim));
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
+                con.setRequestMethod(StringVariable.GET);
                 int status = con.getResponseCode();
                 if (status == 200) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -363,7 +353,7 @@ public class SearchController {
                         String kode_laporan = jsonObject.getString("kode_laporan");
                         String kode_pertemuan = jsonObject.getString("kode_pertemuan");
                         String nim = jsonObject.getString("nim");
-                        int nilai = jsonObject.getInt("nilai");
+                        String nilai = jsonObject.getString("nilai");
                         dataNilai.add(new Nilai(kode_nilai, kode_laporan, kode_pertemuan, nim, nilai));
                     }
                     kodenilai.setCellValueFactory(new PropertyValueFactory<>("kodeNilai"));
@@ -375,11 +365,7 @@ public class SearchController {
                 }
                 con.disconnect();
             } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.ApiError);
             }
         }
     }
@@ -404,14 +390,10 @@ public class SearchController {
             isTabelKeaktifanVisible = true;
             String searchnim = keaktifan.getNim();
             try {
-                URL url = new URL(Route.URL + "keaktifan/nim/" + searchnim);
+                URL url = new URL(ApiRoute.setGetKeaktifanByNim(searchnim));
                 KeaktifanController.ExtractData(url, kodekeaktifan, kodepertemuankeaktifan, nimkeaktifan, keterangankeaktifan, tabelKeaktifan);
             } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.ApiError);
             }
 
         }

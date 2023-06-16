@@ -10,7 +10,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import project.Route;
+import project.Action;
+import project.ApiRoute;
+import project.StringVariable;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -28,7 +30,6 @@ public class PertemuanController implements Initializable {
     public TextField fieldkodepertemuan;
 
     public DatePicker fieldtanggalpertemuan;
-    Alert alert;
     @FXML
     private TableView<Pertemuan> tabelpertemuan;
     @FXML
@@ -40,9 +41,9 @@ public class PertemuanController implements Initializable {
 
     public void setTabel() {
         try {
-            URL url = new URL(Route.URL + "pertemuan");
+            URL url = new URL(ApiRoute.GetPertemuan);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
+            con.setRequestMethod(StringVariable.GET);
             int status = con.getResponseCode();
             if (status == 200) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -66,13 +67,9 @@ public class PertemuanController implements Initializable {
             }
             con.disconnect();
         } catch (ConnectException e) {
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.ApiError);
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            Action.alerterror(StringVariable.ExceptionE(String.valueOf(e)));
         }
         tabelpertemuan.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -95,11 +92,15 @@ public class PertemuanController implements Initializable {
 
     public void tambah() {
         if (fieldtanggalpertemuan.getValue() != null) {
+            if(fieldtanggalpertemuan.getValue().isBefore(LocalDate.now())){
+                Action.alerterror("Harap masukan tanggal yang benar");
+                return;
+            }
             warningTanggal.setVisible(false);
             try {
-                URL url = new URL(Route.URL + "pertemuan/store");
+                URL url = new URL(ApiRoute.StorePertemuan);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
+                conn.setRequestMethod(StringVariable.POST);
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoOutput(true);
@@ -116,38 +117,19 @@ public class PertemuanController implements Initializable {
 
                 int httpResponseCode = conn.getResponseCode();
                 if (httpResponseCode == 201) {
-                    alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Informasi");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Pertemuan Ditambahkan");
+                    Action.alertinfo(StringVariable.BerhasilTambah(StringVariable.Pertemuan));
                 } else {
-                    alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Gagal Menambahkan");
+                    Action.alerterror(StringVariable.GagalTambah(StringVariable.Pertemuan));
                 }
-                alert.showAndWait();
                 setTabel();
             } catch (ConnectException e) {
-                alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.ApiError);
             } catch (Exception e) {
-                alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Error Saat Menambahkan Pertemuan");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.ErrorTambah(StringVariable.Pertemuan));
             }
         } else {
             warningTanggal.setVisible(true);
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Harap isi form sesuai dengan format");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.FormatError);
         }
     }
 
@@ -155,9 +137,9 @@ public class PertemuanController implements Initializable {
         if (!fieldkodepertemuan.getText().isEmpty()) {
             warningTanggal.setVisible(false);
             try {
-                URL url = new URL(Route.URL + "pertemuan/delete/" + fieldkodepertemuan.getText());
+                URL url = new URL(ApiRoute.setDeletePertemuan(fieldkodepertemuan.getText()));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
+                conn.setRequestMethod(StringVariable.POST);
                 conn.connect();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 StringBuilder response = new StringBuilder();
@@ -175,39 +157,20 @@ public class PertemuanController implements Initializable {
 
                 System.out.println(message);
                 if (responseCode == 201) {
-                    alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Informasi");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Pertemuan Berhasil Dihapus");
+                    Action.alertinfo(StringVariable.BerhasilHapus(StringVariable.Pertemuan));
                 } else {
-                    alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Gagal Menghapus");
+                    Action.alerterror(StringVariable.GagalHapus(StringVariable.Pertemuan));
                 }
-                alert.showAndWait();
                 conn.disconnect();
                 setTabel();
             } catch (ConnectException e) {
-                alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.ApiError);
             } catch (Exception e) {
-                alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Error Saat Menghapus Pertemuan");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.ErrorHapus(StringVariable.Pertemuan));
             }
         } else {
             warningTanggal.setVisible(false);
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Harap Pilih Pertemuan Yang Ingin Dihapus");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.PilihData(StringVariable.Pertemuan));
         }
     }
 
@@ -215,9 +178,9 @@ public class PertemuanController implements Initializable {
         if (!fieldkodepertemuan.getText().isEmpty() && fieldtanggalpertemuan.getValue() != null) {
             warningTanggal.setVisible(false);
             try {
-                URL url = new URL(Route.URL + "pertemuan/" + fieldkodepertemuan.getText());
+                URL url = new URL(ApiRoute.setUpdatePertemuan(fieldkodepertemuan.getText()));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
+                conn.setRequestMethod(StringVariable.POST);
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoOutput(true);
@@ -233,39 +196,20 @@ public class PertemuanController implements Initializable {
                 }
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 201) {
-                    alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Informasi");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Pertemuan Berhasil Diupdate");
+                    Action.alertinfo(StringVariable.BerhasilUpdate(StringVariable.Pertemuan));
                 } else {
-                    alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Gagal Mengupdate");
+                    Action.alerterror(StringVariable.GagalUpdate(StringVariable.Pertemuan));
                 }
-                alert.showAndWait();
                 conn.disconnect();
                 setTabel();
             } catch (ConnectException e) {
-                alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.ApiError);
             } catch (Exception e) {
-                alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Error Saat Menambahkan Pertemuan");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.ErrorUpdate(StringVariable.Pertemuan));
             }
         } else {
             warningTanggal.setVisible(true);
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Harap Pilih Pertemuan dan Isi Form dengan Benar");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.DataFormatError);
         }
     }
 }

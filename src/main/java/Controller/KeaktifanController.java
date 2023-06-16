@@ -12,7 +12,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import project.Route;
+import project.Action;
+import project.ApiRoute;
+import project.StringVariable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +27,6 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class KeaktifanController implements Initializable {
-    Alert alert;
     @FXML
     public TableView<Keaktifan> tabelkeaktifan;
     @FXML
@@ -55,12 +56,12 @@ public class KeaktifanController implements Initializable {
     }
 
     public void initFieldNim() {
-        String apiUrl = Route.URL + "mahasiswa";
+        String apiUrl = ApiRoute.GetMahasiswa;
 
         try {
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod(StringVariable.GET);
 
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -98,7 +99,7 @@ public class KeaktifanController implements Initializable {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Action.alerterror(StringVariable.ExceptionE(String.valueOf(e)));
         }
     }
 
@@ -108,11 +109,11 @@ public class KeaktifanController implements Initializable {
 
     public void setTabel() {
         try {
-            URL url = new URL(Route.URL + "keaktifan");
+            URL url = new URL(ApiRoute.GetKeaktifan);
             ExtractData(url, kodekeaktifan, kodepertemuan, tabelnim, keterangan, tabelkeaktifan);
             tablenama.setCellValueFactory(new PropertyValueFactory<>("nama"));
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            Action.alerterror(StringVariable.ExceptionE(String.valueOf(e)));
         }
         tabelkeaktifan.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -134,7 +135,7 @@ public class KeaktifanController implements Initializable {
 
     public static void ExtractData(URL url, TableColumn<Keaktifan, String> kodekeaktifan, TableColumn<Keaktifan, String> kodepertemuan, TableColumn<Keaktifan, String> tabelnim, TableColumn<Keaktifan, String> keterangan2, TableView<Keaktifan> tabelkeaktifan) throws IOException {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
+        con.setRequestMethod(StringVariable.GET);
         int status = con.getResponseCode();
         if (status == 200) {
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -174,43 +175,27 @@ public class KeaktifanController implements Initializable {
                 String nimMahasiswa = selectedMahasiswa.getNim();
                 String keterangan = fieldketerangan.getText();
 
-                URL url = new URL(Route.URL + "keaktifan/store");
+                URL url = new URL(ApiRoute.StoreKeaktifan);
 
                 int httpResponseCode = fetchApi(kodePertemuan, nimMahasiswa, keterangan, url);
 
                 if (httpResponseCode == 201) {
-                    alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Informasi");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Keaktifan Ditambahkan");
+                    Action.alertinfo(StringVariable.BerhasilTambah(StringVariable.Keaktifan));
                 } else {
-                    alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Gagal Menambahkan Keaktifan");
+                    Action.alerterror(StringVariable.GagalTambah(StringVariable.Keaktifan));
                 }
-
-                alert.showAndWait();
                 setTabel();
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Harap isi form keterangan terlebih dahulu");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.EmptyForm);
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Pilih Pertemuan Terlebih Dahulu");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.EmptyData(StringVariable.Pertemuan));
         }
     }
 
     public int fetchApi(String kodePertemuan, String nimMahasiswa, String keterangan, URL url) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
+        conn.setRequestMethod(StringVariable.POST);
         conn.setRequestProperty("Content-Type", "application/json; utf-8");
         conn.setRequestProperty("Accept", "application/json");
         conn.setDoOutput(true);
@@ -237,75 +222,44 @@ public class KeaktifanController implements Initializable {
                 String nimMahasiswa = selectedMahasiswa.getNim();
                 String keterangan = fieldketerangan.getText();
 
-                URL url = new URL(Route.URL + "keaktifan/update/" + fieldkodekeaktifan.getText());
+                URL url = new URL(ApiRoute.setUpdateKeaktifan(fieldkodekeaktifan.getText()));
                 int httpResponseCode = fetchApi(kodePertemuan, nimMahasiswa, keterangan, url);
 
                 if (httpResponseCode == 201) {
-                    alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Informasi");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Keaktifan Berhasil di Update");
+                    Action.alertinfo(StringVariable.BerhasilUpdate(StringVariable.Keaktifan));
                 } else {
-                    alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Gagal Mengupdate Keaktifan");
+                    Action.alerterror(StringVariable.GagalUpdate(StringVariable.Keaktifan));
                 }
-
-                alert.showAndWait();
                 setTabel();
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Harap isi form keterangan terlebih dahulu");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.EmptyForm);
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Pilih Mahasiswa Terlebih Dahulu");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.EmptyData(StringVariable.Mahasiswa));
         }
     }
 
     public void hapus() {
         if (!fieldkodekeaktifan.getText().isEmpty()) {
             try {
-                URL url = new URL(Route.URL + "keaktifan/" + fieldkodekeaktifan.getText());
+                URL url = new URL(ApiRoute.setDeleteKeaktifan(fieldkodekeaktifan.getText()));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
+                conn.setRequestMethod(StringVariable.POST);
                 conn.connect();
 
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 201) {
-                    alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Informasi");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Keaktifan Berhasil Dihapus");
+                    Action.alertinfo(StringVariable.BerhasilHapus(StringVariable.Keaktifan));
                 } else {
-                    alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Gagal Menghapus");
+                    Action.alerterror(StringVariable.GagalHapus(StringVariable.Keaktifan));
                 }
-                alert.showAndWait();
                 conn.disconnect();
             } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.ApiError);
             }
             setTabel();
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Pilih Mahasiswa Terlebih Dahulu");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.EmptyData(StringVariable.Mahasiswa));
         }
     }
 

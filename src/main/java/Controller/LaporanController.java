@@ -12,17 +12,16 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import project.Route;
+import project.Action;
+import project.ApiRoute;
+import project.StringVariable;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class LaporanController implements Initializable {
     @FXML
@@ -32,8 +31,9 @@ public class LaporanController implements Initializable {
     private final List<ToggleGroup> toggleGroups = new ArrayList<>();
     public Pane contentPane = new Pane();
     private final Map<Integer, Map<String, String>> radioButtonStatusMap = new HashMap<>();
-    private final  Map<String, String> tempMhs = new HashMap<>();
+    private final Map<String, String> tempMhs = new HashMap<>();
     public Pagination pagination;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initPertemuan();
@@ -52,6 +52,7 @@ public class LaporanController implements Initializable {
         });
 
     }
+
     private void initializeDataMahasiswa(Pertemuan selectedPertemuan) {
         pagination.setVisible(true);
         textkodepertemuan.setText("Kode Pertemuan : " + selectedPertemuan.getKode_pertemuan());
@@ -159,28 +160,9 @@ public class LaporanController implements Initializable {
     }
 
     private JSONArray getLaporanData(String kodePertemuan) {
-        String apiUrl = Route.URL + "laporan/" + kodePertemuan;
+        String apiUrl = ApiRoute.setGetLaporanById(kodePertemuan);
 
-        return getObjects(apiUrl);
-    }
-
-    static JSONArray getObjects(String apiUrl) {
-        try {
-            URL url = new URL(apiUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String response = reader.lines().collect(Collectors.joining());
-
-                return new JSONArray(response);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return new JSONArray();
+        return Action.getObjects(apiUrl);
     }
 
     public void initPertemuan() {
@@ -188,7 +170,7 @@ public class LaporanController implements Initializable {
     }
 
     public static void getKodePertemuan(ChoiceBox<Pertemuan> kodepertemuan) {
-        NilaiController.GetKodePertemuan(kodepertemuan);
+        Action.GetKodePertemuan(kodepertemuan);
     }
 
     @FXML
@@ -211,12 +193,13 @@ public class LaporanController implements Initializable {
             radioButtonStatusMap.put(pageIndex, statusMap);
         }
     }
+
     public void submit() {
-        if(!tempMhs.isEmpty()) {
+        if (!tempMhs.isEmpty()) {
             try {
-                URL url = new URL(Route.URL + "laporan/update");
+                URL url = new URL(ApiRoute.UpdateLaporan);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
+                connection.setRequestMethod(StringVariable.POST);
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
                 StringBuilder requestBody = new StringBuilder();
@@ -238,34 +221,18 @@ public class LaporanController implements Initializable {
 
                 int responseCode = connection.getResponseCode();
 
-                Alert alert;
                 if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                    alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Informasi");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Laporan Berhasil Diupdate");
+                    Action.alertinfo(StringVariable.BerhasilUpdate(StringVariable.Laporan));
                 } else {
-                    alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Gagal Mengupdate Laporan");
+                    Action.alerterror(StringVariable.GagalUpdate(StringVariable.Laporan));
                 }
-                alert.showAndWait();
 
                 connection.disconnect();
             } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Pilih Pertemuan Terlebih Dahulu");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.EmptyData(StringVariable.Pertemuan));
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Pilih Pertemuan Terlebih Dahulu");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.EmptyData(StringVariable.Pertemuan));
         }
     }
 }

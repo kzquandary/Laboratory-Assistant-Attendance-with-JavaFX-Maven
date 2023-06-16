@@ -1,11 +1,8 @@
 package Controller;
 
 import Model.Pertemuan;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TextField;
@@ -15,23 +12,18 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.util.StringConverter;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import project.Route;
+import project.Action;
+import project.ApiRoute;
+import project.StringVariable;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
-
-import static Controller.LaporanController.getObjects;
 
 public class NilaiController implements Initializable {
     @FXML
@@ -72,7 +64,7 @@ public class NilaiController implements Initializable {
         JSONArray dataMahasiswa = getAbsensiData(kodePertemuan);
         for (int i = 0; i < dataMahasiswa.length(); i++) {
             JSONObject dataMhs = dataMahasiswa.getJSONObject(i);
-            tempMhs.put(dataMhs.getString("kode_nilai"), String.valueOf(dataMhs.getInt("nilai")));
+            tempMhs.put(dataMhs.getString("kode_nilai"), String.valueOf(dataMhs.getString("nilai")));
         }
         int mahasiswaPerHalaman = 12;
         int jumlahHalaman = (int) Math.ceil((double) dataMahasiswa.length() / mahasiswaPerHalaman);
@@ -113,11 +105,7 @@ public class NilaiController implements Initializable {
                                     if (!input.matches("\\d*")) {
                                         nilaiField.setText("0");
                                         tempMhs.put(kodenilai, null);
-                                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                                        alert.setTitle("Error");
-                                        alert.setHeaderText(null);
-                                        alert.setContentText("Harap Masukan Nilai Sesuai Dengan Format");
-                                        alert.showAndWait();
+                                        Action.alerterror(StringVariable.FormatError);
                                     } else {
                                         int nilai = Integer.parseInt(input);
                                         if (nilai > 100) {
@@ -150,9 +138,9 @@ public class NilaiController implements Initializable {
     }
 
     private JSONArray getAbsensiData(String kodePertemuan) {
-        String apiUrl = Route.URL + "nilai/" + kodePertemuan;
+        String apiUrl = ApiRoute.setGetNilaiById(kodePertemuan);
 
-        return getObjects(apiUrl);
+        return Action.getObjects(apiUrl);
     }
 
     public void initPertemuan() {
@@ -160,61 +148,10 @@ public class NilaiController implements Initializable {
     }
 
     public static void getKodePertemuan(ChoiceBox<Pertemuan> kodepertemuan) {
-        GetKodePertemuan(kodepertemuan);
+        Action.GetKodePertemuan(kodepertemuan);
     }
 
-    static void GetKodePertemuan(ChoiceBox<Pertemuan> kodepertemuan) {
-        String apiUrl = Route.URL + "pertemuan";
 
-        try {
-            URL url = new URL(apiUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String response = reader.lines().collect(Collectors.joining());
-
-                JSONArray jsonArray = new JSONArray(response);
-                ObservableList<Pertemuan> pertemuanList = FXCollections.observableArrayList();
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String kodePertemuan = jsonObject.getString("kode_pertemuan");
-                    LocalDate tanggalPertemuan = LocalDate.parse(jsonObject.getString("tanggal_pertemuan"));
-
-                    Pertemuan pertemuan = new Pertemuan(kodePertemuan, tanggalPertemuan);
-                    pertemuanList.add(pertemuan);
-                }
-                kodepertemuan.setItems(pertemuanList);
-                kodepertemuan.setConverter(new StringConverter<>() {
-                    @Override
-                    public String toString(Pertemuan pertemuan) {
-                        if (pertemuan != null) {
-                            return pertemuan.getKode_pertemuan();
-                        } else {
-                            return "Pertemuan kosong";
-                        }
-                    }
-
-                    @Override
-                    public Pertemuan fromString(String s) {
-                        return null;
-                    }
-                });
-                if (!pertemuanList.isEmpty()) {
-                    kodepertemuan.setValue(pertemuanList.get(0));
-                }
-            }
-        } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
-            alert.showAndWait();
-        }
-    }
 
     public void submit() {
         if (!tempMhs.isEmpty()) {
@@ -226,14 +163,10 @@ public class NilaiController implements Initializable {
                 }
             }
             if (hasNullValues) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Isi form sesuai dengan format");
-                alert.showAndWait();
+                Action.alerterror(StringVariable.FormatError);
             } else {
                 try {
-                    URL url = new URL(Route.URL + "nilai/update");
+                    URL url = new URL(ApiRoute.UpdateNilai);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -257,35 +190,17 @@ public class NilaiController implements Initializable {
 
                     int responseCode = connection.getResponseCode();
 
-                    Alert alert;
                     if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                        alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Informasi");
-                        alert.setHeaderText(null);
-                        alert.setContentText("Nilai Diupdate");
+                        Action.alertinfo(StringVariable.BerhasilUpdate(StringVariable.Nilai));
                     } else {
-                        alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Error");
-                        alert.setHeaderText(null);
-                        alert.setContentText("Gagal Mengupdate Nilai");
-                    }
-                    alert.showAndWait();
-
+                        Action.alerterror(StringVariable.GagalUpdate(StringVariable.Nilai));                    }
                     connection.disconnect();
                 } catch (Exception e) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Pilih Pertemuan Terlebih Dahulu");
-                    alert.showAndWait();
+                    Action.alerterror(StringVariable.EmptyData(StringVariable.Pertemuan));
                 }
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Pilih Pertemuan Terlebih Dahulu");
-            alert.showAndWait();
+            Action.alerterror(StringVariable.EmptyData(StringVariable.Pertemuan));
         }
     }
 

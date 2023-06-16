@@ -2,10 +2,11 @@ package Controller;
 
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.text.Text;
 import org.json.JSONArray;
-import project.Route;
+import project.Action;
+import project.ApiRoute;
+import project.StringVariable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +20,6 @@ public class InfoHomeController implements Initializable {
     public Text jmlmahasiswa;
     public Text jmlpertemuan;
     public Text jmllaporan;
-    public Alert alert;
     public boolean isAlertShown = false;
 
     public void initTextFields(FXMLLoader loader) {
@@ -33,17 +33,17 @@ public class InfoHomeController implements Initializable {
 
     public void setMahassiwa() {
         try {
-            URL url = new URL(Route.URL + "mahasiswa");
+            URL url = new URL(ApiRoute.GetMahasiswa);
             getApi(url, jmlmahasiswa);
         } catch (Exception e) {
-            showAlert("Telah Terjadi Error: " + e);
+            showAlert(StringVariable.ExceptionE(String.valueOf(e)));
         }
     }
 
     public void getApi(URL url, Text text) {
         try {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
+            con.setRequestMethod(StringVariable.GET);
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             StringBuilder response = new StringBuilder();
@@ -55,24 +55,24 @@ public class InfoHomeController implements Initializable {
             int totalMahasiswa = mahasiswas.length();
             text.setText(String.valueOf(totalMahasiswa));
         } catch (IOException e) {
-            showAlert("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+            showAlert(StringVariable.ApiError);
         }
     }
 
     public void setPeretmuan() {
         try {
-            URL url = new URL(Route.URL + "pertemuan");
+            URL url = new URL(ApiRoute.GetPertemuan);
             getApi(url, jmlpertemuan);
         } catch (Exception e) {
-            showAlert("Telah Terjadi Error: " + e);
+            showAlert(StringVariable.ExceptionE(String.valueOf(e)));
         }
     }
 
     public void setLaporan() {
         try {
-            URL url = new URL(Route.URL + "laporan");
+            URL url = new URL(ApiRoute.GetLaporan);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
+            con.setRequestMethod(StringVariable.GET);
             con.setRequestProperty("Content-Type", "application/json");
 
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -92,20 +92,16 @@ public class InfoHomeController implements Initializable {
             }
             jmllaporan.setText(Integer.toString(count));
         } catch (ConnectException e) {
-            showAlert("API Tidak Merespon, Harap konfigurasi API terlebih dahulu");
+            showAlert(StringVariable.ApiError);
         } catch (Exception e) {
-            showAlert("Telah Terjadi Error: " + e);
+            showAlert(StringVariable.ExceptionE(String.valueOf(e)));
         }
     }
 
     public void showAlert(String content) {
         if (!isAlertShown) {
             isAlertShown = true;
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText(content);
-            alert.showAndWait();
+            Action.alerterror(content);
         }
     }
 
