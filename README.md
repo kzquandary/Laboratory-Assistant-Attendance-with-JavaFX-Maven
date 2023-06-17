@@ -5,7 +5,7 @@
     Project Tugas Besar Pemrograman Objek 2 Informatika Universitas Jenderal Achmad Yani
   </p>
 </div>
-  
+
 <!-- Badges -->
 <div align="center">
 <p>
@@ -94,14 +94,23 @@
     │           ├── Update [✅] 05/16/2023
     │           └── Delete [✅] 05/16/2023
     └── Finishing Project [✅] 06/1/2023
-    
+
 <div align="left">
   <h2> 📷: Screenshoot </h2>
 </div>
 
 <div align="center"> 
+  <img src="src/main/resources/Screenshoot/Login.png" alt="screenshot" />
+</div>
+<div align="center"> 
+  <img src="src/main/resources/Screenshoot/Lock.png" alt="screenshot" />
+</div>
+<div align="center"> 
   <img src="src/main/resources/Screenshoot/Home.png" alt="screenshot" />
 </div>
 <div align="center"> 
   <img src="src/main/resources/Screenshoot/Search.png" alt="screenshot" />
+</div>
+<div align="center"> 
+  <img src="src/main/resources/Screenshoot/Setting.png" alt="screenshot" />
 </div>
