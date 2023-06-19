@@ -1,4 +1,4 @@
-package project;
+package Project;
 
 public class StringVariable {
     public static String Mahasiswa = "Mahasiswa";
@@ -9,6 +9,7 @@ public class StringVariable {
     public static String Keaktifan = "Keaktifan";
     public static String GET = "GET";
     public static String POST = "POST";
+    public static String ContentType = "Content-Type";
     public static String ApiError = "API Tidak Merespon, Harap konfigurasi API terlebih dahulu";
     public static String FormatError = "Harap isi form sesuai dengan format";
     public static String DataFormatError = "Pilih data terlebih dahulu dan isi form sesuai dengan format";
@@ -17,6 +18,9 @@ public class StringVariable {
     public static String Confirmation = "Apakah Anda yakin ingin melakukan aksi ini? Aksi ini tidak bisa di batalkan";
     public static String Error = "Telah Terjadi Error, Harap Hubungi Administrator";
     public static String Cancel = "Batal Melakukan Action";
+    public static final String RegNama = "^(\\S+\\s){0,9}\\S+$";
+    public static final String RegNIM = "^3411[0-9][0-9]1\\d+$";
+    public static final String RegNoHP = "^(62|0)\\d+$";
 
     public static String EmptyData(String name) {
         return ("Pilih " + name + " Terlebih Dahulu");

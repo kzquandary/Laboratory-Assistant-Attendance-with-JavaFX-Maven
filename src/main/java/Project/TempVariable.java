@@ -1,9 +1,9 @@
-package project;
+package Project;
 
 import java.lang.String;
 import java.io.File;
 
-public class VarTemp {
+public class TempVariable {
     public static String username;
     public static String password;
     public static String token;

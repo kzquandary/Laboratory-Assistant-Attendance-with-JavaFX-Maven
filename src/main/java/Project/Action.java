@@ -1,4 +1,4 @@
-package project;
+package Project;
 
 import Model.Pertemuan;
 import com.aslabapp.aslabapp.Main;
@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -16,7 +17,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
+import org.controlsfx.control.Notifications;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,12 +64,30 @@ public class Action {
     }
     public static void alertinfo(String content){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Info");
+        alert.setTitle("Informasi");
         alert.setHeaderText(null);
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image((Objects.requireNonNull(Main.class.getResourceAsStream("logo.png")))));
         alert.setContentText(content);
         alert.showAndWait();
+    }
+    public static void toastinfo(String content){
+        Notifications.create()
+                .title("Informasi")
+                .text(content)
+                .darkStyle()
+                .position(Pos.BOTTOM_RIGHT)
+                .hideAfter(Duration.seconds(2))
+                .showInformation();
+    }
+    public static void toasterror(String content){
+        Notifications.create()
+                .title("Error")
+                .text(content)
+                .darkStyle()
+                .position(Pos.BOTTOM_RIGHT)
+                .hideAfter(Duration.seconds(3))
+                .showError();
     }
     public void handleMouseDragged(MouseEvent event) {
         Node node = (Node) event.getSource();
@@ -158,7 +179,7 @@ public class Action {
             byte[] postData = parameters.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
 
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty(StringVariable.ContentType, "application/x-www-form-urlencoded");
             connection.setRequestProperty("Content-Length", String.valueOf(postDataLength));
 
             try (DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream())) {
@@ -204,7 +225,7 @@ public class Action {
             byte[] postData = parameters.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
 
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty(StringVariable.ContentType, "application/x-www-form-urlencoded");
             connection.setRequestProperty("Content-Length", String.valueOf(postDataLength));
 
             try (DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream())) {
@@ -227,9 +248,9 @@ public class Action {
                 JSONObject jsonResponse = new JSONObject(response.toString());
                 String token = jsonResponse.getString("token");
 
-                VarTemp.username = username;
-                VarTemp.password = password;
-                VarTemp.token = token;
+                TempVariable.username = username;
+                TempVariable.password = password;
+                TempVariable.token = token;
 
                 saveTokenToFile(token);
 
@@ -246,8 +267,8 @@ public class Action {
 
     private static void saveTokenToFile(String token) {
         try {
-            String folderPath = VarTemp.folderPath;
-            String filePath = VarTemp.filePath;
+            String folderPath = TempVariable.folderPath;
+            String filePath = TempVariable.filePath;
 
             Path folder = Paths.get(folderPath);
             if (!Files.exists(folder)) {
@@ -264,7 +285,7 @@ public class Action {
     }
 
     public static void deleteTokenFile() {
-        String filePath = VarTemp.filePath;
+        String filePath = TempVariable.filePath;
 
         File file = new File(filePath);
         if (file.exists()) {
@@ -286,7 +307,7 @@ public class Action {
             String parameters = "username=" + username;
             byte[] postData = parameters.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty(StringVariable.ContentType, "application/x-www-form-urlencoded");
             connection.setRequestProperty("Content-Length", String.valueOf(postDataLength));
 
             try (DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream())) {
@@ -305,7 +326,7 @@ public class Action {
 
     public static boolean checkAPIStatus() {
         try {
-            URL url = new URL(Route.URL);
+            URL url = new URL(ApiRoute.URL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(StringVariable.GET);
 
@@ -334,9 +355,9 @@ public class Action {
                 String username = json.getString("username");
                 String password = json.getString("password");
 
-                VarTemp.username = username;
-                VarTemp.password = password;
-                VarTemp.token = token;
+                TempVariable.username = username;
+                TempVariable.password = password;
+                TempVariable.token = token;
 
                 return true;
             } else {
