@@ -10,9 +10,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import project.Action;
-import project.ApiRoute;
-import project.StringVariable;
+import Project.Action;
+import Project.ApiRoute;
+import Project.StringVariable;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -93,7 +93,7 @@ public class PertemuanController implements Initializable {
     public void tambah() {
         if (fieldtanggalpertemuan.getValue() != null) {
             if(fieldtanggalpertemuan.getValue().isBefore(LocalDate.now())){
-                Action.alerterror("Harap masukan tanggal yang benar");
+                Action.alerterror(StringVariable.FormatError);
                 return;
             }
             warningTanggal.setVisible(false);
@@ -101,7 +101,7 @@ public class PertemuanController implements Initializable {
                 URL url = new URL(ApiRoute.StorePertemuan);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod(StringVariable.POST);
-                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty(StringVariable.ContentType, "application/json; utf-8");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoOutput(true);
 
@@ -117,19 +117,20 @@ public class PertemuanController implements Initializable {
 
                 int httpResponseCode = conn.getResponseCode();
                 if (httpResponseCode == 201) {
-                    Action.alertinfo(StringVariable.BerhasilTambah(StringVariable.Pertemuan));
+                    Action.toastinfo(StringVariable.BerhasilTambah(StringVariable.Pertemuan));
+                    clear();
                 } else {
-                    Action.alerterror(StringVariable.GagalTambah(StringVariable.Pertemuan));
+                    Action.toasterror(StringVariable.GagalTambah(StringVariable.Pertemuan));
                 }
                 setTabel();
             } catch (ConnectException e) {
                 Action.alerterror(StringVariable.ApiError);
             } catch (Exception e) {
-                Action.alerterror(StringVariable.ErrorTambah(StringVariable.Pertemuan));
+                Action.toasterror(StringVariable.ErrorTambah(StringVariable.Pertemuan));
             }
         } else {
             warningTanggal.setVisible(true);
-            Action.alerterror(StringVariable.FormatError);
+            Action.toasterror(StringVariable.FormatError);
         }
     }
 
@@ -157,20 +158,21 @@ public class PertemuanController implements Initializable {
 
                 System.out.println(message);
                 if (responseCode == 201) {
-                    Action.alertinfo(StringVariable.BerhasilHapus(StringVariable.Pertemuan));
+                    Action.toastinfo(StringVariable.BerhasilHapus(StringVariable.Pertemuan));
+                    clear();
                 } else {
-                    Action.alerterror(StringVariable.GagalHapus(StringVariable.Pertemuan));
+                    Action.toasterror(StringVariable.GagalHapus(StringVariable.Pertemuan));
                 }
                 conn.disconnect();
                 setTabel();
             } catch (ConnectException e) {
                 Action.alerterror(StringVariable.ApiError);
             } catch (Exception e) {
-                Action.alerterror(StringVariable.ErrorHapus(StringVariable.Pertemuan));
+                Action.toasterror(StringVariable.ErrorHapus(StringVariable.Pertemuan));
             }
         } else {
             warningTanggal.setVisible(false);
-            Action.alerterror(StringVariable.PilihData(StringVariable.Pertemuan));
+            Action.toasterror(StringVariable.PilihData(StringVariable.Pertemuan));
         }
     }
 
@@ -181,7 +183,7 @@ public class PertemuanController implements Initializable {
                 URL url = new URL(ApiRoute.setUpdatePertemuan(fieldkodepertemuan.getText()));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod(StringVariable.POST);
-                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty(StringVariable.ContentType, "application/json; utf-8");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoOutput(true);
                 LocalDate date = fieldtanggalpertemuan.getValue();
@@ -196,20 +198,21 @@ public class PertemuanController implements Initializable {
                 }
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 201) {
-                    Action.alertinfo(StringVariable.BerhasilUpdate(StringVariable.Pertemuan));
+                    Action.toastinfo(StringVariable.BerhasilUpdate(StringVariable.Pertemuan));
+                    clear();
                 } else {
                     Action.alerterror(StringVariable.GagalUpdate(StringVariable.Pertemuan));
                 }
                 conn.disconnect();
                 setTabel();
             } catch (ConnectException e) {
-                Action.alerterror(StringVariable.ApiError);
+                Action.toasterror(StringVariable.ApiError);
             } catch (Exception e) {
-                Action.alerterror(StringVariable.ErrorUpdate(StringVariable.Pertemuan));
+                Action.toasterror(StringVariable.ErrorUpdate(StringVariable.Pertemuan));
             }
         } else {
             warningTanggal.setVisible(true);
-            Action.alerterror(StringVariable.DataFormatError);
+            Action.toasterror(StringVariable.DataFormatError);
         }
     }
 }

@@ -12,9 +12,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import project.Action;
-import project.ApiRoute;
-import project.StringVariable;
+import Project.Action;
+import Project.ApiRoute;
+import Project.StringVariable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,12 +50,12 @@ public class KeaktifanController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        initFieldNim();
-        initFieldPertemuan();
+        InisiasiFieldNIM();
+        InisiasiFieldPertemuan();
         setTabel();
     }
 
-    public void initFieldNim() {
+    public void InisiasiFieldNIM() {
         String apiUrl = ApiRoute.GetMahasiswa;
 
         try {
@@ -103,7 +103,7 @@ public class KeaktifanController implements Initializable {
         }
     }
 
-    public void initFieldPertemuan() {
+    public void InisiasiFieldPertemuan() {
         AbsensiController.getKodePertemuan(fieldpertemuan);
     }
 
@@ -180,9 +180,10 @@ public class KeaktifanController implements Initializable {
                 int httpResponseCode = fetchApi(kodePertemuan, nimMahasiswa, keterangan, url);
 
                 if (httpResponseCode == 201) {
-                    Action.alertinfo(StringVariable.BerhasilTambah(StringVariable.Keaktifan));
+                    Action.toastinfo(StringVariable.BerhasilTambah(StringVariable.Keaktifan));
+                    clear();
                 } else {
-                    Action.alerterror(StringVariable.GagalTambah(StringVariable.Keaktifan));
+                    Action.toasterror(StringVariable.GagalTambah(StringVariable.Keaktifan));
                 }
                 setTabel();
             } else {
@@ -196,7 +197,7 @@ public class KeaktifanController implements Initializable {
     public int fetchApi(String kodePertemuan, String nimMahasiswa, String keterangan, URL url) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod(StringVariable.POST);
-        conn.setRequestProperty("Content-Type", "application/json; utf-8");
+        conn.setRequestProperty(StringVariable.ContentType, "application/json; utf-8");
         conn.setRequestProperty("Accept", "application/json");
         conn.setDoOutput(true);
 
@@ -226,13 +227,14 @@ public class KeaktifanController implements Initializable {
                 int httpResponseCode = fetchApi(kodePertemuan, nimMahasiswa, keterangan, url);
 
                 if (httpResponseCode == 201) {
-                    Action.alertinfo(StringVariable.BerhasilUpdate(StringVariable.Keaktifan));
+                    Action.toastinfo(StringVariable.BerhasilUpdate(StringVariable.Keaktifan));
+                    clear();
                 } else {
-                    Action.alerterror(StringVariable.GagalUpdate(StringVariable.Keaktifan));
+                    Action.toasterror(StringVariable.GagalUpdate(StringVariable.Keaktifan));
                 }
                 setTabel();
             } else {
-                Action.alerterror(StringVariable.EmptyForm);
+                Action.toasterror(StringVariable.EmptyForm);
             }
         } else {
             Action.alerterror(StringVariable.EmptyData(StringVariable.Mahasiswa));
@@ -249,13 +251,14 @@ public class KeaktifanController implements Initializable {
 
                 int responseCode = conn.getResponseCode();
                 if (responseCode == 201) {
-                    Action.alertinfo(StringVariable.BerhasilHapus(StringVariable.Keaktifan));
+                    Action.toastinfo(StringVariable.BerhasilHapus(StringVariable.Keaktifan));
                 } else {
-                    Action.alerterror(StringVariable.GagalHapus(StringVariable.Keaktifan));
+                    Action.toasterror(StringVariable.GagalHapus(StringVariable.Keaktifan));
                 }
                 conn.disconnect();
             } catch (Exception e) {
-                Action.alerterror(StringVariable.ApiError);
+                Action.toasterror(StringVariable.ApiError);
+                clear();
             }
             setTabel();
         } else {

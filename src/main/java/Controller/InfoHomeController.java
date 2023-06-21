@@ -4,9 +4,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
 import org.json.JSONArray;
-import project.Action;
-import project.ApiRoute;
-import project.StringVariable;
+import Project.Action;
+import Project.ApiRoute;
+import Project.StringVariable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -73,7 +73,7 @@ public class InfoHomeController implements Initializable {
             URL url = new URL(ApiRoute.GetLaporan);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod(StringVariable.GET);
-            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty(StringVariable.ContentType, "application/json");
 
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
@@ -101,7 +101,7 @@ public class InfoHomeController implements Initializable {
     public void showAlert(String content) {
         if (!isAlertShown) {
             isAlertShown = true;
-            Action.alerterror(content);
+            Action.toasterror(content);
         }
     }
 

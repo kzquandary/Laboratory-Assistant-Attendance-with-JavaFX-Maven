@@ -14,9 +14,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import project.Action;
-import project.ApiRoute;
-import project.StringVariable;
+import Project.Action;
+import Project.ApiRoute;
+import Project.StringVariable;
 
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
@@ -44,7 +44,7 @@ public class NilaiController implements Initializable {
             if (newValue != null) {
                 if (newValue.getKode_pertemuan().equals("Pilih Pertemuan")) {
                     pagination.setVisible(false);
-                    textkodepertemuan.setVisible(false);
+                    textkodepertemuan.setText("");
                     tempMhs.clear();
                 } else {
                     initializeDataMahasiswa(newValue);
@@ -163,13 +163,13 @@ public class NilaiController implements Initializable {
                 }
             }
             if (hasNullValues) {
-                Action.alerterror(StringVariable.FormatError);
+                Action.toasterror(StringVariable.FormatError);
             } else {
                 try {
                     URL url = new URL(ApiRoute.UpdateNilai);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("POST");
-                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    connection.setRequestMethod(StringVariable.POST);
+                    connection.setRequestProperty(StringVariable.ContentType, "application/x-www-form-urlencoded");
 
                     StringBuilder requestBody = new StringBuilder();
                     for (Map.Entry<String, String> entry : tempMhs.entrySet()) {
@@ -191,16 +191,16 @@ public class NilaiController implements Initializable {
                     int responseCode = connection.getResponseCode();
 
                     if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                        Action.alertinfo(StringVariable.BerhasilUpdate(StringVariable.Nilai));
+                        Action.toastinfo(StringVariable.BerhasilUpdate(StringVariable.Nilai));
                     } else {
-                        Action.alerterror(StringVariable.GagalUpdate(StringVariable.Nilai));                    }
+                        Action.toasterror(StringVariable.GagalUpdate(StringVariable.Nilai));                    }
                     connection.disconnect();
                 } catch (Exception e) {
-                    Action.alerterror(StringVariable.EmptyData(StringVariable.Pertemuan));
+                    Action.toasterror(StringVariable.EmptyData(StringVariable.Pertemuan));
                 }
             }
         } else {
-            Action.alerterror(StringVariable.EmptyData(StringVariable.Pertemuan));
+            Action.toasterror(StringVariable.EmptyData(StringVariable.Pertemuan));
         }
     }
 

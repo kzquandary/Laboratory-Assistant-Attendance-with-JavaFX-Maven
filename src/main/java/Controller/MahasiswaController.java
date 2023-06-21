@@ -12,10 +12,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import project.Action;
-import project.ApiRoute;
-import project.Route;
-import project.StringVariable;
+import Project.Action;
+import Project.ApiRoute;
+import Project.StringVariable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -113,7 +112,7 @@ public class MahasiswaController implements Initializable {
                 URL url = new URL(ApiRoute.StoreMahasiswa);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod(StringVariable.POST);
-                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty(StringVariable.ContentType, "application/json; utf-8");
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoOutput(true);
                 String requestBody = String.format("{\"nim\":\"%s\",\"nama\":\"%s\",\"no_hp\":\"%s\"}",
@@ -125,17 +124,17 @@ public class MahasiswaController implements Initializable {
                 }
                 int httpResponseCode = conn.getResponseCode();
                 if (httpResponseCode == 201) {
-                    Action.alertinfo(StringVariable.BerhasilTambah(StringVariable.Mahasiswa));
+                    Action.toastinfo(StringVariable.BerhasilTambah(StringVariable.Mahasiswa));
                     clearmhs();
                 } else {
-                    Action.alerterror(StringVariable.GagalTambah(StringVariable.Mahasiswa));
+                    Action.toasterror(StringVariable.GagalTambah(StringVariable.Mahasiswa));
                 }
                 setTabel();
             } else {
                 emptyNIM.setVisible(false);
                 emptyNAMA.setVisible(false);
                 emptyNoHP.setVisible(false);
-                Action.alerterror(StringVariable.FormatError);
+                Action.toasterror(StringVariable.FormatError);
             }
         } else {
             warningNIM.setVisible(false);
@@ -144,7 +143,7 @@ public class MahasiswaController implements Initializable {
             emptyNIM.setVisible(fieldnim.getText().isEmpty());
             emptyNAMA.setVisible(fieldnama.getText().isEmpty());
             emptyNoHP.setVisible(fieldnohp.getText().isEmpty());
-            Action.alerterror(StringVariable.EmptyForm);
+            Action.toasterror(StringVariable.EmptyForm);
         }
     }
 
@@ -160,14 +159,14 @@ public class MahasiswaController implements Initializable {
 
                     int responseCode = conn.getResponseCode();
                     if (responseCode == 201) {
-                        Action.alertinfo(StringVariable.BerhasilHapus(StringVariable.Mahasiswa));
+                        Action.toastinfo(StringVariable.BerhasilHapus(StringVariable.Mahasiswa));
                         clearmhs();
                     } else {
-                        Action.alerterror(StringVariable.GagalHapus(StringVariable.Mahasiswa));
+                        Action.toasterror(StringVariable.GagalHapus(StringVariable.Mahasiswa));
                     }
                     conn.disconnect();
                 } catch (IOException e) {
-                    Action.alerterror(StringVariable.ErrorHapus(StringVariable.Mahasiswa));
+                    Action.toasterror(StringVariable.ErrorHapus(StringVariable.Mahasiswa));
                 }
                 setTabel();
             }
@@ -190,7 +189,7 @@ public class MahasiswaController implements Initializable {
                     URL url = new URL(ApiRoute.setUpdateMahasiswa(fieldnim.getText()));
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod(StringVariable.POST);
-                    conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                    conn.setRequestProperty(StringVariable.ContentType, "application/json; utf-8");
                     conn.setRequestProperty("Accept", "application/json");
                     conn.setDoOutput(true);
                     String requestBody = String.format("{\"nama\":\"%s\",\"no_hp\":\"%s\"}",
@@ -203,21 +202,21 @@ public class MahasiswaController implements Initializable {
 
                     int responseCode = conn.getResponseCode();
                     if (responseCode == 201) {
-                        Action.alertinfo(StringVariable.BerhasilUpdate(StringVariable.Mahasiswa));
+                        Action.toastinfo(StringVariable.BerhasilUpdate(StringVariable.Mahasiswa));
                         clearmhs();
                     } else {
-                        Action.alerterror(StringVariable.GagalUpdate(StringVariable.Mahasiswa));
+                        Action.toasterror(StringVariable.GagalUpdate(StringVariable.Mahasiswa));
                     }
                     conn.disconnect();
                 } catch (Exception e) {
-                    Action.alerterror(StringVariable.GagalUpdate(StringVariable.Mahasiswa));
+                    Action.toasterror(StringVariable.GagalUpdate(StringVariable.Mahasiswa));
                 }
                 setTabel();
             } else {
                 emptyNIM.setVisible(false);
                 emptyNAMA.setVisible(false);
                 emptyNoHP.setVisible(false);
-                Action.alerterror(StringVariable.FormatError);
+                Action.toasterror(StringVariable.FormatError);
             }
         } else {
             warningNIM.setVisible(false);
@@ -226,14 +225,14 @@ public class MahasiswaController implements Initializable {
             emptyNIM.setVisible(fieldnim.getText().isEmpty());
             emptyNAMA.setVisible(fieldnama.getText().isEmpty());
             emptyNoHP.setVisible(fieldnohp.getText().isEmpty());
-            Action.alerterror(StringVariable.EmptyForm);
+            Action.toasterror(StringVariable.EmptyForm);
         }
     }
 
     public boolean validasiMahasiswa() {
-        boolean validNIM = Pattern.matches(Route.RegNIM, fieldnim.getText());
-        boolean validNama = Pattern.matches(Route.RegNama, fieldnama.getText());
-        boolean validNoHP = Pattern.matches(Route.RegNoHP, fieldnohp.getText());
+        boolean validNIM = Pattern.matches(StringVariable.RegNIM, fieldnim.getText());
+        boolean validNama = Pattern.matches(StringVariable.RegNama, fieldnama.getText());
+        boolean validNoHP = Pattern.matches(StringVariable.RegNoHP, fieldnohp.getText());
         warningNIM.setVisible(!validNIM);
         warningNAMA.setVisible(!validNama);
         warningNoHP.setVisible(!validNoHP);

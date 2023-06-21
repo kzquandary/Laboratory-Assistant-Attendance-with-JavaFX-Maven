@@ -14,10 +14,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import project.Action;
-import project.ApiRoute;
-import project.Route;
-import project.StringVariable;
+import Project.Action;
+import Project.ApiRoute;
+import Project.StringVariable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -100,9 +99,9 @@ public class SearchController {
 
     private void performSearch() {
         if (searchText != null && !searchText.isEmpty()) {
-            if (Pattern.matches(Route.RegNoHP, searchText)) {
+            if (Pattern.matches(StringVariable.RegNoHP, searchText)) {
                 searchByNohp();
-            } else if (Pattern.matches(Route.RegNIM, searchText)) {
+            } else if (Pattern.matches(StringVariable.RegNIM, searchText)) {
                 searchByNIM();
             } else {
                 searchByName();
@@ -172,7 +171,7 @@ public class SearchController {
         try {
             URL url = new URL(link);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
+            con.setRequestMethod(StringVariable.GET);
             int status = con.getResponseCode();
             if (status == 200) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -280,7 +279,7 @@ public class SearchController {
             try {
                 URL url = new URL(ApiRoute.setGetLaporanByNim(searchnim));
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
+                con.setRequestMethod(StringVariable.GET);
                 int status = con.getResponseCode();
                 if (status == 200) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));

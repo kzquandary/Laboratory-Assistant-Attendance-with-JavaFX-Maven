@@ -1,5 +1,9 @@
 package Controller;
 
+import Project.Action;
+import Project.ApiRoute;
+import Project.StringVariable;
+import Project.TempVariable;
 import com.swardana.materialiconfx.control.MaterialIcon;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -20,10 +24,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import project.Action;
-import project.ApiRoute;
-import project.StringVariable;
-import project.VarTemp;
 
 import java.awt.*;
 import java.io.*;
@@ -32,6 +32,8 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -210,7 +212,7 @@ public class SettingController implements Initializable {
             Thread uploadThread = new Thread(uploadTask);
             uploadThread.start();
         } else {
-            Action.alerterror(StringVariable.Cancel);
+            System.out.println(StringVariable.Cancel);
         }
     }
 
@@ -266,7 +268,7 @@ public class SettingController implements Initializable {
         URL apiUrl = new URL(url);
         HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
         connection.setRequestMethod(StringVariable.POST);
-        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty(StringVariable.ContentType, "application/json");
         connection.setDoOutput(true);
 
         OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
@@ -298,7 +300,7 @@ public class SettingController implements Initializable {
             URL url = new URL(ApiRoute.BatchStoreMahasiswa);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(StringVariable.POST);
-            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty(StringVariable.ContentType, "application/json");
             connection.setDoOutput(true);
 
             OutputStream outputStream = connection.getOutputStream();
@@ -337,7 +339,8 @@ public class SettingController implements Initializable {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Simpan File Backup");
-        fileChooser.setInitialFileName("Mahasiswa");
+        String fileName = "backup_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss"));
+        fileChooser.setInitialFileName(fileName);
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel File", "*.xlsx"));
 
         java.io.File selectedFile = fileChooser.showSaveDialog(stage);
@@ -392,7 +395,7 @@ public class SettingController implements Initializable {
                 e.printStackTrace();
             }
         } else {
-            Action.alerterror(StringVariable.Cancel);
+            System.out.println(StringVariable.Cancel);
         }
     }
 
@@ -418,7 +421,7 @@ public class SettingController implements Initializable {
 
     @FXML
     void submitpassword() {
-        String oldUsername = VarTemp.username;
+        String oldUsername = TempVariable.username;
         String oldPassword = field_oldpassword_for_password.getText();
         String newPassword = field_newpassword_for_password.getText();
         String confirmPassword = field_confirmation_for_password.getText();
@@ -429,7 +432,7 @@ public class SettingController implements Initializable {
             HttpURLConnection conn = (HttpURLConnection) apiUrl.openConnection();
 
             conn.setRequestMethod(StringVariable.POST);
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty(StringVariable.ContentType, "application/json");
             conn.setDoOutput(true);
             String requestBody = "{\"username\":\"" + oldUsername + "\",\"password\":\"" + oldPassword + "\",\"new_password\":\"" + newPassword + "\",\"confirm_password\":\"" + confirmPassword + "\"}";
 
@@ -450,7 +453,7 @@ public class SettingController implements Initializable {
                 JSONObject jsonResponse = new JSONObject(response.toString());
                 String message = jsonResponse.getString("message");
                 Action.alertinfo(message);
-                VarTemp.password = newPassword;
+                TempVariable.password = newPassword;
             } else {
                 Action.alerterror(StringVariable.GagalUpdate("Password"));
             }
@@ -465,7 +468,7 @@ public class SettingController implements Initializable {
     void submitusername() {
         String newUsername = field_username_for_username.getText();
         String password = field_password_for_username.getText();
-        String oldUsername = VarTemp.username;
+        String oldUsername = TempVariable.username;
 
         try {
             String url = ApiRoute.updateUsername;
@@ -473,7 +476,7 @@ public class SettingController implements Initializable {
             HttpURLConnection conn = (HttpURLConnection) apiUrl.openConnection();
 
             conn.setRequestMethod(StringVariable.POST);
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty(StringVariable.ContentType, "application/json");
             conn.setDoOutput(true);
             String requestBody = "{\"username\":\"" + oldUsername + "\",\"password\":\"" + password + "\",\"new_username\":\"" + newUsername + "\"}";
 
@@ -493,9 +496,9 @@ public class SettingController implements Initializable {
                 reader.close();
 
                 Action.alertinfo(StringVariable.BerhasilUpdate("Username"));
-                VarTemp.username = newUsername;
+                TempVariable.username = newUsername;
                 try {
-                    File tokenFile = new File(VarTemp.filePath);
+                    File tokenFile = new File(TempVariable.filePath);
                     if (tokenFile.exists()) {
                         boolean deleted = tokenFile.delete();
                         if (deleted) {

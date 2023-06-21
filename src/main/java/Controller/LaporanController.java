@@ -12,9 +12,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import project.Action;
-import project.ApiRoute;
-import project.StringVariable;
+import Project.Action;
+import Project.ApiRoute;
+import Project.StringVariable;
 
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
@@ -43,7 +43,7 @@ public class LaporanController implements Initializable {
             if (newValue != null) {
                 if (newValue.getKode_pertemuan().equals("Pilih Pertemuan")) {
                     pagination.setVisible(false);
-                    textkodepertemuan.setVisible(false);
+                    textkodepertemuan.setText("");
                     tempMhs.clear();
                 } else {
                     initializeDataMahasiswa(newValue);
@@ -200,7 +200,7 @@ public class LaporanController implements Initializable {
                 URL url = new URL(ApiRoute.UpdateLaporan);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod(StringVariable.POST);
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                connection.setRequestProperty(StringVariable.ContentType, "application/x-www-form-urlencoded");
 
                 StringBuilder requestBody = new StringBuilder();
                 for (Map.Entry<String, String> entry : tempMhs.entrySet()) {
@@ -222,14 +222,14 @@ public class LaporanController implements Initializable {
                 int responseCode = connection.getResponseCode();
 
                 if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                    Action.alertinfo(StringVariable.BerhasilUpdate(StringVariable.Laporan));
+                    Action.toastinfo(StringVariable.BerhasilUpdate(StringVariable.Laporan));
                 } else {
-                    Action.alerterror(StringVariable.GagalUpdate(StringVariable.Laporan));
+                    Action.toasterror(StringVariable.GagalUpdate(StringVariable.Laporan));
                 }
 
                 connection.disconnect();
             } catch (Exception e) {
-                Action.alerterror(StringVariable.EmptyData(StringVariable.Pertemuan));
+                Action.toasterror(StringVariable.EmptyData(StringVariable.Pertemuan));
             }
         } else {
             Action.alerterror(StringVariable.EmptyData(StringVariable.Pertemuan));
