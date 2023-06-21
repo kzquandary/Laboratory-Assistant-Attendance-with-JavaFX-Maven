@@ -43,7 +43,7 @@
     </Pane>
     <Pane layoutX="526.0" layoutY="24.0" prefHeight="349.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
         <TextField fx:id="fieldketerangan" layoutX="27.0" layoutY="276.0" prefHeight="44.0" prefWidth="323.0" promptText="Masukan Keterangan" />
-        <Text fill="WHITE" layoutX="165.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NIM" textAlignment="CENTER">
+        <Text fill="WHITE" layoutX="160.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NAMA" textAlignment="CENTER">
             <font>
                 <Font name="Comic Sans MS" size="19.0" />
             </font>
