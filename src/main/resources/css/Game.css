@@ -1,0 +1,18 @@
+.button {
+    -fx-background-color: #1c0cb9;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: BOLD;
+    -fx-font-size: 16;
+
+}
+
+.Background {
+    -fx-background-image: url("../com/aslabapp/aslabapp/Background.jpg");
+}
+
+.Block {
+    -fx-effect: dropshadow(two-pass-box, #000000,8,0.0,2,2);
+    -fx-background-radius: 20;
+    -fx-font-size: 30;
+}
