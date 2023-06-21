@@ -116,3 +116,10 @@
     -fx-background-color: #651FFF;
     -fx-background-radius: 25 25 0 0;
 }
+
+.BackgroundDark{
+    -fx-fill: linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #0a226b 0.6729%, #b06ab3 51.0094%, #3288c9 100.0%);
+}
+.BackgroundLight{
+    -fx-fill: linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #cf8888 0.6729%, #c6b2c7 51.0094%, #4d6e86 100.0%);
+}
