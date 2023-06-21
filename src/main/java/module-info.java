@@ -9,14 +9,16 @@ module com.aslabapp.aslabapp {
     requires com.swardana.materialiconfx;
     requires java.net.http;
     requires java.desktop;
+    requires org.controlsfx.controls;
+    requires javafx.media;
 
 
     opens com.aslabapp.aslabapp to javafx.fxml;
     exports com.aslabapp.aslabapp;
     opens Controller to javafx.fxml;
     exports Controller;
-    opens project to javafx.fxml;
-    exports project;
+    opens Project to javafx.fxml;
+    exports Project;
     opens Model to javafx.base;
     exports Model;
 }
