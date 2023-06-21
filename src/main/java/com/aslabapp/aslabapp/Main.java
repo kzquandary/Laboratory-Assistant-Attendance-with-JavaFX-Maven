@@ -2,6 +2,10 @@ package com.aslabapp.aslabapp;
 
 import Controller.InfoHomeController;
 import Controller.SearchController;
+import Project.Action;
+import Project.Route;
+import Project.StringVariable;
+import Project.TempVariable;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -11,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,13 +23,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import project.Action;
-import project.Route;
-import project.StringVariable;
-import project.VarTemp;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -44,10 +47,11 @@ public class Main extends Application {
     private TextField fieldusername;
     @FXML
     private CheckBox rememberme;
-
+    public Rectangle Background_Rect;
+    public Pane Tab_Tema;
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Path file = Paths.get(VarTemp.filePath);
+        Path file = Paths.get(TempVariable.filePath);
         if (Files.exists(file)) {
             try {
                 String token = Files.readString(file);
@@ -56,6 +60,7 @@ public class Main extends Application {
 
                 if (isValid) {
                     homepage();
+                    Action.toastinfo("Berhasil Login dengan Akses Token");
                 } else {
                     loginpage();
                 }
@@ -84,7 +89,7 @@ public class Main extends Application {
                 Stage loginStage = (Stage) fieldusername.getScene().getWindow();
                 loginStage.close();
                 homepage();
-                Action.alertinfo("Berhasil Login");
+                Action.toastinfo("Berhasil Login");
             } else {
                 Action.alerterror("User dan Password salah");
             }
@@ -92,13 +97,13 @@ public class Main extends Application {
             boolean loginResult = Action.loginWithCredentials(username, password);
 
             if (loginResult) {
-                VarTemp.username = username;
-                VarTemp.password = password;
+                TempVariable.username = username;
+                TempVariable.password = password;
 
                 Stage loginStage = (Stage) fieldusername.getScene().getWindow();
                 loginStage.close();
                 homepage();
-                Action.alertinfo("Berhasil Login");
+                Action.toastinfo("Berhasil Login");
             } else {
                 Action.alerterror("User dan Password salah");
             }
@@ -160,21 +165,21 @@ public class Main extends Application {
             homeStage.close();
 
             Action.deleteTokenFile();
-            Action.logoutFromAPI(VarTemp.username);
+            Action.logoutFromAPI(TempVariable.username);
         } else {
             Action.alerterror(StringVariable.ApiError);
             return;
         }
 
         loginpage();
-        Action.alertinfo("Berhasil logout");
+        Action.toastinfo("Berhasil logout");
     }
 
     public void lock() throws IOException {
         Stage homeStage = (Stage) content.getScene().getWindow();
         homeStage.close();
         lockpage();
-        Action.alertinfo("Akun telah dikunci");
+        Action.toastinfo("Akun telah dikunci");
     }
 
     public void mainClose(MouseEvent mouseEvent) {
@@ -240,10 +245,16 @@ public class Main extends Application {
         Action.Move(loader, content);
     }
 
-    public void carimahasiswa() {
+    public void carimahasiswa() throws IOException {
         if (!search_form.getText().isEmpty()) {
             String searchText = search_form.getText();
-            if (searchText.matches(Route.RegNama)) {
+            if (searchText.equalsIgnoreCase("Game")){
+                Stage homeStage = (Stage) content.getScene().getWindow();
+                homeStage.close();
+                HomeGame.PlayMusic(true);
+                GameHome();
+            }
+            if (searchText.matches(StringVariable.RegNama)) {
 
                 content.getChildren().clear();
 
@@ -279,5 +290,26 @@ public class Main extends Application {
             Action.alerterror(StringVariable.EmptyForm);
         }
     }
-
+    public static void GameHome() throws IOException {
+        Stage gameStage = new Stage();
+        FXMLLoader gameloader = new FXMLLoader(Main.class.getResource("HomeGame.fxml"));
+        ScrollPane gameroot = gameloader.load();
+        Scene gamescene = new Scene(gameroot);
+        gameStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("logo.png"))));
+        gameStage.setTitle("Game Kata");
+        gameStage.setResizable(false);
+        gameStage.setScene(gamescene);
+        gameStage.setScene(gamescene);
+        gameStage.show();
+    }
+    public void ChangeTheme(){
+        Background_Rect.setFill(Paint.valueOf("#3288c9"));
+    }
+    public void Buka_Tema(){
+//        if(tema){
+//            Tab_Tema.setVisible(false);
+//        }else{
+//            Tab_Tema.setVisible(false);
+//        }
+    }
 }

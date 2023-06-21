@@ -2,13 +2,12 @@ package com.aslabapp.aslabapp;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import project.Action;
-import project.VarTemp;
+import Project.Action;
+import Project.TempVariable;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,7 +21,7 @@ public class Lock implements Initializable {
     private TextField lockusername;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        lockusername.setText(VarTemp.username);
+        lockusername.setText(TempVariable.username);
     }
     public void mainClose(MouseEvent mouseEvent) {
         Action action = new Action();
@@ -38,28 +37,16 @@ public class Lock implements Initializable {
         String username = lockusername.getText();
         String password = lockpassword.getText();
         if (password.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Masukan Password");
-            alert.showAndWait();
+            Action.alerterror("Masukan Password");
             return;
         }
-        if (username.equals(VarTemp.username) && password.equals(VarTemp.password)) {
+        if (username.equals(TempVariable.username) && password.equals(TempVariable.password)) {
             Stage lockstage = (Stage) lockusername.getScene().getWindow();
             lockstage.close();
             Main.homepage();
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Info");
-            alert.setHeaderText(null);
-            alert.setContentText("Berhasil Unlock");
-            alert.showAndWait();
+            Action.toastinfo("Berhasil Unlock");
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Password salah");
-            alert.showAndWait();
+            Action.toasterror("Password salah");
         }
     }
 
