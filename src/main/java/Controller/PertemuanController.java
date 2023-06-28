@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
 
 public class PertemuanController implements Initializable {
     public TextField fieldkodepertemuan;
-
+    public TextField fieldjudulpertemuan;
     public DatePicker fieldtanggalpertemuan;
     @FXML
     private TableView<Pertemuan> tabelpertemuan;
@@ -37,7 +37,11 @@ public class PertemuanController implements Initializable {
     @FXML
     private TableColumn<Model.Pertemuan, String> tanggalpertemuan;
     @FXML
+    private TableColumn<Model.Pertemuan, String> judulpertemuan;
+    @FXML
     private Text warningTanggal;
+    @FXML
+    private Text warningJudul;
 
     public void setTabel() {
         try {
@@ -59,10 +63,12 @@ public class PertemuanController implements Initializable {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String kode_pertemuan = jsonObject.getString("kode_pertemuan");
                     LocalDate tanggal_pertemuan = LocalDate.parse(jsonObject.getString("tanggal_pertemuan"));
-                    dataPertemuan.add(new Pertemuan(kode_pertemuan, tanggal_pertemuan));
+                    String judul_pertemuan = jsonObject.getString("judul_pertemuan");
+                    dataPertemuan.add(new Pertemuan(kode_pertemuan, tanggal_pertemuan, judul_pertemuan));
                 }
                 kodepertemuan.setCellValueFactory(new PropertyValueFactory<>("kode_pertemuan"));
                 tanggalpertemuan.setCellValueFactory(new PropertyValueFactory<>("tanggal_pertemuan"));
+                judulpertemuan.setCellValueFactory(new PropertyValueFactory<>("judul_pertemuan"));
                 tabelpertemuan.setItems(dataPertemuan);
             }
             con.disconnect();
@@ -75,6 +81,7 @@ public class PertemuanController implements Initializable {
             if (newValue != null) {
                 fieldkodepertemuan.setText(newValue.getKode_pertemuan());
                 fieldtanggalpertemuan.setValue(newValue.getTanggal_pertemuan());
+                fieldjudulpertemuan.setText(newValue.getJudul_pertemuan());
             }
         });
     }
@@ -88,15 +95,21 @@ public class PertemuanController implements Initializable {
     public void clear() {
         fieldkodepertemuan.clear();
         fieldtanggalpertemuan.setValue(null);
+        fieldjudulpertemuan.clear();
     }
 
     public void tambah() {
+        if(!fieldkodepertemuan.getText().isEmpty()){
+            Action.toasterror(StringVariable.GagalTambah(StringVariable.Pertemuan) + "Bersihkan Field Terlebih Dahulu");
+            return;
+        }
         if (fieldtanggalpertemuan.getValue() != null) {
             if(fieldtanggalpertemuan.getValue().isBefore(LocalDate.now())){
                 Action.alerterror(StringVariable.FormatError);
                 return;
             }
             warningTanggal.setVisible(false);
+            warningJudul.setVisible(false);
             try {
                 URL url = new URL(ApiRoute.StorePertemuan);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -108,7 +121,7 @@ public class PertemuanController implements Initializable {
                 LocalDate date = fieldtanggalpertemuan.getValue();
                 DateTimeFormatter apiDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 String apiDate = date.format(apiDateFormatter);
-                String requestBody = String.format("{\"tanggal_pertemuan\":\"%s\"}", apiDate);
+                String requestBody = String.format("{\"tanggal_pertemuan\":\"%s\", \"judul_pertemuan\":\"%s\"}", apiDate, fieldjudulpertemuan.getText());
                 byte[] requestBodyBytes = requestBody.getBytes(StandardCharsets.UTF_8);
                 conn.setRequestProperty("Content-Length", Integer.toString(requestBodyBytes.length));
                 try (OutputStream os = conn.getOutputStream()) {
@@ -130,6 +143,7 @@ public class PertemuanController implements Initializable {
             }
         } else {
             warningTanggal.setVisible(true);
+            warningJudul.setVisible(true);
             Action.toasterror(StringVariable.FormatError);
         }
     }
@@ -137,48 +151,45 @@ public class PertemuanController implements Initializable {
     public void hapus() {
         if (!fieldkodepertemuan.getText().isEmpty()) {
             warningTanggal.setVisible(false);
-            try {
-                URL url = new URL(ApiRoute.setDeletePertemuan(fieldkodepertemuan.getText()));
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod(StringVariable.POST);
-                conn.connect();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
+            warningJudul.setVisible(false);
+
+            boolean konfirmasi = Action.alertkonfir(StringVariable.DeleteData);
+
+            if (konfirmasi) {
+                try {
+                    URL url = new URL(ApiRoute.setDeletePertemuan(fieldkodepertemuan.getText()));
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod(StringVariable.POST);
+                    conn.connect();
+
+                    int responseCode = conn.getResponseCode();
+
+                    if (responseCode == 201) {
+                        Action.toastinfo(StringVariable.BerhasilHapus(StringVariable.Pertemuan));
+                        clear();
+                    } else {
+                        Action.toasterror(StringVariable.GagalHapus(StringVariable.Pertemuan));
+                    }
+                    conn.disconnect();
+                    setTabel();
+                } catch (ConnectException e) {
+                    Action.alerterror(StringVariable.ApiError);
+                } catch (Exception e) {
+                    Action.toasterror(StringVariable.ErrorHapus(StringVariable.Pertemuan));
                 }
-                reader.close();
-
-                int responseCode = conn.getResponseCode();
-
-                String jsonResponse = response.toString();
-                JSONObject jsonObject = new JSONObject(jsonResponse);
-                String message = jsonObject.getString("message");
-
-                System.out.println(message);
-                if (responseCode == 201) {
-                    Action.toastinfo(StringVariable.BerhasilHapus(StringVariable.Pertemuan));
-                    clear();
-                } else {
-                    Action.toasterror(StringVariable.GagalHapus(StringVariable.Pertemuan));
-                }
-                conn.disconnect();
-                setTabel();
-            } catch (ConnectException e) {
-                Action.alerterror(StringVariable.ApiError);
-            } catch (Exception e) {
-                Action.toasterror(StringVariable.ErrorHapus(StringVariable.Pertemuan));
             }
         } else {
             warningTanggal.setVisible(false);
+            warningJudul.setVisible(false);
             Action.toasterror(StringVariable.PilihData(StringVariable.Pertemuan));
         }
     }
 
+
     public void update() {
-        if (!fieldkodepertemuan.getText().isEmpty() && fieldtanggalpertemuan.getValue() != null) {
+        if (!fieldkodepertemuan.getText().isEmpty() && !fieldjudulpertemuan.getText().isEmpty() && fieldtanggalpertemuan.getValue() != null) {
             warningTanggal.setVisible(false);
+            warningJudul.setVisible(false);
             try {
                 URL url = new URL(ApiRoute.setUpdatePertemuan(fieldkodepertemuan.getText()));
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -189,8 +200,8 @@ public class PertemuanController implements Initializable {
                 LocalDate date = fieldtanggalpertemuan.getValue();
                 DateTimeFormatter apiDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 String apiDate = date.format(apiDateFormatter);
-                String requestBody = String.format("{\"kode_pertemuan\":\"%s\",\"tanggal_pertemuan\":\"%s\"}",
-                        fieldkodepertemuan.getText(), apiDate);
+                String requestBody = String.format("{\"kode_pertemuan\":\"%s\",\"tanggal_pertemuan\":\"%s\",\"judul_pertemuan\":\"%s\"}",
+                        fieldkodepertemuan.getText(), apiDate, fieldjudulpertemuan.getText());
                 byte[] requestBodyBytes = requestBody.getBytes(StandardCharsets.UTF_8);
                 conn.setRequestProperty("Content-Length", Integer.toString(requestBodyBytes.length));
                 try (OutputStream os = conn.getOutputStream()) {
@@ -212,6 +223,7 @@ public class PertemuanController implements Initializable {
             }
         } else {
             warningTanggal.setVisible(true);
+            warningJudul.setVisible(true);
             Action.toasterror(StringVariable.DataFormatError);
         }
     }
