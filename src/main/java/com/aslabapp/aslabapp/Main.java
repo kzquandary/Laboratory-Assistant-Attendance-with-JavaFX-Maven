@@ -48,7 +48,10 @@ public class Main extends Application {
     @FXML
     private CheckBox rememberme;
     public Rectangle Background_Rect;
+    public Rectangle Sidebar_Rect;
+    public Rectangle Header_Rect;
     public Pane Tab_Tema;
+
     @Override
     public void start(Stage primaryStage) throws IOException {
         Path file = Paths.get(TempVariable.filePath);
@@ -68,7 +71,7 @@ public class Main extends Application {
                 e.printStackTrace();
             }
         } else {
-           loginpage();
+            loginpage();
         }
     }
 
@@ -78,7 +81,7 @@ public class Main extends Application {
         String password = fieldpassword.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
-           Action.alerterror("Username dan Password harus diisi");
+            Action.alerterror("Username dan Password harus diisi");
             return;
         }
 
@@ -109,6 +112,7 @@ public class Main extends Application {
             }
         }
     }
+
     public static void homepage() throws IOException {
         Stage homeStage = new Stage();
         FXMLLoader homeLoader = new FXMLLoader(Main.class.getResource(Route.Home));
@@ -126,6 +130,7 @@ public class Main extends Application {
         homeStage.setScene(homeScene);
         homeStage.show();
     }
+
     public void loginpage() throws IOException {
         Stage loginStage = new Stage();
         FXMLLoader loginLoader = new FXMLLoader(getClass().getResource(Route.Login));
@@ -142,6 +147,7 @@ public class Main extends Application {
         loginStage.setScene(loginScene);
         loginStage.show();
     }
+
     public void lockpage() throws IOException {
         Stage lockStage = new Stage();
         FXMLLoader lockLoader = new FXMLLoader(getClass().getResource(Route.Lock));
@@ -158,29 +164,38 @@ public class Main extends Application {
         lockStage.setScene(lockScene);
         lockStage.show();
     }
+
     public void logout() throws IOException {
         boolean apiActive = Action.checkAPIStatus();
         if (apiActive) {
-            Stage homeStage = (Stage) content.getScene().getWindow();
-            homeStage.close();
+            boolean konfirmasi = Action.alertkonfir("Apakah Anda yakin ingin logout?");
 
-            Action.deleteTokenFile();
-            Action.logoutFromAPI(TempVariable.username);
+            if (konfirmasi) {
+                Stage homeStage = (Stage) content.getScene().getWindow();
+                homeStage.close();
+
+                Action.deleteTokenFile();
+                Action.logoutFromAPI(TempVariable.username);
+
+                loginpage();
+                Action.toastinfo("Berhasil logout");
+            }
         } else {
             Action.alerterror(StringVariable.ApiError);
-            return;
         }
-
-        loginpage();
-        Action.toastinfo("Berhasil logout");
     }
 
     public void lock() throws IOException {
-        Stage homeStage = (Stage) content.getScene().getWindow();
-        homeStage.close();
-        lockpage();
-        Action.toastinfo("Akun telah dikunci");
+        boolean konfirmasi = Action.alertkonfir("Apakah Anda yakin ingin mengunci akun?");
+
+        if (konfirmasi) {
+            Stage homeStage = (Stage) content.getScene().getWindow();
+            homeStage.close();
+            lockpage();
+            Action.toastinfo("Akun telah dikunci");
+        }
     }
+
 
     public void mainClose(MouseEvent mouseEvent) {
         Action action = new Action();
@@ -248,7 +263,7 @@ public class Main extends Application {
     public void carimahasiswa() throws IOException {
         if (!search_form.getText().isEmpty()) {
             String searchText = search_form.getText();
-            if (searchText.equalsIgnoreCase("Game")){
+            if (searchText.equalsIgnoreCase("Game")) {
                 Stage homeStage = (Stage) content.getScene().getWindow();
                 homeStage.close();
                 HomeGame.PlayMusic(true);
@@ -290,6 +305,7 @@ public class Main extends Application {
             Action.alerterror(StringVariable.EmptyForm);
         }
     }
+
     public static void GameHome() throws IOException {
         Stage gameStage = new Stage();
         FXMLLoader gameloader = new FXMLLoader(Main.class.getResource("HomeGame.fxml"));
@@ -302,14 +318,254 @@ public class Main extends Application {
         gameStage.setScene(gamescene);
         gameStage.show();
     }
-    public void ChangeTheme(){
+
+    public void Buka_Tema() {
+        Tab_Tema.setVisible(!Tab_Tema.isVisible());
+    }
+
+    public void CloseTema() {
+        Tab_Tema.setVisible(false);
+    }
+
+    @FXML
+    void BG_BIRU() {
+        Background_Rect.setFill(Paint.valueOf("#161d99"));
+    }
+
+    @FXML
+    void BG_Cyan() {
         Background_Rect.setFill(Paint.valueOf("#3288c9"));
     }
-    public void Buka_Tema(){
-//        if(tema){
-//            Tab_Tema.setVisible(false);
-//        }else{
-//            Tab_Tema.setVisible(false);
-//        }
+
+    @FXML
+    void BG_HIJAU() {
+        Background_Rect.setFill(Paint.valueOf("#28a100"));
     }
+
+    @FXML
+    void BG_KUNING() {
+        Background_Rect.setFill(Paint.valueOf("#bff20a"));
+    }
+
+    @FXML
+    void BG_LIME() {
+        Background_Rect.setFill(Paint.valueOf("#32c768"));
+    }
+
+    @FXML
+    void BG_MERAH() {
+        Background_Rect.setFill(Paint.valueOf("#c73256"));
+    }
+
+    @FXML
+    void BG_ORANGE() {
+        Background_Rect.setFill(Paint.valueOf("#c76b32"));
+    }
+
+    @FXML
+    void BG_UNGU() {
+        Background_Rect.setFill(Paint.valueOf("#380257"));
+    }
+
+    @FXML
+    void BGLG_1() {
+        Background_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #0a226b 0.6729%, #b06ab3 51.0094%, #3288c9 100.0%)"));
+    }
+
+    @FXML
+    void BGLG_2() {
+        Background_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #7eb26b 17.6312%, #7eb26b 29.6576%, #0a226b 66.891%, #32c7c1 100.0%)"));
+    }
+
+    @FXML
+    void BGLG_3() {
+        Background_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #0c6b0b 0.6729%, #736bb2 51.0094%, #aac732 100.0%)"));
+    }
+
+    @FXML
+    void BGLG_4() {
+        Background_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #6b0b5e 0.6729%, #abb06a 31.7654%, #806ab0 68.2369%, #c74b32 100.0%)"));
+    }
+
+    @FXML
+    void BGLG_5() {
+        Background_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #0b206b 0.6729%, #601963 51.0094%, #1807b1 100.0%)"));
+    }
+
+    @FXML
+    void BGLG_6() {
+        Background_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #0a226b 0.6729%, #5e2c61 51.0094%, #b18b0d 100.0%)"));
+    }
+
+    @FXML
+    void BGLG_7() {
+        Background_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #001451 0.6729%, #7b0f81 51.0094%, #840724 100.0%)"));
+    }
+
+    @FXML
+    void BGLG_8() {
+        Background_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #3e6b0b 0.6729%, #b0b26b 51.0094%, #32c741 100.0%)"));
+    }
+
+    @FXML
+    void SB_BIRU() {
+        Sidebar_Rect.setFill(Paint.valueOf("#161d99"));
+    }
+
+    @FXML
+    void SB_Cyan() {
+        Sidebar_Rect.setFill(Paint.valueOf("#3289c74e"));
+    }
+
+    @FXML
+    void SB_HIJAU() {
+        Sidebar_Rect.setFill(Paint.valueOf("#28a100"));
+    }
+
+    @FXML
+    void SB_KUNING() {
+        Sidebar_Rect.setFill(Paint.valueOf("#bef00c99"));
+    }
+
+    @FXML
+    void SB_LIME() {
+        Sidebar_Rect.setFill(Paint.valueOf("#34c767b3"));
+    }
+
+    @FXML
+    void SB_MERAH() {
+        Sidebar_Rect.setFill(Paint.valueOf("#c73256"));
+    }
+
+    @FXML
+    void SB_ORANGE() {
+        Sidebar_Rect.setFill(Paint.valueOf("#c76b32"));
+    }
+
+    @FXML
+    void SB_UNGU() {
+        Sidebar_Rect.setFill(Paint.valueOf("#380257b2"));
+    }
+
+    @FXML
+    void SBLG_1() {
+        Sidebar_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #0a226b 0.6729%, #b06ab3 51.0094%, #3288c9 100.0%)"));
+    }
+
+    @FXML
+    void SBLG_2() {
+        Sidebar_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #7eb26b 17.6312%, #7eb26b 29.6576%, #0a226b 66.891%, #32c7c1 100.0%)"));
+    }
+
+    @FXML
+    void SBLG_3() {
+        Sidebar_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #0c6b0b 0.6729%, #736bb2 51.0094%, #aac732 100.0%)"));
+    }
+
+    @FXML
+    void SBLG_4() {
+        Sidebar_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #6b0b5e 0.6729%, #abb06a 31.7654%, #806ab0 68.2369%, #c74b32 100.0%)"));
+    }
+
+    @FXML
+    void SBLG_5() {
+        Sidebar_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #0b206b 0.6729%, #601963 51.0094%, #1807b1 100.0%)"));
+    }
+
+    @FXML
+    void SBLG_6() {
+        Sidebar_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #0a226b 0.6729%, #5e2c61 51.0094%, #b18b0d 100.0%)"));
+    }
+
+    @FXML
+    void SBLG_7() {
+        Sidebar_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #001451 0.6729%, #7b0f81 51.0094%, #840724 100.0%)"));
+    }
+
+    @FXML
+    void SBLG_8() {
+        Sidebar_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #3e6b0b 0.6729%, #b0b26b 51.0094%, #32c741 100.0%)"));
+    }
+
+    @FXML
+    void HD_BIRU() {
+        Header_Rect.setFill(Paint.valueOf("#161d99"));
+    }
+
+    @FXML
+    void HD_Cyan() {
+        Header_Rect.setFill(Paint.valueOf("#3288c9"));
+    }
+
+    @FXML
+    void HD_HIJAU() {
+        Header_Rect.setFill(Paint.valueOf("#28a100"));
+    }
+
+    @FXML
+    void HD_KUNING() {
+        Header_Rect.setFill(Paint.valueOf("#bef00c99"));
+    }
+
+    @FXML
+    void HD_LIME() {
+        Header_Rect.setFill(Paint.valueOf("#32c768"));
+    }
+
+    @FXML
+    void HD_MERAH() {
+        Header_Rect.setFill(Paint.valueOf("#c73256"));
+    }
+
+    @FXML
+    void HD_ORANGE() {
+        Header_Rect.setFill(Paint.valueOf("#c76b32"));
+    }
+
+    @FXML
+    void HD_UNGU() {
+        Header_Rect.setFill(Paint.valueOf("#380257b2"));
+    }
+
+    @FXML
+    void HDLG_1() {
+        Header_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #0a226b 0.6729%, #b06ab3 51.0094%, #3288c9 100.0%)"));
+    }
+
+    @FXML
+    void HDLG_2() {
+        Header_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #7eb26b 17.6312%, #7eb26b 29.6576%, #0a226b 66.891%, #32c7c1 100.0%)"));
+    }
+
+    @FXML
+    void HDLG_3() {
+        Header_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #0c6b0b 0.6729%, #736bb2 51.0094%, #aac732 100.0%)"));
+    }
+
+    @FXML
+    void HDLG_4() {
+        Header_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #6b0b5e 0.6729%, #abb06a 31.7654%, #806ab0 68.2369%, #c74b32 100.0%)"));
+    }
+
+    @FXML
+    void HDLG_5() {
+        Header_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #0b206b 0.6729%, #601963 51.0094%, #1807b1 100.0%)"));
+    }
+
+    @FXML
+    void HDLG_6() {
+        Header_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #0a226b 0.6729%, #5e2c61 51.0094%, #b18b0d 100.0%)"));
+    }
+
+    @FXML
+    void HDLG_7() {
+        Header_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #001451 0.6729%, #7b0f81 51.0094%, #840724 100.0%)"));
+    }
+
+    @FXML
+    void HDLG_8() {
+        Header_Rect.setFill(Paint.valueOf("linear-gradient(from 0.0% 0.0% to 100.0% 100.0%, #223d96 0.0%, #3e6b0b 0.6729%, #b0b26b 51.0094%, #32c741 100.0%)"));
+    }
+
+
 }
