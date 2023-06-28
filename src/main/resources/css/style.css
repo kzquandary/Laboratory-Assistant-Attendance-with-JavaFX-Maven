@@ -64,6 +64,11 @@
     -fx-font-family: "Comic Sans MS";
     -fx-font-weight: bold;
     -fx-font-size: 14;
+    -fx-text-fill: WHITE;
+    -fx-background-radius: 25;
+    -fx-prompt-text-fill: WHITE;
+    -fx-highlight-text-fill: WHITE;
+    -fx-highlight-fill: WHITE;
 }
 .table-view {
     -fx-background-color:#651FFF;
