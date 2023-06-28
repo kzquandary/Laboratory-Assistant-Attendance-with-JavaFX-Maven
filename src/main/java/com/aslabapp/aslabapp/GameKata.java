@@ -136,9 +136,9 @@ public class GameKata implements Initializable {
         });
         Button_Kembali_Ke_Home.setOnAction(e -> {
             Stage gameStage = (Stage) Panel_Jawaban.getScene().getWindow();
+            HomeGame.PlayMusic(false);
             gameStage.close();
             try {
-                HomeGame.PlayMusic(false);
                 Main.homepage();
             } catch (IOException ex) {
 
@@ -149,7 +149,6 @@ public class GameKata implements Initializable {
             HomeGame.level_pilihan = null;
             Stage gameStage = (Stage) Panel_Jawaban.getScene().getWindow();
             gameStage.close();
-            HomeGame.PlayMusic(false);
             try {
                 Main.GameHome();
             } catch (IOException ex) {
