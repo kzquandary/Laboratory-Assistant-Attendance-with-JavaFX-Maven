@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.swardana.materialiconfx.control.MaterialIcon?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -9,7 +10,7 @@
 <?import javafx.scene.text.Text?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="925.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MahasiswaController">
-   <TableView id="tabelmahasiswa" fx:id="tabelmahasiswa" layoutX="18.0" layoutY="14.0" prefHeight="624.0" prefWidth="494.0" stylesheets="@../../../css/style.css">
+   <TableView id="tabelmahasiswa" fx:id="tabelmahasiswa" layoutX="18.0" layoutY="14.0" prefHeight="643.0" prefWidth="494.0" stylesheets="@../../../css/style.css">
       <columns>
          <TableColumn id="nim" fx:id="nim" prefWidth="125.60000038146973" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="NIM" />
          <TableColumn id="nama" fx:id="nama" prefWidth="71.20001220703125" style="-fx-bacground-radius: 25 25 0 0; -fx-background-insets: 0 0 0 0;" text="Nama" />
@@ -19,7 +20,7 @@
          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
       </columnResizePolicy>
    </TableView>
-   <Pane fx:id="clearmhs" layoutX="526.0" layoutY="436.0" prefHeight="169.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
+   <Pane fx:id="clearmhs" layoutX="526.0" layoutY="436.0" prefHeight="221.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">
       <Button layoutX="31.0" layoutY="36.0" mnemonicParsing="false" onAction="#tambah" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #04ff00; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text="Tambah Mahasiswa">
          <font>
             <Font name="Comic Sans MS Bold" size="15.0" />
@@ -39,6 +40,14 @@
          <font>
             <Font name="Comic Sans MS Bold" size="15.0" />
          </font>
+      </Button>
+      <Button layoutX="29.0" layoutY="152.0" mnemonicParsing="false" onAction="#pesantugas" prefHeight="40.0" prefWidth="334.0" style="-fx-background-color: #25d366; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);" styleClass="sidebar-butotn" stylesheets="@../../../css/style.css" text=" Kirim Pesan WhatsApp">
+         <font>
+            <Font name="Comic Sans MS Bold" size="15.0" />
+         </font>
+         <graphic>
+            <MaterialIcon color="WHITE" content="CHAT" size="25" />
+         </graphic>
       </Button>
    </Pane>
    <Pane layoutX="526.0" layoutY="21.0" prefHeight="386.0" prefWidth="374.0" styleClass="content-pane" stylesheets="@../../../css/style.css">

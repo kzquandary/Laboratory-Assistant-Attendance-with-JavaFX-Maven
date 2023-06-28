@@ -1,6 +1,9 @@
 package Controller;
 
 import Model.Mahasiswa;
+import Project.Action;
+import Project.ApiRoute;
+import Project.StringVariable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,16 +15,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import Project.Action;
-import Project.ApiRoute;
-import Project.StringVariable;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.awt.*;
+import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
@@ -227,6 +227,54 @@ public class MahasiswaController implements Initializable {
             emptyNoHP.setVisible(fieldnohp.getText().isEmpty());
             Action.toasterror(StringVariable.EmptyForm);
         }
+    }
+    public void pesantugas() {
+        String nim = fieldnim.getText();
+        String nama = fieldnama.getText();
+        String noHp = fieldnohp.getText();
+        if (nim.isEmpty() || nama.isEmpty() || noHp.isEmpty()) {
+            Action.alerterror(StringVariable.EmptyData(StringVariable.Mahasiswa));
+            return;
+        }
+
+        try {
+            String apiUrl = ApiRoute.CheckMhs + URLEncoder.encode(nim, StandardCharsets.UTF_8);
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(StringVariable.GET);
+
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == 201) {
+                String encodedMessage = URLEncoder.encode("Halo " + capitalizeName(nama) + ", Silahkan Kumpulkan Tugas Praktikum Pemrograman Objek 2, Karena Tengat Waktu Sudah Dekat", StandardCharsets.UTF_8);
+                String formattedNoHp = formatPhoneNumber(noHp);
+                String whatsappUrl = "https://wa.me/" + formattedNoHp + "?text=" + encodedMessage;
+                Desktop.getDesktop().browse(new URI(whatsappUrl));
+            } else {
+                Action.alerterror(StringVariable.Error);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private String capitalizeName(String name) {
+        String[] words = name.split(" ");
+        StringBuilder capitalizedString = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                String capitalizedWord = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+                capitalizedString.append(capitalizedWord).append(" ");
+            }
+        }
+
+        return capitalizedString.toString().trim();
+    }
+    public String formatPhoneNumber(String noHp) {
+        if (noHp.startsWith("08")) {
+            noHp = "628" + noHp.substring(2);
+        }
+        return noHp;
     }
 
     public boolean validasiMahasiswa() {
