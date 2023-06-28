@@ -3,18 +3,21 @@ package Controller;
 import Model.Keaktifan;
 import Model.Mahasiswa;
 import Model.Pertemuan;
+import Project.Action;
+import Project.ApiRoute;
+import Project.StringVariable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.StringConverter;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import Project.Action;
-import Project.ApiRoute;
-import Project.StringVariable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -167,6 +170,10 @@ public class KeaktifanController implements Initializable {
 
 
     public void tambah() throws Exception {
+        if (!fieldkodekeaktifan.getText().isEmpty()) {
+            Action.toasterror(StringVariable.GagalUpdate(StringVariable.Keaktifan) + "Bersihkan Field Terlebih Dahulu");
+            return;
+        }
         Mahasiswa selectedMahasiswa = fieldnim.getValue();
         Pertemuan selectedPertemuan = fieldpertemuan.getValue();
         if (selectedPertemuan != null) {
@@ -243,28 +250,33 @@ public class KeaktifanController implements Initializable {
 
     public void hapus() {
         if (!fieldkodekeaktifan.getText().isEmpty()) {
-            try {
-                URL url = new URL(ApiRoute.setDeleteKeaktifan(fieldkodekeaktifan.getText()));
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod(StringVariable.POST);
-                conn.connect();
+            boolean konfirmasi = Action.alertkonfir(StringVariable.DeleteData);
 
-                int responseCode = conn.getResponseCode();
-                if (responseCode == 201) {
-                    Action.toastinfo(StringVariable.BerhasilHapus(StringVariable.Keaktifan));
-                } else {
-                    Action.toasterror(StringVariable.GagalHapus(StringVariable.Keaktifan));
+            if (konfirmasi) {
+                try {
+                    URL url = new URL(ApiRoute.setDeleteKeaktifan(fieldkodekeaktifan.getText()));
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod(StringVariable.POST);
+                    conn.connect();
+
+                    int responseCode = conn.getResponseCode();
+                    if (responseCode == 201) {
+                        Action.toastinfo(StringVariable.BerhasilHapus(StringVariable.Keaktifan));
+                        clear();
+                    } else {
+                        Action.toasterror(StringVariable.GagalHapus(StringVariable.Keaktifan));
+                    }
+                    conn.disconnect();
+                } catch (Exception e) {
+                    Action.toasterror(StringVariable.ApiError);
                 }
-                conn.disconnect();
-            } catch (Exception e) {
-                Action.toasterror(StringVariable.ApiError);
-                clear();
+                setTabel();
             }
-            setTabel();
         } else {
             Action.alerterror(StringVariable.EmptyData(StringVariable.Mahasiswa));
         }
     }
+
 
     public void clear() {
         fieldkodekeaktifan.clear();
