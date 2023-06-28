@@ -548,4 +548,78 @@ public class SettingController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    public void printrekap() {
+        try {
+            Desktop.getDesktop().browse(new URI(ApiRoute.Rekap));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void downloadreport(ActionEvent event) {
+        Node source = (Node) event.getSource();
+        Stage stage = (Stage) source.getScene().getWindow();
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Simpan File Backup");
+        String fileName = "report_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss"));
+        fileChooser.setInitialFileName(fileName);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel File", "*.xlsx"));
+
+        java.io.File selectedFile = fileChooser.showSaveDialog(stage);
+        if (selectedFile != null) {
+            try {
+                String apiURL = ApiRoute.DownloadReport;
+                URL url = new URL(apiURL);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod(StringVariable.GET);
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    InputStream inputStream = connection.getInputStream();
+
+                    FileOutputStream outputStream = new FileOutputStream(selectedFile);
+
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+
+                    outputStream.close();
+                    inputStream.close();
+
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Download Berhasil");
+                    alert.setHeaderText("File backup berhasil diunduh.");
+                    alert.setContentText("Pilih opsi untuk membuka file atau menutup dialog.");
+
+                    ButtonType bukaDirektoriButton = new ButtonType("Buka Direktori", ButtonBar.ButtonData.OK_DONE);
+                    ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.CANCEL_CLOSE);
+                    alert.getButtonTypes().setAll(bukaDirektoriButton, okButton);
+
+                    alert.setOnCloseRequest(e -> {
+                        if (alert.getResult() == bukaDirektoriButton) {
+                            try {
+                                Desktop.getDesktop().open(selectedFile.getParentFile());
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    });
+
+                    alert.showAndWait();
+                } else {
+                    Action.alerterror(StringVariable.Error);
+                }
+
+                connection.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println(StringVariable.Cancel);
+        }
+    }
 }

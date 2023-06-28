@@ -63,14 +63,34 @@
             <MaterialIcon color="WHITE" content="ARCHIVE" size="20" />
          </graphic>
       </Button>
-      <Text fill="WHITE" layoutX="19.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Print Report Praktikum" textAlignment="CENTER">
+      <Text fill="WHITE" layoutX="19.0" layoutY="343.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Print Report Praktikum" textAlignment="CENTER">
          <font>
             <Font name="Comic Sans MS" size="19.0" />
          </font>
       </Text>
-      <Button layoutX="245.0" layoutY="267.0" mnemonicParsing="false" onAction="#printreport" prefHeight="39.0" prefWidth="123.0" style="-fx-background-color: #0aa83f; -fx-border-radius: 25; -fx-background-radius: 25;" text="Print" textFill="WHITE">
+      <Button layoutX="245.0" layoutY="316.0" mnemonicParsing="false" onAction="#printreport" prefHeight="39.0" prefWidth="123.0" style="-fx-background-color: #0aa83f; -fx-border-radius: 25; -fx-background-radius: 25;" text="Print" textFill="WHITE">
          <graphic>
             <MaterialIcon color="WHITE" content="CLOUD_DOWNLOAD" size="20" />
+         </graphic>
+      </Button>
+      <Text fill="WHITE" layoutX="21.0" layoutY="397.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Print Rekap Nilai" textAlignment="CENTER">
+         <font>
+            <Font name="Comic Sans MS" size="19.0" />
+         </font>
+      </Text>
+      <Button layoutX="245.0" layoutY="370.0" mnemonicParsing="false" onAction="#printrekap" prefHeight="39.0" prefWidth="123.0" style="-fx-background-color: #0aa83f; -fx-border-radius: 25; -fx-background-radius: 25;" text="Print" textFill="WHITE">
+         <graphic>
+            <MaterialIcon color="WHITE" content="CLOUD_DOWNLOAD" size="20" />
+         </graphic>
+      </Button>
+      <Text fill="WHITE" layoutX="21.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Download Report (.xlsx)" textAlignment="CENTER">
+         <font>
+            <Font name="Comic Sans MS" size="19.0" />
+         </font>
+      </Text>
+      <Button layoutX="245.0" layoutY="262.0" mnemonicParsing="false" onAction="#downloadreport" prefHeight="39.0" prefWidth="123.0" style="-fx-background-color: #0091df; -fx-border-radius: 25; -fx-background-radius: 25;" text="Download" textFill="WHITE">
+         <graphic>
+            <MaterialIcon color="WHITE" content="ARCHIVE" size="20" />
          </graphic>
       </Button>
    </Pane>
