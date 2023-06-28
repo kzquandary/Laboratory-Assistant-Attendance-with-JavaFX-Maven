@@ -16,6 +16,7 @@ public class ApiRoute {
     public static String GetMahasiswaByNim = URL + "mahasiswa/nim/{nim}";
     public static String GetMahasiswaByNama = URL + "mahasiswa/nama/{nama}";
     public static String GetMahasiswaByNohp = URL + "mahasiswa/nohp/{nohp}";
+    public static String CheckMhs = URL + "mahasiswa/checkmhs/";
     public static String GetPertemuan = URL + "pertemuan";
     public static String StorePertemuan = URL + "pertemuan/store";
     public static String UpdatePertemuan = URL + "pertemuan/{id}";
@@ -39,6 +40,8 @@ public class ApiRoute {
     public static String TruncateData = URL + "truncate";
     public static String Import = URL + "import";
     public static String Report = URL + "report";
+    public static String Rekap = URL + "rekap";
+    public static String DownloadReport = URL + "downloadreport";
     // Setter untuk rute yang memerlukan parameter
     public static String setCheckToken(String token) {
         return CheckToken.replace("{token}", token);
